@@ -43,15 +43,17 @@ def ver_estado(seleccion, estacionamientos):
     estado = estacionamientos[1][seleccion]
 
     if estado == 1:
-        print(str(estacionamientos[0][seleccion]) + " se encuentra disponible.")
+        estado = "disponible"
     elif estado == 2:
-        print(str(estacionamientos[0][seleccion]) + " se encuentra ocupado.")
+        estado = "ocupado"
     else:
-        print(str(estacionamientos[0][seleccion]) + " se encuentra fuera de servicio.")
+        estado = "fuera de servicio"
+
+    return estado
 
 estacionamientos = [[None, "Parking del sol", "Estacione Recoleta"], [None, 1, 2], [None, "Av. 123", "Calle 123"], [None, 100, 24], [None, 300, 2000], [None, "12:30", "14:25"], [None, "18:00", "20:00"], [None, 10000, 23400]] #(columna 0 no incluida)
 
 seleccion = elegir_estacionamiento(estacionamientos)
 
 for i in range(1, len(estacionamientos[1])):
-    ver_estado(i, estacionamientos)
+    print("'" + str(estacionamientos[0][i]) + "' se encuentra " + str(ver_estado(i, estacionamientos)) + ".")
