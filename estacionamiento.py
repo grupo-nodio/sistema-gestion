@@ -41,19 +41,20 @@ def elegir_estacionamiento(estacionamientos):
 
     while estacionamientos[1][seleccion] != 1:
         seleccion = int(input("El estacionamiento '" + str(estacionamientos[0][seleccion]) + "' no se encuentra disponible, ingrese otro: "))
+        seleccion = validar_seleccion
 
     print("'" + str(estacionamientos[0][seleccion]) + "' seleccionado.")
     return seleccion
 
 def validar_seleccion(seleccion, estacionamientos):
     '''se llama a la funcion para validar si el rango es correcto'''
-    nueva_seleccion = seleccion
+    seleccion = seleccion
 
-    while nueva_seleccion < 1 or nueva_seleccion >= len(estacionamientos[0]):
+    while seleccion < 1 or seleccion >= len(estacionamientos[0]):
         print("La opción ingresada no es válida.")
-        nueva_seleccion = int(input("Seleccione un estacionamiento: "))
+        seleccion = int(input("Seleccione un estacionamiento: "))
 
-    return nueva_seleccion
+    return seleccion
 
 # Ver información uno por uno
 def ver_nombre(seleccion, estacionamientos):
@@ -110,6 +111,7 @@ def mostrar_informacion(seleccion, estacionamientos):
 
 # 2. Modificación
 def elegir_modificar():
+    '''permite al usuario elegir un valor a modificar y llama a una función para verificar si el input es válido'''
     print("Elige valor a modificar: ")
     print("1. Nombre")
     print("2. Estado")
@@ -127,14 +129,13 @@ def elegir_modificar():
     return eleccion
 
 def validar_modificar(eleccion):
-    nueva_eleccion = eleccion
+    while eleccion < 1 or eleccion > 8:
+        eleccion = int(input("Error, opción inválida, vuelva a elegir una opción: "))
 
-    while nueva_eleccion < 1 or nueva_eleccion > 8:
-        nueva_eleccion = int(input("Error, opción inválida, vuelva a elegir una opción: "))
-
-    return nueva_eleccion
+    return eleccion
 
 def modificar(seleccion, estacionamientos):
+    '''llama a una funcion para que el usuario elija que modificar para luego llamar a la funcion que modifique el valor solicitado'''
     eleccion = elegir_modificar()
     opciones = [edit_nombre, edit_estado, edit_direccion, edit_espacios, edit_precio, edit_horario, edit_ganancias]
 
@@ -162,12 +163,10 @@ def edit_estado(seleccion, estacionamientos):
     print("Modificación realizada. El nuevo estado es: " + str(ver_estado(seleccion, estacionamientos)))
 
 def validar_cambio_estado(cambio):
-    nuevo_cambio = cambio
+    while cambio < 1 or cambio > 3:
+        cambio = int(input("Opción no válida, ingrese un nuevo estado: "))
 
-    while nuevo_cambio < 1 or nuevo_cambio > 3:
-        nuevo_cambio = int(input("Opción no válida, ingrese un nuevo estado: "))
-
-    return nuevo_cambio
+    return cambio
 
 # 2.3 Dirección
 def edit_direccion(seleccion, estacionamientos):
@@ -188,12 +187,10 @@ def edit_espacios(seleccion, estacionamientos):
     print("Modificación realizada. La nueva capacidad es: " + str(estacionamientos[3][seleccion]))
 
 def validar_positivos(cambio):
-    nuevo_cambio = cambio
+    while cambio <= 0:
+        cambio = int(input("Error, debe ser un número mayor a 0. Ingrese nuevamente: "))
 
-    while nuevo_cambio < 0:
-        nuevo_cambio = int(input("Error, debe ser un número mayor a 0. Ingrese nuevamente: "))
-
-    return nuevo_cambio
+    return cambio
 
 # 2.5 Precio
 def edit_precio(seleccion, estacionamientos):
@@ -207,7 +204,53 @@ def edit_precio(seleccion, estacionamientos):
 
 # 2.6 Horario
 def edit_horario(seleccion, estacionamientos):
-    pass #CONTINUAR
+    print("Horario actual de " + str(estacionamientos[0][seleccion]) + ": de " + str(estacionamientos[5][seleccion]) + " a " + str(estacionamientos[6][seleccion]) + "hs")
+
+    hora1 = input("Ingrese nueva hora de apertura (sin minutos), o Enter para mantener: ")
+
+    if hora1 != "":
+        hora1 = int(hora1)
+        hora1 = validar_hora(hora1)
+
+        minuto1 = int(input("Ingrese nuevos minutos de apertura: "))
+        minuto1 = validar_minuto(minuto1)
+
+        estacionamientos[5][seleccion] = str(hora1) + ":" + str(minuto1)
+    else:
+        # Obtener la hora y minuto actuales
+        hora1 = int(estacionamientos[5][seleccion].split(":")[0])
+        minuto1 = int(estacionamientos[5][seleccion].split(":")[1])
+
+    hora2 = input("Ingrese nueva hora de cierre (sin minutos), o Enter para mantener: ")
+
+    if hora2 != "":
+        hora2 = int(hora2)
+        hora2 = validar_hora(hora2)
+
+        minuto2 = int(input("Ingrese nuevos minutos de cierre: "))
+        minuto2 = validar_minuto(minuto2)
+
+        if hora2 * 60 + minuto2 <= hora1 * 60 + minuto1:
+            print("Error: el horario de cierre debe ser posterior al de apertura.")
+            edit_horario(seleccion, estacionamientos)
+            return
+
+        estacionamientos[6][seleccion] = str(hora2) + ":" + str(minuto2)
+
+    print("Modificación realizada.")
+    print("Nuevo horario: " + str(estacionamientos[5][seleccion]) + " - " + str(estacionamientos[6][seleccion]))
+
+def validar_hora(hora):
+    while hora < 0 or hora > 23:
+        hora = int(input("Error, ingrese una hora válida: "))
+
+    return hora
+
+def validar_minuto(minuto):
+    while minuto < 0 or minuto > 59:
+        minuto = int(input("Error, ingrese un minuto válido: "))
+
+    return minuto
 
 # 2.7 Ganancias
 def edit_ganancias(seleccion, estacionamientos):
