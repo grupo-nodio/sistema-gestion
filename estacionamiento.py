@@ -260,7 +260,49 @@ def edit_ganancias(seleccion, estacionamientos):
     estacionamientos[7][seleccion] += cambio
     print("Modificación realizada. La nueva ganancia es $" + str(estacionamientos[7][seleccion]))
 
-estacionamientos = [[None, "Parking del sol", "Estacione Recoleta"], [None, 1, 2], [None, "Av. 123", "Calle 123"], [None, 100, 24], [None, 300, 2000], [None, "12:30", "14:25"], [None, "18:00", "20:00"], [None, 10000, 23400]] #(columna 0 no incluida)
+def crear_estacionamiento(estacionamientos):
+    print("Crear nuevo estacionamiento:")
+    estacionamientos[0].append(crear_nombre())
+    estacionamientos[1].append(crear_estado())
+    estacionamientos[2].append(crear_direccion())
+    estacionamientos[3].append(crear_espacios())
+    estacionamientos[4].append(crear_precio())
+    estacionamientos[5].append(crear_apertura())
+    estacionamientos[6].append(crear_cierre())
+    estacionamientos[7].append(crear_ganancias())
+
+def crear_nombre():
+    pass
+
+def crear_estado():
+    pass
+
+def crear_direccion():
+    pass
+
+def crear_espacios():
+    pass
+
+def crear_precio():
+    pass
+
+def crear_apertura():
+    pass
+
+def crear_cierre():
+    pass
+
+def crear_ganancias():
+    pass
+
+estacionamientos = [[None, "Parking del sol", "Estacione Recoleta"], 
+                    [None, 1, 2], 
+                    [None, "Av. 123", "Calle 123"], 
+                    [None, 100, 24], 
+                    [None, 300, 2000], 
+                    [None, "12:30", "14:25"], 
+                    [None, "18:00", "20:00"], 
+                    [None, 10000, 23400]] #(columna 0 no incluida)
 
 seleccion = elegir_estacionamiento(estacionamientos)
 
