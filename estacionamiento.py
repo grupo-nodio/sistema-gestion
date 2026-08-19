@@ -22,6 +22,8 @@ Cada estacionamiento cuenta con espacios cuyo estado puede ser:
 
 Esto permite conocer rápidamente la disponibilidad de cada estacionamiento.
 '''
+
+# 1. Mostrar información
 def mostrar_estacionamientos(estacionamientos):
     '''Muestra la lista de los estacionamientos que se encuentran en la base de datos.'''
     print("Estacionamientos disponibles: ")
@@ -53,6 +55,7 @@ def validar_seleccion(seleccion, estacionamientos):
 
     return nueva_seleccion
 
+# Ver información uno por uno
 def ver_nombre(seleccion, estacionamientos):
     nombre = estacionamientos[0][seleccion]
 
@@ -105,6 +108,7 @@ def mostrar_informacion(seleccion, estacionamientos):
     print("Horario:", ver_horario(seleccion, estacionamientos))
     print("Ganancias:", ver_ganancias(seleccion, estacionamientos))
 
+# 2. Modificación
 def elegir_modificar():
     print("Elige valor a modificar: ")
     print("1. Nombre")
@@ -114,13 +118,104 @@ def elegir_modificar():
     print("5. Precio")
     print("6. Horario")
     print("7. Ganancias")
+    print("8. Cancelar")
 
     eleccion = int(input())
 
+    eleccion = validar_modificar(eleccion)
+
     return eleccion
 
+def validar_modificar(eleccion):
+    nueva_eleccion = eleccion
+
+    while nueva_eleccion < 1 or nueva_eleccion > 8:
+        nueva_eleccion = int(input("Error, opción inválida, vuelva a elegir una opción: "))
+
+    return nueva_eleccion
+
 def modificar(seleccion, estacionamientos):
-    eleccion = elegir_modificar() #CONTINUAR
+    eleccion = elegir_modificar()
+    opciones = [edit_nombre, edit_estado, edit_direccion, edit_espacios, edit_precio, edit_horario, edit_ganancias]
+
+    if eleccion == 8:
+        print("Modificación cancelada.")
+    else:
+        opciones[eleccion - 1](seleccion, estacionamientos)
+
+# 2.1 Nombre
+def edit_nombre(seleccion, estacionamientos):
+    print("Nombre actual: " + str(estacionamientos[0][seleccion]))
+    cambio = input("Ingrese un nuevo nombre: ")
+
+    estacionamientos[0][seleccion] = cambio
+
+# 2.2 Estado
+def edit_estado(seleccion, estacionamientos):
+    print("Estado actual de '" + str(estacionamientos[0][seleccion]) + "': " + str(ver_estado(seleccion, estacionamientos)))
+    print("\n1. Disponible \n2. Ocupado \n3. Fuera de servicio")
+    cambio = int(input("Ingrese un nuevo estado: "))
+
+    cambio = validar_cambio_estado(cambio)
+    
+    estacionamientos[1][seleccion] = cambio
+    print("Modificación realizada. El nuevo estado es: " + str(ver_estado(seleccion, estacionamientos)))
+
+def validar_cambio_estado(cambio):
+    nuevo_cambio = cambio
+
+    while nuevo_cambio < 1 or nuevo_cambio > 3:
+        nuevo_cambio = int(input("Opción no válida, ingrese un nuevo estado: "))
+
+    return nuevo_cambio
+
+# 2.3 Dirección
+def edit_direccion(seleccion, estacionamientos):
+    print("Dirección actual de '" + str(estacionamientos[0][seleccion]) + "': " + str(estacionamientos[2][seleccion]))
+    cambio = input("Ingrese una nueva dirección: ")
+
+    estacionamientos[2][seleccion] = cambio
+    print("Modificación realizada. La nueva dirección es: " + str(estacionamientos[2][seleccion]))
+
+# 2.4 Espacios
+def edit_espacios(seleccion, estacionamientos):
+    print("Espacio actual de '" + str(estacionamientos[0][seleccion]) + "': " + str(estacionamientos[3][seleccion]))
+    cambio = int(input("Ingrese una nueva capacidad de espacio: "))
+
+    cambio = validar_positivos(cambio)
+    
+    estacionamientos[3][seleccion] = cambio
+    print("Modificación realizada. La nueva capacidad es: " + str(estacionamientos[3][seleccion]))
+
+def validar_positivos(cambio):
+    nuevo_cambio = cambio
+
+    while nuevo_cambio < 0:
+        nuevo_cambio = int(input("Error, debe ser un número mayor a 0. Ingrese nuevamente: "))
+
+    return nuevo_cambio
+
+# 2.5 Precio
+def edit_precio(seleccion, estacionamientos):
+    print("Precio actual de '" + str(estacionamientos[0][seleccion]) + "': $" + str(estacionamientos[4][seleccion]))
+    cambio = int(input("Ingrese una nuevo precio: "))
+
+    cambio = validar_positivos(cambio)
+    
+    estacionamientos[4][seleccion] = cambio
+    print("Modificación realizada. El nuevo precio es $" + str(estacionamientos[4][seleccion]))
+
+# 2.6 Horario
+def edit_horario(seleccion, estacionamientos):
+    pass #CONTINUAR
+
+# 2.7 Ganancias
+def edit_ganancias(seleccion, estacionamientos):
+    print("Precio actual de '" + str(estacionamientos[0][seleccion]) + "': $" + str(estacionamientos[7][seleccion]))
+    cambio = int(input("Ingrese un numero positivo para sumar o negativo para restar: "))
+    
+    estacionamientos[7][seleccion] += cambio
+    print("Modificación realizada. La nueva ganancia es $" + str(estacionamientos[7][seleccion]))
 
 estacionamientos = [[None, "Parking del sol", "Estacione Recoleta"], [None, 1, 2], [None, "Av. 123", "Calle 123"], [None, 100, 24], [None, 300, 2000], [None, "12:30", "14:25"], [None, "18:00", "20:00"], [None, 10000, 23400]] #(columna 0 no incluida)
 
