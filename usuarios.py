@@ -3,7 +3,17 @@ def lineas():
 
 
 def alta(lst_nombre,lst_apellido,lst_dni,lst_email,lst_telefono,lst_estado):
+    """
+    Esta funcion solicita y valida datos ingresados por el usuario para registrar su alta y guardarlos en listas diferentes.
+
+    La funcion verifica que:
+    - El DNI sea exactamente de 8 digitos y no este duplicado
+    - El mail tenga un @
+    - El telefono sea exactamente de 10 digitos.
     
+    Asigna automaticamente el estado 'A' (Activo) al usuario y agrega los datos
+    a las listas correspondientes pasadas como parametros.
+    """
     print("CREACION DE USUARIO")
     lineas()
     nom=input("Ingrese su nombre:")
@@ -124,13 +134,13 @@ def modificar_usuario(lst_nombre,lst_apellido,lst_dni,lst_mail,lst_telefono,lst_
             print("El correo debe contener un '@' y terminar en '.com'.")
             nuevo_email = input("Ingrese eMail nuevamente: ")
 
-        # Verificación del nuevo Teléfono
+        # se verifica nuevo telefono
         nuevo_telefono = int(input("Ingrese el nuevo teléfono: "))
         while len(str(nuevo_telefono)) != 10:
             print("El teléfono tiene que tener exactamente 10 dígitos.")
             nuevo_telefono = int(input("Ingrese teléfono nuevamente: "))
 
-        # Reemplazamos los valores en la lista usando el índice encontrado
+        #Se reemplazan los antiguos valores con los nuevos
         lst_nombre[posicion] = nuevo_nombre
         lst_apellido[posicion] = nuevo_apellido
         lst_mail[posicion] = nuevo_email
