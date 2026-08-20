@@ -64,34 +64,35 @@ def mostrar_usuarios(lst_nombre,lst_apellido,lst_dni,lst_email,lst_telefono,lst_
         lineas()
 
 
-def baja_usuarios(lst_nombre,lst_apellido,lst_dni,lst_email,lst_telefono,lst_estado):
+def baja_usuarios(lst_dni,lst_estado):
     if not lst_dni:
         print("No hay usuarios registrados para dar de baja.")
         lineas()
         return
             
     baja_dni=int(input("Ingrese el dni del usuario para darlo de baja:"))
-
+    encontrado=False
     posicion = -1
     for i in range(len(lst_dni)):
-        if lst_dni[i] == baja_dni:
+        if lst_dni[i] == baja_dni and lst_estado[i] == "A":
             posicion = i
+            encontrado=True
 
-    if posicion != -1:
+    if encontrado==True:
         seguro=input("Esta seguro de darlo de baja? (y/n):")
         if seguro == "y":
 
             lst_estado[posicion] = "B"
         
-            print("USUARIO DADO DE BAJA")
+            print("--USUARIO DADO DE BAJA--")
             lineas()
             return lst_estado
         else:
-            print("OPERACION CANCELADA")
+            print("--OPERACION CANCELADA--")
             lineas()
             return
     else:
-        print("No se encontro ningun usuario con ese DNI")
+        print("\nNo se encontro ningun usuario con ese DNI activo")
         lineas()
         return
 
@@ -110,14 +111,14 @@ def modificar_usuario(lst_nombre,lst_apellido,lst_dni,lst_mail,lst_telefono,lst_
         if lst_dni[i] == dni_buscar and lst_estado[i] == "A":
             posicion = i
             encontrado = True
-    if encontrado:
+    if encontrado == True:
         print("Modificando datos para el usuario con DNI",lst_dni[i])
         lineas()
 
         nuevo_nombre = input("Ingrese el nuevo nombre: ")
         nuevo_apellido = input("Ingrese el nuevo apellido: ")
 
-        # Verificación del nuevo eMail
+        # se verifica nuevo mail
         nuevo_email = input("Ingrese el nuevo eMail: ")
         while "@" not in nuevo_email:
             print("El correo debe contener un '@' y terminar en '.com'.")
@@ -183,7 +184,7 @@ def main():
             mostrar_usuarios(nombre,apellido,dni,email,telefono,estado)
 
         elif menu==3:
-            baja_usuarios(nombre,apellido,dni,email,telefono,estado)
+            baja_usuarios(dni,estado)
 
         elif menu==4:
             modificar_usuario(nombre,apellido,dni,email,telefono,estado)
