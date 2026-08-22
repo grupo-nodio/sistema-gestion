@@ -260,6 +260,7 @@ def edit_ganancias(seleccion, estacionamientos):
     estacionamientos[7][seleccion] += cambio
     print("Modificación realizada. La nueva ganancia es $" + str(estacionamientos[7][seleccion]))
 
+# 3. Creación
 def crear_estacionamiento(estacionamientos):
     print("Crear nuevo estacionamiento:")
     estacionamientos[0].append(crear_nombre())
@@ -272,19 +273,49 @@ def crear_estacionamiento(estacionamientos):
     estacionamientos[7].append(crear_ganancias())
 
 def crear_nombre():
-    pass
+    nombre = input("Ingrese nombre: ")
+
+    nombre = validar_nombre(nombre)
+
+    return nombre
+
+def validar_nombre():
+    while nombre == "":
+        nombre = input("Error, el nombre no puede estar vacio, ingrese nuevamente: ")
+
+        return nombre
 
 def crear_estado():
-    pass
+    estado = int(input("Ingrese el estado actual (1. Disponible, 2. Ocupado, 3. Fuera de servicio): "))
+
+    estado = validar_cambio_estado(estado)
+
+    return estado
 
 def crear_direccion():
-    pass
+    direccion = input("Ingrese la dirección: ")
+
+    direccion = validar_direccion(direccion)
+
+def validar_direccion():
+    while direccion == "":
+        direccion = input("Error, la dirección no puede estar vacia, ingrese nuevamente: ")
+
+        return direccion
 
 def crear_espacios():
-    pass
+    espacios = int(input("Ingrese la capacidad actual: "))
+
+    espacios = validar_positivos(espacios)
+
+    return espacios
 
 def crear_precio():
-    pass
+    precio = int(input("Ingrese el precio por hora: "))
+
+    precio = validar_positivos(precio)
+
+    return precio
 
 def crear_apertura():
     pass
@@ -293,7 +324,11 @@ def crear_cierre():
     pass
 
 def crear_ganancias():
-    pass
+    ganancia = int(input("Ingrese las ganancias actuales: "))
+
+    ganancia = validar_positivos(precio)
+
+    return ganancia
 
 estacionamientos = [[None, "Parking del sol", "Estacione Recoleta"], 
                     [None, 1, 2], 
