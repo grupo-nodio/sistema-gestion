@@ -326,9 +326,13 @@ def crear_cierre():
 def crear_ganancias():
     ganancia = int(input("Ingrese las ganancias actuales: "))
 
-    ganancia = validar_positivos(precio)
+    ganancia = validar_positivos(ganancia)
 
     return ganancia
+
+#Pensar facilidad de codigo con las nuevas funcionalidades
+#Pensar precios por distintos tiempos
+#Pensar horarios entre cortados(dependiendo complejidad)
 
 estacionamientos = [[None, "Parking del sol", "Estacione Recoleta"], 
                     [None, 1, 2], 
