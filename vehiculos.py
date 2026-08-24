@@ -29,7 +29,24 @@ def mostrar_vehiculos(lista_patente, lista_tipo, lista_dnivehiculo):
         print("No hay vehículos registrados.") 
         return
     print("Vehículos registrados:")
-    for i in range(len(lista_patente)):
+    for i in range(len(lista_patente)): #recorre la lista de patentes y muestra los datos de cada vehiculo registrado
         print("patente:", lista_patente[i])
         print("tipo:", lista_tipo[i])
         print("DNI propietario:", lista_dnivehiculo[i])
+
+# funcion para eliminar un vehiculo
+def eliminar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo):
+    patente = input("Ingrese la patente del vehículo a eliminar: ")
+
+    # Recorre las posiciones de la lista para buscar la patente
+    for pos in range(len(lista_patente)):
+        if lista_patente[pos] == patente:
+            # Elimina el elemento en la posición encontrada de las tres listas
+            del lista_patente[pos]
+            del lista_tipo[pos]
+            del lista_dnivehiculo[pos]
+            print("Vehículo eliminado correctamente.")
+            return # Sale de la función una vez que lo encuentra y elimina
+            
+    print("La patente ingresada no corresponde a ningún vehículo registrado.")
+
