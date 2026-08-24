@@ -5,14 +5,14 @@ import usuarios
 def ingresar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo, listadniusuario):
     print("Ingresar datos del vehículo:")
     patente = input("Patente: ")
-    while patente in lista_patente:
+    while patente in lista_patente: #operador IN para chequear que la patente no se repita
         print("La patente ya existe. Ingrese una patente diferente.")
         patente = input("Ingrese la patente nuevamente porfavor ")
 
     tipo = input("Tipo de vehículo (auto, moto, camioneta): ")
 
     dni_usuario = input("DNI del usuario propietario: ")
-    while dni_usuario not in listadniusuario:
+    while dni_usuario not in listadniusuario: #operador IN para chequear que el dni ingresado corresponda a un usuario registrado
         print("El DNI ingresado no corresponde a ningún usuario registrado.")
         dni_usuario = input("Ingrese el DNI del usuario propietario: ")
 
@@ -24,8 +24,10 @@ def ingresar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo, listadniusua
 
 def mostrar_vehiculos(lista_patente, lista_tipo, lista_dnivehiculo):
     if not lista_patente:
-        print("No hay vehículos registrados.")
+        print("No hay vehículos registrados.") 
         return
     print("Vehículos registrados:")
     for i in range(len(lista_patente)):
-        print("patente:", lista_patente[i], "| tipo:", lista_tipo[i], "| DNI propietario:", lista_dnivehiculo[i])
+        print("patente:", lista_patente[i])
+        print("tipo:", lista_tipo[i])
+        print("DNI propietario:", lista_dnivehiculo[i])
