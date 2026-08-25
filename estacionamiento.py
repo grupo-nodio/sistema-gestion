@@ -260,7 +260,88 @@ def edit_ganancias(seleccion, estacionamientos):
     estacionamientos[7][seleccion] += cambio
     print("Modificación realizada. La nueva ganancia es $" + str(estacionamientos[7][seleccion]))
 
-estacionamientos = [[None, "Parking del sol", "Estacione Recoleta"], [None, 1, 2], [None, "Av. 123", "Calle 123"], [None, 100, 24], [None, 300, 2000], [None, "12:30", "14:25"], [None, "18:00", "20:00"], [None, 10000, 23400]] #(columna 0 no incluida)
+# 3. Creación
+def crear_estacionamiento(estacionamientos):
+    print("Crear nuevo estacionamiento:")
+    estacionamientos[0].append(crear_nombre())
+    estacionamientos[1].append(crear_estado())
+    estacionamientos[2].append(crear_direccion())
+    estacionamientos[3].append(crear_espacios())
+    estacionamientos[4].append(crear_precio())
+    estacionamientos[5].append(crear_apertura())
+    estacionamientos[6].append(crear_cierre())
+    estacionamientos[7].append(crear_ganancias())
+
+def crear_nombre():
+    nombre = input("Ingrese nombre: ")
+
+    nombre = validar_nombre(nombre)
+
+    return nombre
+
+def validar_nombre():
+    while nombre == "":
+        nombre = input("Error, el nombre no puede estar vacio, ingrese nuevamente: ")
+
+        return nombre
+
+def crear_estado():
+    estado = int(input("Ingrese el estado actual (1. Disponible, 2. Ocupado, 3. Fuera de servicio): "))
+
+    estado = validar_cambio_estado(estado)
+
+    return estado
+
+def crear_direccion():
+    direccion = input("Ingrese la dirección: ")
+
+    direccion = validar_direccion(direccion)
+
+def validar_direccion():
+    while direccion == "":
+        direccion = input("Error, la dirección no puede estar vacia, ingrese nuevamente: ")
+
+        return direccion
+
+def crear_espacios():
+    espacios = int(input("Ingrese la capacidad actual: "))
+
+    espacios = validar_positivos(espacios)
+
+    return espacios
+
+def crear_precio():
+    precio = int(input("Ingrese el precio por hora: "))
+
+    precio = validar_positivos(precio)
+
+    return precio
+
+def crear_apertura():
+    pass
+
+def crear_cierre():
+    pass
+
+def crear_ganancias():
+    ganancia = int(input("Ingrese las ganancias actuales: "))
+
+    ganancia = validar_positivos(ganancia)
+
+    return ganancia
+
+#Pensar facilidad de codigo con las nuevas funcionalidades
+#Pensar precios por distintos tiempos
+#Pensar horarios entre cortados(dependiendo complejidad)
+
+estacionamientos = [[None, "Parking del sol", "Estacione Recoleta"], 
+                    [None, 1, 2], 
+                    [None, "Av. 123", "Calle 123"], 
+                    [None, 100, 24], 
+                    [None, 300, 2000], 
+                    [None, "12:30", "14:25"], 
+                    [None, "18:00", "20:00"], 
+                    [None, 10000, 23400]] #(columna 0 no incluida)
 
 seleccion = elegir_estacionamiento(estacionamientos)
 
