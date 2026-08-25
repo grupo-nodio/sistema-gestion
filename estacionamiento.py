@@ -333,6 +333,7 @@ def crear_ganancias():
 #Pensar facilidad de codigo con las nuevas funcionalidades
 #Pensar precios por distintos tiempos
 #Pensar horarios entre cortados(dependiendo complejidad)
+#Cambiar funciones de mostrar_informacion por funciones lambda
 
 estacionamientos = [[None, "Parking del sol", "Estacione Recoleta"], 
                     [None, 1, 2], 
