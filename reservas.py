@@ -1,4 +1,4 @@
-def escritura_dijitos(A):
+def escritura_digitos(A):
     if A < 10:
         A = "0" + str(A)
 
@@ -89,37 +89,37 @@ def generar_reserva():
                 minuto = int(input("Ingrese el minuto de la reserva: "))
             validacion_horario, hora, minuto = validar_hora(hora, minuto)
 
-    dia = escritura_dijitos(dia)
-    mes = escritura_dijitos(mes)
-    hora = escritura_dijitos(hora)
-    minuto = escritura_dijitos(minuto)
+    dia = escritura_digitos(dia)
+    mes = escritura_digitos(mes)
+    hora = escritura_digitos(hora)
+    minuto = escritura_digitos(minuto)
     print("\n -------------CONTROL DE RESERVA------------- \n")
     print("La reserva se genero bajo el nombre de: " + str(nombre))
     print("En la fecha DD - MM - YYYY: ",dia ,"-",mes ,"-",año)
     print("la reserva comenzara a las: ",hora ,":",minuto, ", y durara: ", duracion,"hs")
 
-    control = input("Verifique si los datos tomados son los correctos [Y / N]: ")
+    control = input("\nVerifique si los datos tomados son los correctos [Y / N]: ")
 
     if control not in ["Y", "y", "yes", "Yes", "si", "Si"]:
-        cambio = input(f"¿Cual de los siguientes datos desea modificar?, [{nombre} / {dia} / {mes} / {año} / {hora} / {minuto} / {duracion}]: ")
-        if cambio == nombre:
+        cambio = int(input(f"¿Cual de los siguientes datos desea modificar?, [1. {nombre} / 2. {dia} / 3. {mes} / 4. {año} / 5. {hora} / 6. {minuto} / 7. {duracion}]: "))
+        if cambio == 1:
             cambio_datos = modificar_datos(nombre)
-        elif cambio == dia:
+        elif cambio == 2:
             cambio_datos = modificar_datos(dia)
             validacion_fecha, dia, mes, año = validacion_fecha(dia, mes, año)
             
             while validacion_fecha != True:
                 cambio_datos = modificar_datos(dia)
                 validacion_fecha, dia, mes, año = validacion_fecha(dia, mes, año)
-        elif cambio == mes:
+        elif cambio == 3:
             cambio_datos = modificar_datos(mes)
-        elif cambio == año:
+        elif cambio == 4:
             cambio_datos = modificar_datos(año)
-        elif cambio == hora:
+        elif cambio == 5:
             cambio_datos = modificar_datos(hora)
-        elif cambio == minuto:
+        elif cambio == 6:
             cambio_datos = modificar_datos(minuto)
-        elif cambio == duracion:
+        elif cambio == 7 :
             cambio_datos = modificar_datos(duracion)
                 
 #---------------programa principal------------
