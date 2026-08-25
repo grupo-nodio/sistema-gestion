@@ -31,8 +31,8 @@ def alta(lst_nombre,lst_apellido,lst_dni,lst_email,lst_telefono,lst_estado):
 
     email_1=input("Ingrese eMail:")
     #Verificacion email
-    while "@" not in email_1:
-        print("El correo debe contener un '@'")
+    while "@"  not in email_1 and "." not in email_1:
+        print("El correo debe contener un '@' y un '.'")
         email_1 = input("Ingrese eMail nuevamente: ")
 
 
@@ -125,20 +125,20 @@ def modificar_usuario(lst_nombre,lst_apellido,lst_dni,lst_mail,lst_telefono,lst_
         print("Modificando datos para el usuario con DNI",lst_dni[i])
         lineas()
 
-        nuevo_nombre = input("Ingrese el nuevo nombre: ")
-        nuevo_apellido = input("Ingrese el nuevo apellido: ")
+        nuevo_nombre=input("Ingrese el nuevo nombre: ")
+        nuevo_apellido=input("Ingrese el nuevo apellido: ")
 
         # se verifica nuevo mail
-        nuevo_email = input("Ingrese el nuevo eMail: ")
-        while "@" not in nuevo_email:
-            print("El correo debe contener un '@' y terminar en '.com'.")
-            nuevo_email = input("Ingrese eMail nuevamente: ")
+        nuevo_email=input("Ingrese el nuevo eMail: ")
+        while "@"  not in nuevo_email and "." not in nuevo_email:
+            print("El correo debe contener un '@' y un '.'")
+            nuevo_email=input("Ingrese eMail nuevamente: ")
 
         # se verifica nuevo telefono
-        nuevo_telefono = int(input("Ingrese el nuevo teléfono: "))
+        nuevo_telefono=int(input("Ingrese el nuevo teléfono: "))
         while len(str(nuevo_telefono)) != 10:
             print("El teléfono tiene que tener exactamente 10 dígitos.")
-            nuevo_telefono = int(input("Ingrese teléfono nuevamente: "))
+            nuevo_telefono=int(input("Ingrese teléfono nuevamente: "))
 
         #Se reemplazan los antiguos valores con los nuevos
         lst_nombre[posicion] = nuevo_nombre
