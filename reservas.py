@@ -48,13 +48,11 @@ def validar_hora(hora, minuto):
     return True, hora, minuto
 
 def modificar_datos(A):
-    A = input("Ingrese el nuevo dato, el cual sera modificado en su reserva: ")
+    A = int(input("Ingrese el nuevo dato, el cual sera modificado en su reserva: "))
 
     return A
 
 def generar_reserva():
-    nombre = input("Ingrese el nombre para comenzar la reserva: ")
-
     dia = int(input("Ingrese el dia que desea hacer la reserva: "))
     mes = int(input("Ingrese el mes que desea hacer la reserva: "))
     año = int(input("Ingrese el año que desea hacer la reserva: "))
@@ -88,38 +86,60 @@ def generar_reserva():
                 minuto = int(input("Ingrese el minuto de la reserva: "))
             validacion_horario, hora, minuto = validar_hora(hora, minuto)
 
-    dia = escritura_digitos(dia)
-    mes = escritura_digitos(mes)
-    hora = escritura_digitos(hora)
-    minuto = escritura_digitos(minuto)
     print("\n -------------CONTROL DE RESERVA------------- \n")
-    print("La reserva se genero bajo el nombre de: " + str(nombre))
-    print("En la fecha DD - MM - YYYY: ",dia ,"-",mes ,"-",año)
-    print("la reserva comenzara a las: ",hora ,":",minuto, ", y durara: ", duracion,"hs")
+    print("En la fecha DD - MM - YYYY: ",escritura_digitos(dia) ,"-",escritura_digitos(mes) ,"-",escritura_digitos(año))
+    print("la reserva comenzara a las: ",escritura_digitos(hora) ,":",escritura_digitos(minuto), ", y durara: ", duracion,"hs")
 
     control = input("\nVerifique si los datos tomados son los correctos [Y / N]: ")
 
     if control not in ["Y", "y", "yes", "Yes", "si", "Si"]:
-        cambio = int(input(f"¿Cual de los siguientes datos desea modificar?, [1. {nombre} / 2. {dia} / 3. {mes} / 4. {año} / 5. {hora} / 6. {minuto} / 7. {duracion}]: "))
-        if cambio == 1:
-            cambio_datos = modificar_datos(nombre)
-        elif cambio == 2:
-            cambio_datos = modificar_datos(dia)
-            validacion_fecha, dia, mes, año = validacion_fecha(dia, mes, año)
+        while control not in ["Y", "y", "yes", "Yes", "si", "Si"]:
+            cambio = int(input(f"¿Cual de los siguientes datos desea modificar?, [1. {escritura_digitos(dia)} / 2. {escritura_digitos(mes)} / 3. {escritura_digitos(año)} / 4. {escritura_digitos(hora)} / 5. {escritura_digitos(minuto)} / 6. {duracion}]: "))
+            if cambio == 1:
+                dia = modificar_datos(dia)
+                validacion_fecha, dia, mes, año = validar_fecha(dia, mes, año)
             
-            while validacion_fecha != True:
-                cambio_datos = modificar_datos(dia)
-                validacion_fecha, dia, mes, año = validacion_fecha(dia, mes, año)
-        elif cambio == 3:
-            cambio_datos = modificar_datos(mes)
-        elif cambio == 4:
-            cambio_datos = modificar_datos(año)
-        elif cambio == 5:
-            cambio_datos = modificar_datos(hora)
-        elif cambio == 6:
-            cambio_datos = modificar_datos(minuto)
-        elif cambio == 7 :
-            cambio_datos = modificar_datos(duracion)
-                
+                if validacion_fecha != True:
+                    while validacion_fecha != True:
+                        print("La fecha ingresada no es valida, por favor, modifique el dia.")
+                        dia = modificar_datos(dia)
+                        validacion_fecha, dia, mes, año = validar_fecha(dia, mes, año)
+
+            elif cambio == 2:
+                mes = modificar_datos(mes)
+                validacion_fecha, dia, mes, año = validar_fecha(dia, mes, año)
+                            
+                if validacion_fecha != True:
+                    while validacion_fecha != True:
+                        print("La fecha ingresada no es valida, por favor, modifique el mes.")
+                        mes = modificar_datos(mes)
+                        validacion_fecha, dia, mes, año = validar_fecha(dia, mes, año)
+
+            elif cambio == 3:
+                año = modificar_datos(año)
+                validacion_fecha, dia, mes, año = validar_fecha(dia, mes, año)
+                            
+                if validacion_fecha != True:
+                    while validacion_fecha != True:
+                        print("La fecha ingresada no es valida, por favor, modifique el año.")
+                        año = modificar_datos(año)
+                        validacion_fecha, dia, mes, año = validar_fecha(dia, mes, año)
+            elif cambio == 4:
+                hora = modificar_datos(hora)
+                validacion_horario, hora, minuto = validar_hora(hora, minuto)
+
+                if validacion_horario != True:
+                    while validacion_horario != True:
+
+            elif cambio == 5:
+                minuto = modificar_datos(minuto)
+            elif cambio == 6:
+                duracion = modificar_datos(duracion)
+
+            print("\n -------------CONTROL DE RESERVA------------- \n")
+            print("En la fecha DD - MM - YYYY: ",escritura_digitos(dia) ,"-",escritura_digitos(mes) ,"-",escritura_digitos(año))
+            print("la reserva comenzara a las: ",escritura_digitos(hora) ,":",escritura_digitos(minuto), ", y durara: ", duracion,"hs")
+            control = input("\nVerifique si los datos tomados son los correctos [Y / N]: ")
+            
 #---------------programa principal------------
 ejecutar_reserva = generar_reserva()
