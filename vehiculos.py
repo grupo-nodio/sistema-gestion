@@ -1,6 +1,28 @@
 import usuarios 
 #FUNCIONES
 
+#FUNCION MENU 
+def menu_vehiculos():
+    print("Menú de Vehículos:")
+    print("1. Ingresar vehículo")
+    print("2. Mostrar vehículos")
+    print("3. Eliminar vehículo")
+    print("4. Volver al menú principal")
+    opcion = input("Seleccione una opción: ")
+    return opcion
+
+def opcion_vehiculos(opcion, lista_patente, lista_tipo, lista_dnivehiculo, listadniusuario):
+    if opcion == "1":
+        ingresar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo, listadniusuario)
+    elif opcion == "2":
+        mostrar_vehiculos(lista_patente, lista_tipo, lista_dnivehiculo)
+    elif opcion == "3":
+        eliminar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo)
+    elif opcion == "4":
+        print("Volviendo al menú principal...")
+    else:
+        print("Opción inválida. Por favor, seleccione una opción válida.")
+
 #Funcion para ingresar un vehiculo
 def ingresar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo, listadniusuario):
     print("Ingresar datos del vehículo:")
@@ -50,3 +72,12 @@ def eliminar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo):
             
     print("La patente ingresada no corresponde a ningún vehículo registrado.")
            
+
+#PROGRAMA PRINCIPAL - MENU 
+lista_patente = []
+lista_tipo = []
+dni_vehiculo = []
+
+menu_vehiculos()
+
+
