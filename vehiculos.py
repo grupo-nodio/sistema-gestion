@@ -49,4 +49,4 @@ def eliminar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo):
             return # Sale de la función una vez que lo encuentra y elimina
             
     print("La patente ingresada no corresponde a ningún vehículo registrado.")
-
+           
