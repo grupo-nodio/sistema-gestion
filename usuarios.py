@@ -1,9 +1,24 @@
+"""
+Seccion usuarios
+
+Permite dar de alta, listar, dar de baja, modificar y reactivar
+usuarios utilizando listas paralelas como almacenamiento en memoria.
+
+"""
+
+
 def lineas():
+    """
+    Printea una linea divisora en la consola, sirve para que se vea mejor esteticamente
+    el programa
+
+    """
     print("--------------------------------------")
 
 
 def alta(lst_nombre,lst_apellido,lst_dni,lst_email,lst_telefono,lst_estado):
     """
+
     Esta funcion solicita y valida datos ingresados por el usuario para registrar su alta y guardarlos en listas diferentes.
 
     La funcion verifica que:
@@ -13,6 +28,7 @@ def alta(lst_nombre,lst_apellido,lst_dni,lst_email,lst_telefono,lst_estado):
     
     Asigna automaticamente el estado 'A' (Activo) al usuario y agrega los datos
     a las listas correspondientes pasadas como parametros.
+
     """
     print("CREACION DE USUARIO")
     lineas()
@@ -55,6 +71,12 @@ def alta(lst_nombre,lst_apellido,lst_dni,lst_email,lst_telefono,lst_estado):
     return lst_nombre,lst_apellido,lst_dni,lst_email,lst_telefono
 
 def mostrar_usuarios(lst_nombre,lst_apellido,lst_dni,lst_email,lst_telefono,lst_estado):
+    """
+    Esta funcion muestra unicamente los usuarios que estan dados de ALTA, esto
+    se identifica si el estado=A, si no fuese asi, no se mostrarian aunque estuvieran
+    en la memoria del programa.
+    
+    """
     if not lst_dni:
         print("No hay usuarios")
         lineas()
@@ -75,6 +97,14 @@ def mostrar_usuarios(lst_nombre,lst_apellido,lst_dni,lst_email,lst_telefono,lst_
 
 
 def baja_usuarios(lst_dni,lst_estado):
+    """
+    Esta funcion modifica todos los datos del usuario(a excepcion del DNI), primero los busca por DNI, si lo encuentra
+    (puede no encontrarlo y simplemente cancelar la operacion) va a pedir una nueva
+    confirmacion por si realmente lo quiere dar de baja, si presiona 'y', el usuario es dado
+    de baja cambiando su estado a 'B' y finalizando la operacion. Si presiona 'n', se cancela
+    la operacion.
+    
+    """
     if not lst_dni:
         print("No hay usuarios registrados para dar de baja.")
         lineas()
@@ -108,6 +138,13 @@ def baja_usuarios(lst_dni,lst_estado):
 
 
 def modificar_usuario(lst_nombre,lst_apellido,lst_dni,lst_mail,lst_telefono,lst_estado):
+    """
+    Esta funcion va a dar de baja al usuario, primero los busca por DNI, si lo encuentra
+    (puede no encontrarlo y simplemente cancelar la operacion) va a pedir todos los datos
+    para modificarlos.
+    
+    """
+
     if not lst_dni:
         print("No hay usuarios registrados")
         lineas()
@@ -151,6 +188,18 @@ def modificar_usuario(lst_nombre,lst_apellido,lst_dni,lst_mail,lst_telefono,lst_
         print("No se encontró un usuario activo con ese DNI.")
 
 def quitar_baja(lst_nombre,lst_apellido,lst_dni,lst_mail,lst_telefono,lst_estado):
+    """Reactiva a un usuario previamente dado de baja en el sistema.
+
+    
+    Muestra la lista de usuarios dados de baja ('B'), solicita el DNI del
+    usuario a reactivar y cambia su estado a activo ('A') para evitar
+    volver a cargarlo desde cero.
+
+    Retorna:
+        list: La lista 'lst_estado' actualizada, o None si el DNI no existe.
+    """
+
+
     for i in range(len(lst_dni)):
         if lst_estado[i]=="B":
             print("Nombre:", lst_nombre[i], "Apellido:", lst_apellido[i], "DNI:", lst_dni[i], "Mail:", lst_mail[i], "Telefono:", lst_telefono[i], "Estado:", lst_estado[i])
@@ -177,6 +226,12 @@ def quitar_baja(lst_nombre,lst_apellido,lst_dni,lst_mail,lst_telefono,lst_estado
             return
 
 def main():
+
+    """
+    Gestiona el menu principal del apartado de usuarios y el flujo de ejecucion del sistema
+    del mismo.
+    """
+
     nombre=[]
     apellido=[]
     dni=[]
@@ -201,7 +256,12 @@ def main():
         elif menu==5:
             quitar_baja(nombre,apellido,dni,email,telefono,estado)
 
+        elif menu >5 or menu <0:
+            print("Vuelva a seleccionar una opcion")
+            lineas()
+
 
         elif menu==0:
             print("Fin del programa")
+            lineas()
 main()
