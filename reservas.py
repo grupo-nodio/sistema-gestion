@@ -7,7 +7,6 @@ def escritura_digitos(A):
 
     return A
 
-
 def validar_fecha(dia, mes, año):
     if año < 2026:
         año = 0
