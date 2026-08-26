@@ -40,7 +40,7 @@ def elegir_estacionamiento(estacionamientos):
 
     while estacionamientos[1][seleccion] != 1:
         seleccion = int(input("El estacionamiento '" + str(estacionamientos[0][seleccion]) + "' no se encuentra disponible, ingrese otro: "))
-        seleccion = validar_seleccion
+        seleccion = validar_seleccion(seleccion, estacionamientos)
 
     print("'" + str(estacionamientos[0][seleccion]) + "' seleccionado.")
     return seleccion
@@ -88,19 +88,14 @@ def mostrar_informacion(seleccion, estacionamientos, horarios):
     ver_nombre = lambda seleccion, estacionamientos: estacionamientos[0][seleccion]
     ver_direccion = lambda seleccion, estacionamientos: estacionamientos[2][seleccion]
     ver_espacios = lambda seleccion, estacionamientos: estacionamientos[3][seleccion]
-    ver_precio = lambda seleccion, estacionamientos: "$" + str(estacionamientos[4][seleccion])
-    ver_ganancias = lambda seleccion, estacionamientos: "$" + str(estacionamientos[5][seleccion])
 
     print("Nombre:", ver_nombre(seleccion, estacionamientos))
     print("Estado:", ver_estado(seleccion, estacionamientos))
     print("Dirección:", ver_direccion(seleccion, estacionamientos))
     print("Espacios:", ver_espacios(seleccion, estacionamientos))
-    print("Precio:", ver_precio(seleccion, estacionamientos))
 
     print("Horarios:")
     ver_horario(seleccion, horarios)
-
-    print("Ganancias:", ver_ganancias(seleccion, estacionamientos))
 
 # 2. Modificación
 def elegir_modificar():
@@ -110,19 +105,16 @@ def elegir_modificar():
     print("2. Estado")
     print("3. Dirección")
     print("4. Espacios")
-    print("5. Precio")
-    print("6. Horario")
-    print("7. Ganancias")
-    print("8. Cancelar")
+    print("5. Horario")
+    print("6. Cancelar")
 
     eleccion = int(input())
-
     eleccion = validar_modificar(eleccion)
 
     return eleccion
 
 def validar_modificar(eleccion):
-    while eleccion < 1 or eleccion > 8:
+    while eleccion < 1 or eleccion > 6:
         eleccion = int(input("Error, opción inválida, vuelva a elegir una opción: "))
 
     return eleccion
@@ -130,11 +122,11 @@ def validar_modificar(eleccion):
 def modificar(seleccion, estacionamientos, horarios):
     '''llama a una funcion para que el usuario elija que modificar para luego llamar a la funcion que modifique el valor solicitado'''
     eleccion = elegir_modificar()
-    opciones = [edit_nombre, edit_estado, edit_direccion, edit_espacios, edit_precio, edit_horario, edit_ganancias]
+    opciones = [edit_nombre, edit_estado, edit_direccion, edit_espacios, edit_horario]
 
-    if eleccion == 8:
+    if eleccion == 6:
         print("Modificación cancelada.")
-    elif eleccion == 6:
+    elif eleccion == 5:
         opciones[eleccion - 1](seleccion, horarios)
     else:
         opciones[eleccion - 1](seleccion, estacionamientos)
@@ -186,16 +178,6 @@ def validar_positivos(cambio):
         cambio = int(input("Error, debe ser un número mayor a 0. Ingrese nuevamente: "))
 
     return cambio
-
-# 2.5 Precio
-def edit_precio(seleccion, estacionamientos):
-    print("Precio actual de '" + str(estacionamientos[0][seleccion]) + "': $" + str(estacionamientos[4][seleccion]))
-    cambio = int(input("Ingrese una nuevo precio: "))
-
-    cambio = validar_positivos(cambio)
-    
-    estacionamientos[4][seleccion] = cambio
-    print("Modificación realizada. El nuevo precio es $" + str(estacionamientos[4][seleccion]))
 
 # 2.6 Horario
 def edit_horario(seleccion, horarios):
@@ -286,14 +268,6 @@ def validar_minuto(minuto):
 
     return minuto
 
-# 2.7 Ganancias
-def edit_ganancias(seleccion, estacionamientos):
-    print("Precio actual de '" + str(estacionamientos[0][seleccion]) + "': $" + str(estacionamientos[7][seleccion]))
-    cambio = int(input("Ingrese un numero positivo para sumar o negativo para restar: "))
-    
-    estacionamientos[7][seleccion] += cambio
-    print("Modificación realizada. La nueva ganancia es $" + str(estacionamientos[7][seleccion]))
-
 # 3. Creación
 def crear_estacionamiento(estacionamientos, horarios):
     print("Crear nuevo estacionamiento:")
@@ -301,8 +275,7 @@ def crear_estacionamiento(estacionamientos, horarios):
     estacionamientos[1].append(crear_estado())
     estacionamientos[2].append(crear_direccion())
     estacionamientos[3].append(crear_espacios())
-    estacionamientos[4].append(crear_precio())
-    estacionamientos[5].append(crear_ganancias())
+
     horarios.append(crear_horarios())
 
 def crear_nombre():
@@ -343,20 +316,6 @@ def crear_espacios():
 
     return espacios
 
-def crear_precio():
-    precio = int(input("Ingrese el precio por hora: "))
-
-    precio = validar_positivos(precio)
-
-    return precio
-
-def crear_ganancias():
-    ganancia = int(input("Ingrese las ganancias actuales: "))
-
-    ganancia = validar_positivos(ganancia)
-
-    return ganancia
-
 def crear_horarios():
     pass
 
@@ -365,11 +324,9 @@ def crear_horarios():
 
 estacionamientos = [
     [None, "Parking del sol", "Estacione Recoleta"],  # 0 Nombre
-    [None, 1, 2],                                      # 1 Estado
+    [None, 1, 2],                                     # 1 Estado
     [None, "Av. 123", "Calle 123"],                   # 2 Dirección
-    [None, 100, 24],                                  # 3 Espacios
-    [None, 300, 2000],                                # 4 Precio
-    [None, 10000, 23400]                              # 5 Ganancias
+    [None, 100, 24]                                   # 3 Espacios
     ] #(columna 0 no incluida)
 
 horarios = [None,
