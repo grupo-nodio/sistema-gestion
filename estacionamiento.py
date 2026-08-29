@@ -215,23 +215,7 @@ def edit_horario(seleccion, horarios):
     tipo = validar_tipo_horario(tipo)
 
     if tipo == 1:
-
-        hora_apertura = int(input("Ingrese hora de apertura: "))
-        hora_apertura = validar_hora(hora_apertura)
-
-        minuto_apertura = int(input("Ingrese minutos de apertura: "))
-        minuto_apertura = validar_minuto(minuto_apertura)
-
-        hora_cierre = int(input("Ingrese hora de cierre: "))
-        hora_cierre = validar_hora(hora_cierre)
-
-        minuto_cierre = int(input("Ingrese minutos de cierre: "))
-        minuto_cierre = validar_minuto(minuto_cierre)
-
-        horarios[seleccion][dia] = [
-            str(hora_apertura) + ":" + str(minuto_apertura),
-            str(hora_cierre) + ":" + str(minuto_cierre)
-        ]
+        horarios[seleccion][dia] = tipo_horario_1()
 
     elif tipo == 2:
         horarios[seleccion][dia] = True
@@ -241,6 +225,25 @@ def edit_horario(seleccion, horarios):
 
     print("Modificación realizada.")
     print("Nuevo horario:", mostrar_horario(horarios[seleccion][dia]))
+
+def tipo_horario_1():
+    hora_apertura = int(input("Ingrese hora de apertura: "))
+    hora_apertura = validar_hora(hora_apertura)
+
+    minuto_apertura = int(input("Ingrese minutos de apertura: "))
+    minuto_apertura = validar_minuto(minuto_apertura)
+
+    hora_cierre = int(input("Ingrese hora de cierre: "))
+    hora_cierre = validar_hora(hora_cierre)
+
+    minuto_cierre = int(input("Ingrese minutos de cierre: "))
+    minuto_cierre = validar_minuto(minuto_cierre)
+
+    if hora_cierre * 60 + minuto_cierre <= hora_apertura * 60 + minuto_apertura:
+        print("Error: el horario de cierre debe ser posterior al de apertura.")
+        return tipo_horario_1()
+
+    return [str(hora_apertura) + ":" + str(minuto_apertura), str(hora_cierre) + ":" + str(minuto_cierre)]
 
 def validar_tipo_horario(tipo):
 
@@ -289,7 +292,7 @@ def validar_nombre(nombre):
     while nombre == "":
         nombre = input("Error, el nombre no puede estar vacio, ingrese nuevamente: ")
 
-        return nombre
+    return nombre
 
 def crear_estado():
     estado = int(input("Ingrese el estado actual (1. Disponible, 2. Ocupado, 3. Fuera de servicio): "))
@@ -302,6 +305,8 @@ def crear_direccion():
     direccion = input("Ingrese la dirección: ")
 
     direccion = validar_direccion(direccion)
+
+    return direccion
 
 def validar_direccion(direccion):
     while direccion == "":
@@ -317,11 +322,40 @@ def crear_espacios():
     return espacios
 
 def crear_horarios():
-    pass
+    horarios = []
 
-#Pensar facilidad de codigo con las nuevas funcionalidades
-#Pensar precios por distintos tiempos
+    dias = [
+        "Lunes",
+        "Martes",
+        "Miércoles",
+        "Jueves",
+        "Viernes",
+        "Sábado",
+        "Domingo"
+    ]
 
+    print("1. Horario normal")
+    print("2. 24 horas")
+    print("3. Cerrado")
+    print()
+
+    for dia in dias:
+        tipo = int(input("Seleccione el tipo de horario para " + dia + ": "))
+        tipo = validar_tipo_horario(tipo)
+
+        if tipo == 1:
+            horarios.append(tipo_horario_1())
+
+        elif tipo == 2:
+            horarios.append(True)
+
+        else:
+            horarios.append(False)
+
+    return horarios
+
+
+#PRUEBA PROGRAMA
 estacionamientos = [
     [None, "Parking del sol", "Estacione Recoleta"],  # 0 Nombre
     [None, 1, 2],                                     # 1 Estado
@@ -347,7 +381,7 @@ horarios = [None,
         True,                # Viernes 24 horas
         True,                # Sábado 24 horas
         True                 # Domingo 24 horas
-    ]]
+    ]]#str=Horario, False=cerrado, True=24hs. el largo de cada lista es de 7 por los dias de la semana
 
 seleccion = elegir_estacionamiento(estacionamientos)
 
