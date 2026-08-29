@@ -41,3 +41,9 @@ MAIN
     ├── Consultar
     └── Generar
 '''
+import estacionamiento
+import tarifas
+import reservas
+import usuarios
+import vehiculos
+import reportes
