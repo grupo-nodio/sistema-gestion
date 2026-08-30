@@ -1,4 +1,4 @@
-import usuarios 
+from usuarios import listadniusuario 
 #FUNCIONES
 
 #FUNCION MENU 
@@ -73,11 +73,8 @@ def eliminar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo):
     print("La patente ingresada no corresponde a ningún vehículo registrado.")
            
 
-#PROGRAMA PRINCIPAL - MENU 
-lista_patente = []
-lista_tipo = []
-dni_vehiculo = []
-
+#PROGRAMA PRINCIPAL - MENU
 menu_vehiculos()
+
 
 
