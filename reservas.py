@@ -41,19 +41,29 @@ def validar_hora(hora, minuto):
     if hora < 0 or hora > 23:
         hora = 0
         return False, hora, minuto
-    if minuto < 0 or minuto > 59:
-        minuto = 0
+    if minuto != 0 and minuto != 30:
+        minuto = 1
         return False, hora, minuto
 
     return True, hora, minuto
 
 def modificar_datos(A):
-    A = int(input("Ingrese el nuevo dato, el cual sera modificado en su reserva: "))
+    A = int(input(f"Ingrese el nuevo dato, que modificara al dato [{A}]: "))
 
     return A
 
+def contar_duracion(duracion, hora):
+    horaduracion = hora
+    for i in range(duracion):
+        if horaduracion == 23:
+            horaduracion = 0
+        else:
+            horaduracion = horaduracion + 1
+
+    return duracion, horaduracion
+
 def generar_reserva():
-    dia = int(input("Ingrese el dia que desea hacer la reserva: "))
+    dia = int(input("\n Ingrese el dia que desea hacer la reserva: "))
     mes = int(input("Ingrese el mes que desea hacer la reserva: "))
     año = int(input("Ingrese el año que desea hacer la reserva: "))
     validacion_fecha, dia, mes, año = validar_fecha(dia, mes, año)
@@ -72,8 +82,7 @@ def generar_reserva():
             validacion_fecha, dia, mes, año = validar_fecha(dia, mes, año)
 
     hora = int(input("Ingrese la hora de la reserva, (formato de 24 horas): "))
-    minuto = int(input("Ingrese el minuto de la reserva: "))
-    duracion = int(input("Ingrese cuanto tiempo durara la reserva: "))
+    minuto = int(input("Ingrese el minuto de la reserva (saltos de media hora): "))
     validacion_horario, hora, minuto = validar_hora(hora, minuto)
 
     while validacion_horario != True:
@@ -81,14 +90,17 @@ def generar_reserva():
             if hora == 0:
                 print("La hora ingresada es invalida, por favor, modifique la hora.")
                 hora = int(input("Ingrese la hora de la reserva, (formato de 24 horas): "))
-            elif minuto == 0:
+            elif minuto == 1:
                 print("El o los minuto/s ingresado es invalido, por favor, modifique los minutos.")
                 minuto = int(input("Ingrese el minuto de la reserva: "))
             validacion_horario, hora, minuto = validar_hora(hora, minuto)
 
+    duracion = int(input("Ingrese cuanto tiempo durara la reserva (saltos de una hora): "))
+    duracion, horaduracion = contar_duracion(duracion, hora)
+
     print("\n -------------CONTROL DE RESERVA------------- \n")
     print("En la fecha DD - MM - YYYY: ",escritura_digitos(dia) ,"-",escritura_digitos(mes) ,"-",escritura_digitos(año))
-    print("la reserva comenzara a las: ",escritura_digitos(hora) ,":",escritura_digitos(minuto), ", y durara: ", duracion,"hs")
+    print(f"la reserva comenzara a las: {escritura_digitos(hora)} : {escritura_digitos(minuto)} y durara hasta las: {escritura_digitos(horaduracion)} : {escritura_digitos(minuto)} hs")
 
     control = input("\nVerifique si los datos tomados son los correctos [Y / N]: ")
 
@@ -130,16 +142,32 @@ def generar_reserva():
 
                 if validacion_horario != True:
                     while validacion_horario != True:
+                        print("La hora ingresada es invalida, por favor, modifique la hora.")
+                        hora = modificar_datos(hora)
+                        validacion_horario, hora, minuto = validar_hora(hora, minuto)
 
             elif cambio == 5:
                 minuto = modificar_datos(minuto)
+                validacion_horario, hora, minuto = validar_hora(hora, minuto)
+                
+                if validacion_horario != True:
+                    while validacion_horario != True:
+                        print("El o los minuto/s ingresado es invalido, por favor, modifique los minutos.")
+                        minuto = modificar_datos(minuto)
+                        validacion_horario, hora, minuto = validar_hora(hora, minuto)
+                
             elif cambio == 6:
                 duracion = modificar_datos(duracion)
+                duracion, horaduracion = contar_duracion(duracion, hora)
 
             print("\n -------------CONTROL DE RESERVA------------- \n")
             print("En la fecha DD - MM - YYYY: ",escritura_digitos(dia) ,"-",escritura_digitos(mes) ,"-",escritura_digitos(año))
-            print("la reserva comenzara a las: ",escritura_digitos(hora) ,":",escritura_digitos(minuto), ", y durara: ", duracion,"hs")
+            print(f"la reserva comenzara a las: {escritura_digitos(hora)} : {escritura_digitos(minuto)} y durara hasta las: {escritura_digitos(horaduracion)} : {escritura_digitos(minuto)} hs")
             control = input("\nVerifique si los datos tomados son los correctos [Y / N]: ")
+
+    elif control in ["Y", "y", "yes", "Yes", "si", "Si"]:
+        nombre = input("Ingrese el nombre bajo el cual estara la reserva: ")
+        print(f"La reserva se efectuo correctamente, bajo el nombre de {nombre} para la fecha {dia}/ {mes}/ {año}, empezara a las {hora}:{minuto} hr y finalizara a las {escritura_digitos(horaduracion)} : {escritura_digitos(minuto)} hs")
             
 #---------------programa principal------------
 ejecutar_reserva = generar_reserva()
