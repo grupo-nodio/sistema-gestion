@@ -226,7 +226,7 @@ def quitar_baja(lst_nombre,lst_apellido,lst_dni,lst_mail,lst_telefono,lst_estado
             return
 
 #PROGRAMA PRINCIPAL
-# SE TUVO QUE BORRAR MAIN() POR PROBLEMAS DE IMPORTS..
+# SE TUVO QUE BORRAR MAIN() POR PROBLEMAS DE IMPORTS.
 
 nombre=[]
 apellido=[]
