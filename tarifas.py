@@ -1,53 +1,88 @@
-def verificacion_horarios(hora_entrada, minutos_entrada, hora_salida, minutos_salida):
-
-    #Verificación de la hora y minutos de entrada con un rango válido de 0 a 23 para la hora y de 0 a 59 para los minutos
-    while int(hora_entrada) < 0 or int(hora_entrada) > 23 or int(minutos_entrada) < 0 or int(minutos_entrada) > 59:
-        print("Hora o minutos de entrada inválidos. Por favor, ingrese valores válidos.")
-        hora_entrada = input("Ingrese la hora de entrada (HH):    ")
-        minutos_entrada = input("Ingrese los minutos de entrada (MM):    ")
-
-    #Verificación de la hora y minutos de salida con un rango válido de 0 a 23 para la hora y de 0 a 59 para los minutos
-    while int(hora_salida) < 0 or int(hora_salida) > 23 or int(minutos_salida) < 0 or int(minutos_salida) > 59:
-        print("Hora o minutos de salida inválidos. Por favor, ingrese valores válidos.")
-        hora_salida = input("Ingrese la hora de salida (HH):    ")
-        minutos_salida = input("Ingrese los minutos de salida (MM):    ")
-
-    return hora_entrada, minutos_entrada, hora_salida, minutos_salida
+from reservas import generar_reserva
 
 
-def conversion_entrada_salida(hora_entrada, minutos_entrada, hora_salida, minutos_salida):
-    
-    # Convertir la hora y los minutos de entrada y salida a minutos totales luego de hacer la verificación
-    hora_entrada, minutos_entrada, hora_salida, minutos_salida = verificacion_horarios(hora_entrada, minutos_entrada, hora_salida, minutos_salida)
-    entrada_total = int(hora_entrada) * 60 + int(minutos_entrada)
-    salida_total = int(hora_salida) * 60 + int(minutos_salida)
-    
-    # Verificar si la hora de salida es mayor que la hora de entrada
-    while salida_total < entrada_total:
-        print("La hora de salida no puede ser menor que la hora de entrada. Por favor, ingrese valores válidos.")
-        hora_entrada = input("Ingrese la hora de entrada (HH):    ")
-        minutos_entrada = input("Ingrese los minutos de entrada (MM):    ")
-        hora_salida = input("Ingrese la hora de salida (HH):    ")
-        minutos_salida = input("Ingrese los minutos de salida (MM):    ")
+def conversion_minutos(hora, minuto):
+
+    #Convierte todo a minutos para comodidad a la hora de comparar valores de horarios.
+    return hora * 60 + minuto
 
 
-        hora_entrada, minutos_entrada, hora_salida, minutos_salida = verificacion_horarios(hora_entrada, minutos_entrada, hora_salida, minutos_salida)
+def usuario_horario_salida(hora_inicio, minuto_inicio):
+    print("\n--- REGISTRO DE SALIDA DEL PARKING ---")
 
-        entrada_total = int(hora_entrada) * 60 + int(minutos_entrada)
-        salida_total = int(hora_salida) * 60 + int(minutos_salida)
+    minutos_inicio_total = hora_inicio * 60 + minuto_inicio
 
-    #Se calcula la permanencia en minutos
-    permanencia = salida_total - entrada_total
-    
-    return entrada_total, salida_total, permanencia
+    while True:
+        hora_salida = int(input("Ingrese la hora de salida real (0-23): "))
+        while hora_salida < 0 or hora_salida > 23:
+            hora_salida = int(input("Hora inválida. Ingrese la hora de salida real (0-23): "))
+
+        minuto_salida = int(input("Ingrese los minutos de salida real (0-59): "))
+        while minuto_salida < 0 or minuto_salida > 59:
+            minuto_salida = int(input("Minutos inválidos. Ingrese los minutos de salida (0-59): "))
+
+        minutos_salida_total = hora_salida * 60 + minuto_salida
+
+        if minutos_salida_total < minutos_inicio_total:
+            print(f"\nError: El horario de salida ({hora_salida:02d}:{minuto_salida:02d}) "f"no puede ser anterior al inicio de la reserva ({hora_inicio:02d}:{minuto_inicio:02d}).")
+            print("Por favor, ingrese el horario nuevamente.\n")
+        else:
+            return hora_salida, minuto_salida
 
 
-#Programa principal
+def calcular_costo_base(duracion_horas):
+    tarifa_base_hora = 3500
+    return duracion_horas * tarifa_base_hora
 
-fecha = input("Ingrese la fecha de estacionamiento (DD-MM-YYYY):    ")
-hora_entrada = input("Ingrese la hora de entrada (HH):    ")
-minutos_entrada = input("Ingrese los minutos de entrada (MM):    ")
-hora_salida = input("Ingrese la hora de salida (HH):    ")
-minutos_salida = input("Ingrese los minutos de salida (MM):    ")
 
-entrada_total, salida_total, permanencia = conversion_entrada_salida(hora_entrada, minutos_entrada, hora_salida, minutos_salida)
+def calcular_recargo_exceso(minutos_pactados, minutos_reales, costo_base):
+    if minutos_reales <= minutos_pactados:
+        return 0
+
+    minutos_exceso = minutos_reales - minutos_pactados
+
+    if minutos_exceso % 5 == 0:
+        bloques_exceso = minutos_exceso // 5
+    else:
+        bloques_exceso = (minutos_exceso // 5) + 1
+
+    porcentaje_recargo = bloques_exceso * 0.10
+    return costo_base * porcentaje_recargo
+
+
+
+# --------------- PROGRAMA PRINCIPAL ---------------
+print("--- INICIO DE RESERVA ---")
+hora_inicial, min_inicial, duracion_horas, hora_fin = generar_reserva()
+
+minutos_entrada_total = conversion_minutos(hora_inicial, min_inicial)
+minutos_salida_prevista = conversion_minutos(hora_fin, min_inicial)
+
+if minutos_salida_prevista < minutos_entrada_total:
+    minutos_salida_prevista += 24 * 60
+
+
+hora_salida_real, min_salida_real = usuario_horario_salida(hora_inicial, min_inicial)
+minutos_salida_real = conversion_minutos(hora_salida_real, min_salida_real)
+
+if minutos_salida_real < minutos_entrada_total:
+    minutos_salida_real += 24 * 60
+
+costo_base = calcular_costo_base(duracion_horas)
+
+recargo = calcular_recargo_exceso(minutos_salida_prevista, minutos_salida_real, costo_base)
+
+total_pagar = costo_base + recargo
+
+print("\n------------- RESUMEN DE CUENTA -------------")
+print(f"Costo base de la reserva ({duracion_horas} hs): ${costo_base}")
+
+if recargo > 0:
+    minutos_demora = minutos_salida_real - minutos_salida_prevista
+    print(f"Minutos de exceso registrados: {minutos_demora} min")
+    print(f"Recargo por demora aplicado: ${recargo}")
+else:
+    print("Salida realizada a tiempo. Sin recargos aplicados.")
+
+print(f"TOTAL A PAGAR: ${total_pagar}")
+
