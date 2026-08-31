@@ -1,9 +1,10 @@
-from usuarios import * 
+from usuarios import *
 
-# FUNCIONES MENU
+#FUNCIONES
 
+#MENU
 def menu_vehiculos():
-    print("Menú de Vehículos:")
+    print("Menu de vehiculos:")
     print("1. Ingresar vehículo")
     print("2. Mostrar vehículos")
     print("3. Eliminar vehículo")
@@ -11,72 +12,65 @@ def menu_vehiculos():
     opcion = input("Seleccione una opción: ")
     return opcion
 
-def opcion_vehiculos(opcion, lista_patente, lista_tipo, lista_dnivehiculo, lista_dni_usuarios):
-    if opcion == "1":
-        ingresar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo, lista_dni_usuarios)
-    elif opcion == "2":
-        mostrar_vehiculos(lista_patente, lista_tipo, lista_dnivehiculo)
-    elif opcion == "3":
-        eliminar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo)
-    elif opcion == "4":
-        print("Volviendo al menú principal...")
-    else:
-        print("Opción inválida. Por favor, seleccione una opción válida.")
+# INGRESAR UN VEHICULO
+def ingresar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo, lista_dniusuarios):
+    print("Ingresar datos del vehiculo: ")
 
-# FUNCIONES PRINCIPALES
+    patente = input("Ingrese la patente del vehiculo:")
+    while len(patente) != 7:
+        print("La patente ingresada no es valida, por favor ingrese una patente de 7 caracteres.")
+        patente = input("Ingrese la patente del vehiculo:")
 
-def ingresar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo, lista_dni_usuarios):
-    print("Ingresar datos del vehículo:")
-    patente = input("Patente: ")
     while patente in lista_patente:
-        print("La patente ya existe. Ingrese una patente diferente.")
-        patente = input("Ingrese la patente nuevamente por favor: ")
+        print("la patente ya existe, porfavor ingrese otra patente")
+        patente = input("Ingrese la patente del vehículo: ")
+        while len(patente) != 7:
+            print("La patente ingresada no es valida, por favor ingrese una patente de 7 caracteres.")
+            patente = input("Ingrese la patente del vehiculo:")
 
-    tipo = input("Tipo de vehículo: ")
+    tipo = input("Ingrese el tipo de vehiculo(moto, auto, camioneta, etc):")
 
-    dni_usuario = input("DNI del usuario propietario: ")
-    while dni_usuario not in lista_dni_usuarios:
-        print("El DNI ingresado no corresponde a ningún usuario registrado.")
-        dni_usuario = input("Ingrese el DNI del usuario propietario: ")
+    dni_usuarios = int(input("Ingrese el DNI del usuario propietario del vehiculo: "))
+    while len(str(dni_usuarios)) != 8:
+        print("El DNI ingresado no es valido, por favor ingrese un DNI de 8 dígitos.")
+        dni_usuarios = int(input("Ingrese el DNI del usuario propietario del vehiculo: "))
 
-    lista_patente.append(patente) 
+    while dni_usuarios not in lista_dniusuarios:
+        print("el dni ingresado no existe, porfavor ingrese un dni valido")
+        dni_usuarios = int(input("Ingrese el DNI del usuario propietario del vehiculo:"))
+        while len(str(dni_usuarios)) != 8:
+            print("El DNI ingresado no es valido, por favor ingrese un DNI de 8 dígitos.")
+            dni_usuarios = int(input("Ingrese el DNI del usuario propietario del vehiculo: "))
+
+    lista_patente.append(patente)
     lista_tipo.append(tipo)
-    lista_dnivehiculo.append(dni_usuario)
+    lista_dnivehiculo.append(dni_usuarios)
+
 
     print("Vehículo ingresado correctamente.")
 
 def mostrar_vehiculos(lista_patente, lista_tipo, lista_dnivehiculo):
     if not lista_patente:
-        print("No hay vehículos registrados.") 
-        return
-    print("Vehículos registrados:")
-    for i in range(len(lista_patente)):
-        print("Patente:", lista_patente[i])
-        print("Tipo:", lista_tipo[i])
-        print("DNI propietario:", lista_dnivehiculo[i])
+        print("No hay vehículos registrados.")
+    else:
+        print("La lista de vehiculos registrados es la siguiente:")
+        for i in range(len(lista_patente)):
+            print("Patente:", lista_patente[i])
+            print("Tipo:", lista_tipo[i])
+            print("DNI:", lista_dnivehiculo[i])
 
 def eliminar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo):
-    patente = input("Ingrese la patente del vehículo a eliminar: ")
-
-    for pos in range(len(lista_patente)):
+    patente = input("Ingrese la patente del vehiculo que quiere eliminar de la lista: ")
+    pos = 0
+    while pos < len(lista_patente):
         if lista_patente[pos] == patente:
             del lista_patente[pos]
             del lista_tipo[pos]
             del lista_dnivehiculo[pos]
             print("Vehículo eliminado correctamente.")
             return
-            
-    print("La patente ingresada no corresponde a ningún vehículo registrado.")
-
-# PROGRAMA PRINCIPAL
-patentes = []
-tipos = []
-dni_vehiculos = []
-
-opcion = ""
-while opcion != "4":
-    opcion = menu_vehiculos()
-    opcion_vehiculos(opcion, patentes, tipos, dni_vehiculos, dni)
+        pos += 1
+    print("No se encontró ningún vehículo con esa patente.")
 
 
 
