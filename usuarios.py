@@ -250,14 +250,17 @@ def quitar_baja(lst_nombre,lst_apellido,lst_dni,lst_mail,lst_telefono,lst_estado
         list: La lista 'lst_estado' actualizada, o None si el DNI no existe.
     """
 
-
+    hay_bajas = False
     for i in range(len(lst_dni)):
         if lst_estado[i]=="B":
             print("Nombre:", lst_nombre[i], "Apellido:", lst_apellido[i], "DNI:", lst_dni[i], "Mail:", lst_mail[i], "Telefono:", lst_telefono[i], "Estado:", lst_estado[i])
             lineas()
-        else:
-            print("No hay usuarios dados de baja")
-            lineas()
+            hay_bajas = True
+
+    if not hay_bajas:
+        print("No hay usuarios dados de baja")
+        lineas()
+        return
 
     dni_usuario=input("Ingrese el dni para dar nuevamente de alta:")
     while not re.match(r"^\d{8}$", dni_usuario):
