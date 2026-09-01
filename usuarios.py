@@ -224,22 +224,19 @@ def quitar_baja(lst_nombre,lst_apellido,lst_dni,lst_mail,lst_telefono,lst_estado
             print("No se encontro ningun usuario con ese DNI")
             lineas()
             return
-
-def main():
-
     """
-    Gestiona el menu principal del apartado de usuarios y el flujo de ejecucion del sistema
-    del mismo.
+Gestiona el menu principal del apartado de usuarios y el flujo de ejecucion del sistema
+del mismo.
     """
 
-    nombre=[]
-    apellido=[]
-    dni=[]
-    email=[]
-    telefono=[]
-    estado=[]
-    menu=-1
-    while menu!=0:
+nombre=[]
+apellido=[]
+dni=[]
+email=[]
+telefono=[]
+estado=[]
+menu=-1
+while menu!=0:
         menu=int(input("--MENU DE USUARIOS--\n1)Alta de usuarios \n2)Mostrar usuarios \n3)Baja de usuarios \n4)Modificar usuario \n5)Quitar baja usuario \n0)Ingrese '0' para finalizar el programa \nSeleccione una opcion:"))
         lineas()
         if menu ==1:
@@ -264,4 +261,3 @@ def main():
         elif menu==0:
             print("Fin del programa")
             lineas()
-main()

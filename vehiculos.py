@@ -1,48 +1,59 @@
 from usuarios import *
+import re
+#FUNCIONES PARA VEHICULOS
 
-#FUNCIONES
+#VALIDAR PATENTE
+def validar_patente():
 
-#MENU
-def menu_vehiculos():
-    print("Menu de vehiculos:")
-    print("1. Ingresar vehículo")
-    print("2. Mostrar vehículos")
-    print("3. Eliminar vehículo")
-    print("4. Volver al menú principal")
-    opcion = input("Seleccione una opción: ")
-    return opcion
+    """
+    Valida mediante expresiones regulares que la patente ingresada 
+    cumpla con el formato exacto de 4 letras mayúsculas y 3 números.
+    Retorna la patente si es válida.
+    """
 
-# INGRESAR UN VEHICULO
+    patente = input("Ingrese la patente del vehiculo: ")
+    if re.match(r'^[A-Z]{4}\d{3}$', patente):
+        print("Patente válida.")
+        return patente
+    else:
+        print("Patente inválida. Debe tener 4 letras MAYUSCULAS y 3 numeros.")
+
+#VALIDAR TIPO DE AUTO
+def validar_tipodeauto():
+    """
+    Valida que el tipo de vehículo ingresado corresponda exactamente 
+    a una de las opciones permitidas ('auto', 'moto' o 'camioneta').
+    Retorna el tipo si es válido.
+    """
+
+    tipo = input("Ingrese el tipo de vehiculo(moto, auto, camioneta): ")
+    if re.match(r"^(auto|moto|camioneta)$", tipo):
+        print("Tipo de vehículo válido.")
+        return tipo
+    else:
+        print("Tipo de vehículo inválido debe ser moto, auto o camioneta.")
+
+#INGRESAR UN VEHICULO
 def ingresar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo, lista_dniusuarios):
     print("Ingresar datos del vehiculo: ")
-
-    #Ingresar patente del vehiculo y valido que tenga 7 caracteres y que no exista en la lista de patentes
-    patente = input("Ingrese la patente del vehiculo:")
-    while len(patente) != 7:
-        print("La patente ingresada no es valida, por favor ingrese una patente de 7 caracteres.")
-        patente = input("Ingrese la patente del vehiculo:")
-
+    """
+    Solicita y valida los datos necesarios para registrar un nuevo vehículo 
+    (patente, tipo y DNI del propietario existente), guardándolos en listas paralelas.
+    """
+    #Patente
+    patente = validar_patente()
     while patente in lista_patente:
         print("la patente ya existe, porfavor ingrese otra patente")
-        patente = input("Ingrese la patente del vehículo: ")
-        while len(patente) != 7:
-            print("La patente ingresada no es valida, por favor ingrese una patente de 7 caracteres.")
-            patente = input("Ingrese la patente del vehiculo:")
+        patente=validar_patente()
+
     #Tipo de vehiculo
-    tipo = input("Ingrese el tipo de vehiculo(moto, auto, camioneta, etc):")
+    tipo = validar_tipodeauto()
 
-    #Solicito el dni del usuario propietario del vehiculo y valido que tenga 8 caracteres y que exista en la lista de dni usuario
+    #DNI del usuario propietario del vehiculo
     dni_usuarios = int(input("Ingrese el DNI del usuario propietario del vehiculo: "))
-    while len(str(dni_usuarios)) != 8:
-        print("El DNI ingresado no es valido, por favor ingrese un DNI de 8 dígitos.")
-        dni_usuarios = int(input("Ingrese el DNI del usuario propietario del vehiculo: "))
-
     while dni_usuarios not in lista_dniusuarios:
         print("el dni ingresado no existe, porfavor ingrese un dni valido")
         dni_usuarios = int(input("Ingrese el DNI del usuario propietario del vehiculo:"))
-        while len(str(dni_usuarios)) != 8:
-            print("El DNI ingresado no es valido, por favor ingrese un DNI de 8 dígitos.")
-            dni_usuarios = int(input("Ingrese el DNI del usuario propietario del vehiculo: "))
 
     lista_patente.append(patente)
     lista_tipo.append(tipo)
@@ -51,31 +62,26 @@ def ingresar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo, lista_dniusu
 
     print("Vehículo ingresado correctamente.")
 
-#Funcion para poder mostrar los vehiculos que estan registrados en el sistema, mostrando la patente, el tipo y el dni del propietario del vehiculo.
-def mostrar_vehiculos(lista_patente, lista_tipo, lista_dnivehiculo):
-    if not lista_patente:
-        print("No hay vehículos registrados.")
-    else:
-        print("La lista de vehiculos registrados es la siguiente:")
-        for i in range(len(lista_patente)):
-            print("Patente:", lista_patente[i])
-            print("Tipo:", lista_tipo[i])
-            print("DNI:", lista_dnivehiculo[i])
-#Busqueda secuencial 
+#Busqueda secuencial para poder eliminar el vehiculo de la lista
 def eliminar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo):
-    patente = input("Ingrese la patente del vehiculo que quiere eliminar de la lista: ")
-    pos = 0
-    while pos < len(lista_patente):
-        if lista_patente[pos] == patente:
-            del lista_patente[pos]
-            del lista_tipo[pos]
-            del lista_dnivehiculo[pos]
-            print("Vehículo eliminado correctamente.")
-            return
-        pos += 1
-    print("No se encontró ningún vehículo con esa patente.")
+    """
+    Utilizo el metodo in para buscar la patente en la lista de patentes y eliminar el vehículo correspondiente de las listas paralelas.
 
-#Programa principal
+    """
+    patente = input("Ingrese la patente del vehiculo que quiere eliminar de la lista(Ingresela en mayusculas): ")
+    if patente in lista_patente:
+        pos = 0 
+        while pos < len(lista_patente):
+            if lista_patente[pos] == patente:
+                del lista_patente[pos]
+                del lista_tipo[pos]
+                del lista_dnivehiculo[pos]
+                print("Vehículo eliminado correctamente.")
+                return
+            pos += 1    
+    else:
+        print("No se encontró un vehículo con esa patente.")
+
 
 
 
