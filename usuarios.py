@@ -28,7 +28,7 @@ def lineas():
     el programa
 
     """
-    print("--------------------------------------")
+    print("-"*60)
 
 
 def alta(lst_nombre,lst_apellido,lst_dni,lst_email,lst_telefono,lst_estado):
@@ -278,40 +278,3 @@ def quitar_baja(lst_nombre,lst_apellido,lst_dni,lst_mail,lst_telefono,lst_estado
             print("No se encontro ningun usuario con ese DNI")
             lineas()
             return
-'''
-#PROGRAMA PRINCIPAL
-# SE TUVO QUE BORRAR MAIN() POR PROBLEMAS DE IMPORTS.
-
-nombre=[]
-apellido=[]
-dni=[]
-email=[]
-telefono=[]
-estado=[]
-menu=-1
-while menu!=0:
-    menu=int(input("--MENU DE USUARIOS--\n1)Alta de usuarios \n2)Mostrar usuarios \n3)Baja de usuarios \n4)Modificar usuario \n5)Quitar baja usuario \n0)Ingrese '0' para finalizar el programa \nSeleccione una opcion:"))
-    lineas()
-    if menu ==1:
-        alta(nombre,apellido,dni,email,telefono,estado)
-
-    elif menu==2:
-        mostrar_usuarios(nombre,apellido,dni,email,telefono,estado)
-
-    elif menu==3:
-        baja_usuarios(dni,estado)
-
-    elif menu==4:
-        modificar_usuario(nombre,apellido,dni,email,telefono,estado)
-    elif menu==5:
-        quitar_baja(nombre,apellido,dni,email,telefono,estado)
-
-    elif menu >5 or menu <0:
-        print("Vuelva a seleccionar una opcion")
-        lineas()
-
-
-    elif menu==0:
-        print("Fin del programa")
-        lineas()
-'''
