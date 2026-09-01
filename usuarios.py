@@ -255,7 +255,6 @@ while menu!=0:
     elif menu >5 or menu <0:
         print("Vuelva a seleccionar una opcion")
         lineas()
-<<<<<<< HEAD
         if menu ==1:
             alta(nombre,apellido,dni,email,telefono,estado)
 
@@ -273,8 +272,6 @@ while menu!=0:
         elif menu >5 or menu <0:
             print("Vuelva a seleccionar una opcion")
             lineas()
-=======
->>>>>>> f3421cfea1df627937e3dbdde94cdc092b7c51bb
 
 
     elif menu==0:

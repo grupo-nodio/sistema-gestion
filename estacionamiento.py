@@ -1,27 +1,3 @@
-'''
-🅿️ Gestión de estacionamientos
-
-Permite administrar uno o varios estacionamientos, incluyendo:
-
-- Identificación del estacionamiento. (indice de la columna)
-- Estado (1 libre, 2 ocupado/lleno, 3 fuera de servicio)
-- Nombre y dirección. (string)
-- Cantidad de espacios. (int)
-- Precio por hora. (int en AR$)
-- Horario de atención. (string de horario de apertura + horario de cerrrada en formato de 24 hs.)
-- Ganancias generadas. (int en AR$)
-
-### 📍 Gestión de espacios
-
-Cada estacionamiento cuenta con espacios cuyo estado puede ser:
-
-- 🟢 Libre
-- 🔴 Ocupado
-- 🟡 Reservado
-- ⚫ Fuera de servicio
-
-Esto permite conocer rápidamente la disponibilidad de cada estacionamiento.
-'''
 # 1. Mostrar información
 def mostrar_estacionamientos(estacionamientos):
     '''Muestra la lista de los estacionamientos que se encuentran en la base de datos.'''
@@ -354,7 +330,7 @@ def crear_horarios():
 
     return horarios
 
-
+'''
 #PRUEBA PROGRAMA
 estacionamientos = [
     [None, "Parking del sol", "Estacione Recoleta"],  # 0 Nombre
@@ -387,3 +363,4 @@ seleccion = elegir_estacionamiento(estacionamientos)
 
 for i in range(1, len(estacionamientos[1])):
     print("'" + str(estacionamientos[0][i]) + "' se encuentra " + str(ver_estado(i, estacionamientos)) + ".")
+'''
