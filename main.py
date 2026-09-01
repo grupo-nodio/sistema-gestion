@@ -72,13 +72,13 @@ def menu_principal():
     opcion_principal = "-1"
     
     while opcion_principal != "0":
-        print("\n" + "="*40)
-        print("SISTEMA DE GESTIÓN - PANEL ADMINISTRADOR")
-        print("="*40)
+        print("\n" + "="*60)
+        print("PARK DIRECT - SISTEMA DE GESTIÓN - PANEL ADMINISTRADOR")
+        print("="*60)
         print("1. Seleccionar un estacionamiento existente")
         print("2. Crear un estacionamiento nuevo")
         print("0. Salir del sistema")
-        print("="*40)
+        print("="*60)
         
         opcion_principal = input("Seleccione una opción: ")
         while opcion_principal not in ["0", "1", "2"]:
@@ -99,13 +99,13 @@ def menu_principal():
                 while op_sub != "0":
                     print("\n" + "="*40)
                     print(f" ADMINISTRANDO: {nombre_actual.upper()}")
-                    print("="*40)
+                    print("="*60)
                     print("1. Ver / Modificar datos del estacionamiento")
                     print("2. Administrar Reservas")
                     print("3. Administrar Usuarios y Vehículos")
                     print("4. Administrar Tarifas y Cobros")
                     print("0. Volver al menú de inicio")
-                    print("="*40)
+                    print("="*60)
                     
                     op_sub = input("Seleccione un módulo: ")
                     while op_sub not in ["0", "1", "2", "3", "4"]:
