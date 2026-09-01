@@ -6,6 +6,10 @@ Permite dar de alta, listar, dar de baja, modificar y reactivar
 usuarios utilizando listas paralelas como almacenamiento en memoria.
 
 """
+def validar_nombre(texto):
+    patron = r"[A-Za-zÁÉÍÓÚáéíóúÑñ]+(?:[ '-][A-Za-zÁÉÍÓÚáéíóúÑñ]+)*"
+    return (re.fullmatch(patron, texto))
+
 def validar_email(email):
     """
     Valida que un correo electrónico tenga un formato básico válido.
@@ -39,8 +43,14 @@ def alta(lst_nombre,lst_apellido,lst_dni,lst_email,lst_telefono,lst_estado):
     print("CREACION DE USUARIO")
     lineas()
     nom=input("Ingrese su nombre:")
+    while not validar_nombre(nom):
+        print("Nombre inválido. Solo se permiten letras, espacios, guiones y apóstrofes.")
+        nom = input("Ingrese su nombre nuevamente: ")
+
     apellido_1=input("Ingrese su apellido:")
-    dni_1=input("Ingrese su DNI:")
+    while not validar_nombre(apellido_1):
+        print("Apellido inválido. Solo se permiten letras, espacios, guiones y apóstrofes.")
+        apellido_1 = input("Ingrese su apellido nuevamente: ")
     #Verificacion DNI
     while not re.match(r"^\d{8}$", dni_1):
         print("DNI INVALIDO, TIENE QUE TENER EXACTAMENTE 8 CARACTERES.")
@@ -170,8 +180,16 @@ def modificar_usuario(lst_nombre,lst_apellido,lst_dni,lst_mail,lst_telefono,lst_
         lineas()
 
         nuevo_nombre=input("Ingrese el nuevo nombre: ")
-        nuevo_apellido=input("Ingrese el nuevo apellido: ")
+        while not validar_nombre(nuevo_nombre):
+                    print("Nombre inválido. Solo se permiten letras, espacios, guiones y apóstrofes.")
+                    nuevo_nombre = input("Ingrese su nombre nuevamente: ")
 
+
+
+        nuevo_apellido=input("Ingrese el nuevo apellido: ")
+        while not validar_nombre(nuevo_apellido):
+            print("Apellido inválido. Solo se permiten letras, espacios, guiones y apóstrofes.")
+            nuevo_apellido = input("Ingrese su apellido nuevamente: ")
         # se verifica nuevo mail
         nuevo_email=input("Ingrese el nuevo eMail: ")
         while not validar_email(nuevo_email):
@@ -186,10 +204,17 @@ def modificar_usuario(lst_nombre,lst_apellido,lst_dni,lst_mail,lst_telefono,lst_
         
 
         #Se reemplazan los antiguos valores con los nuevos
-        lst_nombre[posicion] = nuevo_nombre
-        lst_apellido[posicion] = nuevo_apellido
-        lst_mail[posicion] = nuevo_email
-        lst_telefono[posicion] = nuevo_telefono
+        if nuevo_nombre:
+            lst_nombre[posicion] = nuevo_nombre
+
+        if nuevo_apellido:
+            lst_apellido[posicion] = nuevo_apellido
+
+        if nuevo_email:
+            lst_mail[posicion] = nuevo_email
+
+        if nuevo_telefono:
+            lst_telefono[posicion] = nuevo_telefono
 
         print("\n-- USUARIO MODIFICADO CON ÉXITO --")
     else:
