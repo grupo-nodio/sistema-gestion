@@ -39,16 +39,14 @@ def ver_estacionamientos_disponibles(estacionamientos):
         list(map(lambda i: print(f"- '{estacionamientos[0][i]}' en {estacionamientos[2][i]}"), disponibles))
 
 def elegir_estacionamiento(estacionamientos):
-    '''Permite seleccionar el estacionamiento, llamando a funciones de verificación y de muestra de opciones'''
+    '''Permite seleccionar cualquier estacionamiento existente para administrarlo, sin restringir por su estado actual.'''
     mostrar_estacionamientos(estacionamientos)
 
-    seleccion = int(input("Seleccione un estacionamiento: "))
+    # Usamos pedir_numero para evitar errores si ingresan letras
+    seleccion = pedir_numero("Seleccione un estacionamiento: ")
 
+    # Solo validamos que el número esté dentro del rango de estacionamientos creados
     seleccion = validar_seleccion(seleccion, estacionamientos)
-
-    while estacionamientos[1][seleccion] != 1:
-        seleccion = int(input("El estacionamiento '" + str(estacionamientos[0][seleccion]) + "' no se encuentra disponible, ingrese otro: "))
-        seleccion = validar_seleccion(seleccion, estacionamientos)
 
     print("'" + str(estacionamientos[0][seleccion]) + "' seleccionado.")
     return seleccion
