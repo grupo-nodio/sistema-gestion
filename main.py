@@ -72,7 +72,8 @@ def menu_principal():
                     if op_sub == "1":
                         estacionamiento.mostrar_informacion(sel, estacionamientos, horarios)
                         modificar = input("\n¿Desea modificar este estacionamiento? (y/n): ")
-                        if modificar.lower() in ['y', 's', 'si', 'yes']:
+    
+                        if modificar in ['y', 'Y', 's', 'S', 'si', 'SI', 'Si', 'sI', 'yes', 'YES', 'Yes']:
                             estacionamiento.modificar(sel, estacionamientos, horarios)
                     
                     # 2. RESERVAS
@@ -132,5 +133,4 @@ def menu_principal():
         elif opcion_principal == "0":
             print("\nCerrando sesión de administrador. ¡Hasta luego!")
 
-if __name__ == "__main__":
-    menu_principal()
+menu_principal()
