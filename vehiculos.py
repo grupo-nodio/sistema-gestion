@@ -6,9 +6,7 @@ import re
 def validar_patente():
 
     """
-    Valida mediante expresiones regulares que la patente ingresada 
-    cumpla con el formato exacto de 4 letras mayúsculas y 3 números.
-    Retorna la patente si es válida.
+    Expresiones regulares para que la patente tenga 4 letras MAYUSCULAS y 3 numeros
     """
 
     patente = input("Ingrese la patente del vehiculo: ")
@@ -21,9 +19,9 @@ def validar_patente():
 #VALIDAR TIPO DE AUTO
 def validar_tipodeauto():
     """
-    Valida que el tipo de vehículo ingresado corresponda exactamente 
+    Expresiones Regulares para validar que el tipo de vehículo ingresado corresponda exactamente 
     a una de las opciones permitidas ('auto', 'moto' o 'camioneta').
-    Retorna el tipo si es válido.
+    
     """
 
     tipo = input("Ingrese el tipo de vehiculo(moto, auto, camioneta): ")
@@ -38,8 +36,8 @@ def ingresar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo, lista_dniusu
     print("Ingresar datos del vehiculo: ")
     """
     Solicita y valida los datos necesarios para registrar un nuevo vehículo 
-    (patente, tipo y DNI del propietario existente), guardándolos en listas paralelas.
     """
+    
     #Patente
     patente = validar_patente()
     while patente in lista_patente:
@@ -62,6 +60,20 @@ def ingresar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo, lista_dniusu
 
     print("Vehículo ingresado correctamente.")
 
+
+def mostrar_vehiculos(lista_patente, lista_tipo, lista_dnivehiculo):
+    """
+    Muestra la información de todos los vehículos registrados en las listas paralelas.
+    """
+    if len(lista_patente) == 0:
+        print("No hay vehículos registrados.")
+    else:
+        print("Vehículos registrados:")
+        for i in range(len(lista_patente)):
+            print("patente:", lista_patente[i])
+            print("tipo:", lista_tipo[i])
+            print("DNI del propietario:", lista_dnivehiculo[i])
+
 #Busqueda secuencial para poder eliminar el vehiculo de la lista
 def eliminar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo):
     """
@@ -82,9 +94,21 @@ def eliminar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo):
     else:
         print("No se encontró un vehículo con esa patente.")
 
+"""
+Cuenta y muestra la cantidad de vehículos registrados de cada tipo (moto, auto, camioneta) en la lista proporcionada.
 
+"""
+def contar_motos(lista_contar):
+    motos = list(filter(lambda x: x == "moto", lista_contar))
+    print("Cantidad de motos registradas:", len(motos))
 
+def contar_autos(lista_contar):
+    autos = list(filter(lambda x: x == "auto", lista_contar))
+    print("Cantidad de autos registrados:", len(autos))
 
+def contar_camionetas(lista_contar):
+    camionetas = list(filter(lambda x: x == "camioneta", lista_contar))
+    print("Cantidad de camionetas registradas:", len(camionetas))
 
 
 
