@@ -1,4 +1,5 @@
 import re
+from functools import reduce
 """
 Seccion usuarios
 
@@ -108,16 +109,25 @@ def mostrar_usuarios(lst_nombre,lst_apellido,lst_dni,lst_email,lst_telefono,lst_
         lineas()
         return
 
-    activo=False
+    usuarios = list(map(lambda datos: {
+        "nombre": datos[0],
+        "apellido": datos[1],
+        "dni": datos[2],
+        "email": datos[3],
+        "telefono": datos[4],
+        "estado": datos[5]
+    }, zip(lst_nombre, lst_apellido, lst_dni, lst_email, lst_telefono, lst_estado)))
+
+    usuarios_activos = list(filter(lambda usuario: usuario["estado"] == "A", usuarios))
+    cantidad_activos = reduce(lambda total, usuario: total + 1, usuarios_activos, 0)
+
     print("LISTA DE CLIENTES \n")
-    for i in range(len(lst_dni)):
-        if lst_estado[i] == "A":
-            print("Nombre:", lst_nombre[i], "Apellido:", lst_apellido[i], "DNI:", lst_dni[i], "Mail:", lst_email[i], "Telefono:", lst_telefono[i], "Estado:", lst_estado[i])
-            lineas()
-            activo=True
+    for usuario in usuarios_activos:
+        print("Nombre:", usuario["nombre"], "Apellido:", usuario["apellido"], "DNI:", usuario["dni"], "Mail:", usuario["email"], "Telefono:", usuario["telefono"], "Estado:", usuario["estado"])
+        lineas()
 
 
-    if activo==False:
+    if cantidad_activos == 0:
         print("No hay usuario activos")
         lineas()
 
