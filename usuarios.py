@@ -109,21 +109,14 @@ def mostrar_usuarios(lst_nombre,lst_apellido,lst_dni,lst_email,lst_telefono,lst_
         lineas()
         return
 
-    usuarios = list(map(lambda datos: {
-        "nombre": datos[0],
-        "apellido": datos[1],
-        "dni": datos[2],
-        "email": datos[3],
-        "telefono": datos[4],
-        "estado": datos[5]
-    }, zip(lst_nombre, lst_apellido, lst_dni, lst_email, lst_telefono, lst_estado)))
-
-    usuarios_activos = list(filter(lambda usuario: usuario["estado"] == "A", usuarios))
-    cantidad_activos = reduce(lambda total, usuario: total + 1, usuarios_activos, 0)
+    indices = range(len(lst_dni))
+    indices_activos = list(filter(lambda i: lst_estado[i] == "A", indices))
+    lineas_usuarios = list(map(lambda i: "Nombre: " + lst_nombre[i] + " Apellido: " + lst_apellido[i] + " DNI: " + lst_dni[i] + " Mail: " + lst_email[i] + " Telefono: " + lst_telefono[i] + " Estado: " + lst_estado[i], indices_activos))
+    cantidad_activos = reduce(lambda total, i: total + 1, indices_activos, 0)
 
     print("LISTA DE CLIENTES \n")
-    for usuario in usuarios_activos:
-        print("Nombre:", usuario["nombre"], "Apellido:", usuario["apellido"], "DNI:", usuario["dni"], "Mail:", usuario["email"], "Telefono:", usuario["telefono"], "Estado:", usuario["estado"])
+    for linea_usuario in lineas_usuarios:
+        print(linea_usuario)
         lineas()
 
 
