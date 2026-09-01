@@ -19,23 +19,24 @@ def pedir_numero(mensaje):
 def mostrar_estacionamientos(estacionamientos):
     '''Muestra la lista de los estacionamientos usando map() en lugar de un bucle for tradicional.'''
     print("Estacionamientos en la base de datos: ")
-    indices = range(1, len(estacionamientos)) # Evitamos la columna 0 (None)
+    # Medimos el largo de la primera sublista (nombres) para obtener la cantidad real de estacionamientos
+    indices = range(1, len(estacionamientos[0])) 
     
-    # map() aplica la función de impresión a cada índice de manera limpia [2]
-    list(map(lambda i: print(f"Estacionamiento {i}: '{estacionamientos[i]}' - Dirección: {estacionamientos[4][i]}"), indices))
+    # Apuntamos correctamente a [0][i] para el nombre y [2][i] para la dirección (evitando el [4] que no existe)
+    list(map(lambda i: print(f"Estacionamiento {i}: '{estacionamientos[0][i]}' - Dirección: {estacionamientos[2][i]}"), indices))
 
 def ver_estacionamientos_disponibles(estacionamientos):
     '''Filtra y muestra únicamente los estacionamientos con estado Disponible (1) usando filter() y map() [2, 3].'''
-    indices = range(1, len(estacionamientos))
-    
-    # filter() conserva solo los índices cuyo estado en la fila 1 es igual a 1 (Disponible) [3]
+    indices = range(1, len(estacionamientos[0])) # Usamos el largo de la fila 0
+
     disponibles = list(filter(lambda i: estacionamientos[1][i] == 1, indices))
-    
+
     print("\nEstacionamientos Libres/Disponibles:")
     if len(disponibles) == 0:
         print("No hay estacionamientos disponibles en este momento.")
     else:
-        list(map(lambda i: print(f"- '{estacionamientos[i]}' en {estacionamientos[4][i]}"), disponibles))
+        # Corregido: [0][i] para el nombre y [2][i] para la dirección
+        list(map(lambda i: print(f"- '{estacionamientos[0][i]}' en {estacionamientos[2][i]}"), disponibles))
 
 def elegir_estacionamiento(estacionamientos):
     '''Permite seleccionar el estacionamiento, llamando a funciones de verificación y de muestra de opciones'''
