@@ -243,7 +243,7 @@ def main():
         menu=int(input("--MENU DE USUARIOS--\n1)Alta de usuarios \n2)Mostrar usuarios \n3)Baja de usuarios \n4)Modificar usuario \n5)Quitar baja usuario \n0)Ingrese '0' para finalizar el programa \nSeleccione una opcion:"))
         lineas()
         if menu ==1:
-            crea_alta=alta(nombre,apellido,dni,email,telefono,estado)
+            alta(nombre,apellido,dni,email,telefono,estado)
 
         elif menu==2:
             mostrar_usuarios(nombre,apellido,dni,email,telefono,estado)
