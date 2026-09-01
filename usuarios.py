@@ -7,6 +7,10 @@ usuarios utilizando listas paralelas como almacenamiento en memoria.
 
 """
 def validar_nombre(texto):
+    """
+    Valida que un Nombre o apellido tenga un formato en el que no se puedan ingresar numeros.
+    
+    """
     patron = r"[A-Za-zÁÉÍÓÚáéíóúÑñ]+(?:[ '-][A-Za-zÁÉÍÓÚáéíóúÑñ]+)*"
     return (re.fullmatch(patron, texto))
 
@@ -52,6 +56,8 @@ def alta(lst_nombre,lst_apellido,lst_dni,lst_email,lst_telefono,lst_estado):
         print("Apellido inválido. Solo se permiten letras, espacios, guiones y apóstrofes.")
         apellido_1 = input("Ingrese su apellido nuevamente: ")
     #Verificacion DNI
+
+    dni_1=input("Ingrese su DNI:")
     while not re.match(r"^\d{8}$", dni_1):
         print("DNI INVALIDO, TIENE QUE TENER EXACTAMENTE 8 CARACTERES.")
         dni_1=input("Ingrese su DNI:")
@@ -59,7 +65,10 @@ def alta(lst_nombre,lst_apellido,lst_dni,lst_email,lst_telefono,lst_estado):
 
     while dni_1 in lst_dni:
         print("ERROR, EL DNI YA EXISTE, un dni no puede estar duplicado.")
-        dni_1 = int(input("Ingrese su DNI:"))
+        dni_1 = input("Ingrese su DNI:")
+        while not re.match(r"^\d{8}$", dni_1):
+            print("DNI INVALIDO, TIENE QUE TENER EXACTAMENTE 8 CARACTERES.")
+            dni_1=input("Ingrese su DNI:")
 
 
     email_1=input("Ingrese eMail:")
@@ -69,7 +78,7 @@ def alta(lst_nombre,lst_apellido,lst_dni,lst_email,lst_telefono,lst_estado):
         email_1 = input("Ingrese eMail nuevamente: ")
 
 
-    telefono_1=input("Ingrese telefono:")
+    telefono_1=input("Ingrese telefono (SIN CODIGO DE AREA, EJEMPLO 1167676767):")
     #Verificacion telefono
     while not re.match(r"^\d{10}$", telefono_1):
         print("El telefono tiene que tener exactamente 10 digitos.")
@@ -127,7 +136,10 @@ def baja_usuarios(lst_dni,lst_estado):
         lineas()
         return
             
-    baja_dni=int(input("Ingrese el dni del usuario para darlo de baja:"))
+    baja_dni=input("Ingrese el dni del usuario para darlo de baja:")
+    while not re.match(r"^\d{8}$", baja_dni):
+        print("DNI INVALIDO, TIENE QUE TENER EXACTAMENTE 8 CARACTERES.")
+        baja_dni=input("Ingrese el dni del usuario para darlo de baja:")
     encontrado=False
     posicion = -1
     for i in range(len(lst_dni)):
@@ -167,7 +179,10 @@ def modificar_usuario(lst_nombre,lst_apellido,lst_dni,lst_mail,lst_telefono,lst_
         lineas()
         return
 
-    dni_buscar=int(input("Ingrese el DNI a buscar:"))
+    dni_buscar=input("Ingrese el DNI a buscar:")
+    while not re.match(r"^\d{8}$", dni_buscar):
+        print("DNI INVALIDO, TIENE QUE TENER EXACTAMENTE 8 CARACTERES.")
+        dni_buscar=input("Ingrese el DNI a buscar:")
 
     pos=-1
     encontrado=False
@@ -176,7 +191,7 @@ def modificar_usuario(lst_nombre,lst_apellido,lst_dni,lst_mail,lst_telefono,lst_
             posicion = i
             encontrado = True
     if encontrado == True:
-        print("Modificando datos para el usuario con DNI",lst_dni[i])
+        print("Modificando datos para el usuario con DNI",lst_dni[posicion])
         lineas()
 
         nuevo_nombre=input("Ingrese el nuevo nombre: ")
@@ -197,7 +212,7 @@ def modificar_usuario(lst_nombre,lst_apellido,lst_dni,lst_mail,lst_telefono,lst_
             nuevo_email = input("Ingrese eMail nuevamente: ")
 
         # se verifica nuevo telefono
-        nuevo_telefono=int(input("Ingrese el nuevo teléfono: "))
+        nuevo_telefono=input("Ingrese el nuevo teléfono: ")
         while not re.match(r"^\d{10}$", nuevo_telefono):
             print("El telefono tiene que tener exactamente 10 digitos.")
             nuevo_telefono=input("Ingrese telefono:")
@@ -241,7 +256,10 @@ def quitar_baja(lst_nombre,lst_apellido,lst_dni,lst_mail,lst_telefono,lst_estado
             print("No hay usuarios dados de baja")
             lineas()
 
-    dni_usuario=int(input("Ingrese el dni para dar nuevamente de alta:"))
+    dni_usuario=input("Ingrese el dni para dar nuevamente de alta:")
+    while not re.match(r"^\d{8}$", dni_usuario):
+        print("DNI INVALIDO, TIENE QUE TENER EXACTAMENTE 8 CARACTERES.")
+        dni_usuario=input("Ingrese el dni para dar nuevamente de alta:")
 
     posicion = -1
     for i in range(len(lst_dni)):

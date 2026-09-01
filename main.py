@@ -96,6 +96,8 @@ def menu_principal():
                             print("3. Modificar usuario")
                             print("4. Ingresar vehículo nuevo (Requiere DNI)")
                             print("5. Mostrar vehículos registrados")
+                            print("6. Dar de baja al usuario.")
+                            print("7. Reactivar usuario dado de baja")
                             print("0. Volver atrás")
                             op_usu = input("Opción: ")
                             
@@ -110,6 +112,13 @@ def menu_principal():
                                 vehiculos.ingresar_vehiculo(patentes, tipos, dni_vehiculos, dnis)
                             elif op_usu == "5":
                                 vehiculos.mostrar_vehiculos(patentes, tipos, dni_vehiculos)
+
+                            elif op_usu=="6":
+                                usuarios.baja_usuarios(dnis,estados)
+
+                            #Para dar de alta nuevamente a un usuario antiguo.    
+                            elif op_usu=="7":
+                                usuarios.quitar_baja(nombres,apellidos,dnis,emails,telefonos,estados)
                                 
                     # 4. TARIFAS Y COBROS
                     elif op_sub == "4":
