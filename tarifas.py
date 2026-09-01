@@ -49,8 +49,7 @@ def calcular_recargo_exceso(minutos_pactados, minutos_reales, costo_base):
     porcentaje_recargo = bloques_exceso * 0.10
     return costo_base * porcentaje_recargo
 
-
-
+'''
 # --------------- PROGRAMA PRINCIPAL ---------------
 print("--- INICIO DE RESERVA ---")
 hora_inicial, min_inicial, duracion_horas, hora_fin = generar_reserva()
@@ -85,4 +84,4 @@ else:
     print("Salida realizada a tiempo. Sin recargos aplicados.")
 
 print(f"TOTAL A PAGAR: ${total_pagar}")
-
+'''

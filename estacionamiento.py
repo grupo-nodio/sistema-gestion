@@ -203,16 +203,17 @@ def edit_horario(seleccion, horarios):
     print("Nuevo horario:", mostrar_horario(horarios[seleccion][dia]))
 
 def tipo_horario_1():
-    hora_apertura = int(input("Ingrese hora de apertura: "))
+    # Se aclara que solo se ingresa el número
+    hora_apertura = int(input("Ingrese hora de apertura (formato 0-23, ej: 10): "))
     hora_apertura = validar_hora(hora_apertura)
 
-    minuto_apertura = int(input("Ingrese minutos de apertura: "))
+    minuto_apertura = int(input("Ingrese minutos de apertura (ej: 0 o 30): "))
     minuto_apertura = validar_minuto(minuto_apertura)
 
-    hora_cierre = int(input("Ingrese hora de cierre: "))
+    hora_cierre = int(input("Ingrese hora de cierre (formato 0-23, ej: 18): "))
     hora_cierre = validar_hora(hora_cierre)
 
-    minuto_cierre = int(input("Ingrese minutos de cierre: "))
+    minuto_cierre = int(input("Ingrese minutos de cierre (ej: 0 o 30): "))
     minuto_cierre = validar_minuto(minuto_cierre)
 
     if hora_cierre * 60 + minuto_cierre <= hora_apertura * 60 + minuto_apertura:

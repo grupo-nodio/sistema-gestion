@@ -168,6 +168,8 @@ def generar_reserva():
     elif control in ["Y", "y", "yes", "Yes", "si", "Si"]:
         nombre = input("Ingrese el nombre bajo el cual estara la reserva: ")
         print(f"La reserva se efectuo correctamente, bajo el nombre de {nombre} para la fecha {dia}/ {mes}/ {año}, empezara a las {hora}:{minuto} hr y finalizara a las {escritura_digitos(horaduracion)} : {escritura_digitos(minuto)} hs")
-            
+
+'''    
 #---------------programa principal------------
 ejecutar_reserva = generar_reserva()
+'''
