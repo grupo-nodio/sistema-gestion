@@ -1,3 +1,4 @@
+import re
 """
 Seccion usuarios
 
@@ -5,7 +6,12 @@ Permite dar de alta, listar, dar de baja, modificar y reactivar
 usuarios utilizando listas paralelas como almacenamiento en memoria.
 
 """
-
+def validar_email(email):
+    """
+    Valida que un correo electrónico tenga un formato básico válido.
+    """
+    patron = r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}"
+    return re.fullmatch(patron, email)
 
 def lineas():
     """
@@ -34,29 +40,30 @@ def alta(lst_nombre,lst_apellido,lst_dni,lst_email,lst_telefono,lst_estado):
     lineas()
     nom=input("Ingrese su nombre:")
     apellido_1=input("Ingrese su apellido:")
-    dni_1=int(input("Ingrese su DNI:"))
+    dni_1=input("Ingrese su DNI:")
     #Verificacion DNI
-    while len(str(dni_1)) !=8:
-        print("El DNI tiene que tener exactamente 8 digitos.")
-        dni_1=int(input("Ingrese su DNI:"))
+    while not re.match(r"^\d{8}$", dni_1):
+        print("DNI INVALIDO, TIENE QUE TENER EXACTAMENTE 8 CARACTERES.")
+        dni_1=input("Ingrese su DNI:")
+        
 
     while dni_1 in lst_dni:
-        print("ERROR, EL DNI YA EXISTE")
+        print("ERROR, EL DNI YA EXISTE, un dni no puede estar duplicado.")
         dni_1 = int(input("Ingrese su DNI:"))
 
 
     email_1=input("Ingrese eMail:")
     #Verificacion email
-    while "@"  not in email_1 and "." not in email_1:
-        print("El correo debe contener un '@' y un '.'")
+    while not validar_email(email_1):
+        print("Correo inválido. Ejemplo válido: nombre@dominio.com")
         email_1 = input("Ingrese eMail nuevamente: ")
 
 
-    telefono_1=int(input("Ingrese telefono:"))
+    telefono_1=input("Ingrese telefono:")
     #Verificacion telefono
-    while len(str(telefono_1)) !=10:
+    while not re.match(r"^\d{10}$", telefono_1):
         print("El telefono tiene que tener exactamente 10 digitos.")
-        telefono_1=int(input("Ingrese telefono:"))
+        telefono_1=input("Ingrese telefono:")
 
     estado="A"
 
@@ -167,15 +174,16 @@ def modificar_usuario(lst_nombre,lst_apellido,lst_dni,lst_mail,lst_telefono,lst_
 
         # se verifica nuevo mail
         nuevo_email=input("Ingrese el nuevo eMail: ")
-        while "@"  not in nuevo_email and "." not in nuevo_email:
-            print("El correo debe contener un '@' y un '.'")
-            nuevo_email=input("Ingrese eMail nuevamente: ")
+        while not validar_email(nuevo_email):
+            print("Correo inválido. Ejemplo válido: nombre@dominio.com")
+            nuevo_email = input("Ingrese eMail nuevamente: ")
 
         # se verifica nuevo telefono
         nuevo_telefono=int(input("Ingrese el nuevo teléfono: "))
-        while len(str(nuevo_telefono)) != 10:
-            print("El teléfono tiene que tener exactamente 10 dígitos.")
-            nuevo_telefono=int(input("Ingrese teléfono nuevamente: "))
+        while not re.match(r"^\d{10}$", nuevo_telefono):
+            print("El telefono tiene que tener exactamente 10 digitos.")
+            nuevo_telefono=input("Ingrese telefono:")
+        
 
         #Se reemplazan los antiguos valores con los nuevos
         lst_nombre[posicion] = nuevo_nombre
@@ -224,7 +232,7 @@ def quitar_baja(lst_nombre,lst_apellido,lst_dni,lst_mail,lst_telefono,lst_estado
             print("No se encontro ningun usuario con ese DNI")
             lineas()
             return
-
+'''
 #PROGRAMA PRINCIPAL
 # SE TUVO QUE BORRAR MAIN() POR PROBLEMAS DE IMPORTS.
 
@@ -260,3 +268,4 @@ while menu!=0:
     elif menu==0:
         print("Fin del programa")
         lineas()
+'''
