@@ -225,7 +225,7 @@ def quitar_baja(lst_nombre,lst_apellido,lst_dni,lst_mail,lst_telefono,lst_estado
             lineas()
             return
 
-'''
+
 #PROGRAMA PRINCIPAL
 # SE TUVO QUE BORRAR MAIN() POR PROBLEMAS DE IMPORTS.
 
@@ -256,26 +256,9 @@ while menu!=0:
     elif menu >5 or menu <0:
         print("Vuelva a seleccionar una opcion")
         lineas()
-        if menu ==1:
-            alta(nombre,apellido,dni,email,telefono,estado)
-
-        elif menu==2:
-            mostrar_usuarios(nombre,apellido,dni,email,telefono,estado)
-
-        elif menu==3:
-            baja_usuarios(dni,estado)
-
-        elif menu==4:
-            modificar_usuario(nombre,apellido,dni,email,telefono,estado)
-        elif menu==5:
-            quitar_baja(nombre,apellido,dni,email,telefono,estado)
-
-        elif menu >5 or menu <0:
-            print("Vuelva a seleccionar una opcion")
-            lineas()
-
+        
 
     elif menu==0:
         print("Fin del programa")
         lineas()
-'''
+
