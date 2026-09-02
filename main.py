@@ -25,7 +25,7 @@ def menu_principal():
     tipos = []
     dni_vehiculos = []
 
-    # --- BUCLE DEL MENÚ PRINCIPAL (NIVEL 1) ---
+    # --- BUCLE DEL MENÚ PRINCIPAL ---
     opcion_principal = "-1"
     
     while opcion_principal != "0":
@@ -34,18 +34,21 @@ def menu_principal():
         print("="*60)
         print("1. Seleccionar un estacionamiento existente")
         print("2. Crear un estacionamiento nuevo")
+        print("3. Ver estadísticas generales del sistema")
+        print("4. Eliminar un estacionamiento")
         print("0. Salir del sistema")
         print("="*60)
         
         opcion_principal = input("Seleccione una opción: ")
-        while opcion_principal not in ["0", "1", "2"]:
+        # Se actualizó la lista para permitir las opciones 3 y 4
+        while opcion_principal not in ["0", "1", "2", "3", "4"]:
             opcion_principal = input("Error: Opción inválida. Vuelva a seleccionar: ")
 
         # --- CREAR ESTACIONAMIENTO ---
         if opcion_principal == "2":
             estacionamiento.crear_estacionamiento(estacionamientos, horarios)
 
-        # --- SELECCIONAR ESTACIONAMIENTO (NIVEL 2 - SUBSISTEMAS) ---
+        # --- SELECCIONAR ESTACIONAMIENTO ---
         elif opcion_principal == "1":
             if len(estacionamientos[0]) > 1: 
                 # El administrador elige sobre qué estacionamiento va a trabajar
@@ -128,6 +131,11 @@ def menu_principal():
 
             else:
                 print("\nNo hay estacionamientos registrados en el sistema. Por favor, cree uno primero.")
+
+        # --- ELIMINAR ESTACIONAMIENTO ---
+        elif opcion_principal == "4":
+            # Como los usuarios son globales, solo llamamos a la función de borrado sin afectar a las personas
+            estacionamiento.eliminar_estacionamiento(estacionamientos, horarios)
 
         # --- SALIR ---
         elif opcion_principal == "0":

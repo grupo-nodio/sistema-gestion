@@ -370,6 +370,40 @@ def crear_horarios():
 
     return horarios
 
+#Eliminar estacionamiento
+def eliminar_estacionamiento(estacionamientos, horarios):
+    '''Permite eliminar un estacionamiento de la matriz y sus horarios, exigiendo un código de seguridad.'''
+    mostrar_estacionamientos(estacionamientos)
+    
+    if len(estacionamientos[0]) <= 1:
+        print("No hay estacionamientos registrados para eliminar.")
+        return None
+
+    sel = pedir_numero("Seleccione el número del estacionamiento que desea eliminar: ")
+    
+    while sel < 1 or sel >= len(estacionamientos[0]):
+        print("Opción no válida.")
+        sel = pedir_numero("Seleccione un estacionamiento válido: ")
+
+    nombre_a_borrar = estacionamientos[0][sel]
+    print(f"\n¡ADVERTENCIA! Está a punto de eliminar el estacionamiento: '{nombre_a_borrar}'")
+    
+    # Protocolo de seguridad por código
+    codigo_seguridad = "BORRAR"
+    confirmacion = input(f"Para confirmar la eliminación, escriba exactamente el código '{codigo_seguridad}': ")
+
+    if confirmacion == codigo_seguridad:
+        del estacionamientos[0][sel]
+        del estacionamientos[1][sel]
+        del estacionamientos[2][sel]
+        del estacionamientos[3][sel]
+        del horarios[sel]
+        print(f"Estacionamiento '{nombre_a_borrar}' eliminado correctamente del sistema.")
+        return sel # Le avisa al main qué índice se borró
+    else:
+        print("\n-- OPERACIÓN CANCELADA: El código de confirmación es incorrecto --")
+        return None
+
 '''
 #PRUEBA PROGRAMA
 estacionamientos = [
