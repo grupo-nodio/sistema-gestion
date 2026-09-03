@@ -1,6 +1,6 @@
 import re
 
-# --------------------------------------------------------------- 1. VALIDACIONES ---------------------------------------------------------------
+# ------------------------------------------------------------- 1. VALIDACIONES -----------------------------------------------------------
 
 # Se usa en validar_seleccion, validar_modificar, validar_cambio_estado, validar_positivos, validar_tipo_horario, validar_dia, elegir_estacionamiento, elegir_modificar, edit_estado, edit_espacios, edit_horario, crear_estado, crear_espacios, crear_horarios, eliminar_estacionamiento
 def pedir_numero(mensaje):
@@ -117,7 +117,7 @@ def validar_direccion(direccion):
 
 
 
-# --------------------------------------------------------------- 2. CREACIÓN ---------------------------------------------------------------
+# ------------------------------------------------------------- 2. CREACIÓN -------------------------------------------------------------
 
 def crear_estacionamiento(estacionamientos, horarios):
     '''llama a todas las funciones necesarias para la creacion del estacionamiento'''
@@ -126,6 +126,7 @@ def crear_estacionamiento(estacionamientos, horarios):
     estacionamientos[1].append(crear_estado())
     estacionamientos[2].append(crear_direccion())
     estacionamientos[3].append(crear_espacios())
+    estacionamientos[4].append(estacionamientos[3][-1])
 
     horarios.append(crear_horarios())
 
@@ -189,7 +190,7 @@ def crear_horarios():
 
 
 
-# --------------------------------------------------------------- 3. VISUALIZACIÓN Y CONSULTAS ---------------------------------------------------------------
+# ----------------------------------------------------- 3. VISUALIZACIÓN Y CONSULTAS -----------------------------------------------------
 
 def mostrar_informacion(seleccion, estacionamientos, horarios):
     '''llama a todas las funciones que muestran la informacion del estacionamiento'''
@@ -271,7 +272,7 @@ def mostrar_horario(horario):
 
 
 
-# --------------------------------------------------------------- 4. MODIFICACIÓN ---------------------------------------------------------------
+# ------------------------------------------------------------- 4. MODIFICACIÓN -------------------------------------------------------------
 
 def elegir_modificar():
     '''permite al usuario elegir un valor a modificar y llama a una función para verificar si el input es válido'''
@@ -325,12 +326,38 @@ def edit_direccion(seleccion, estacionamientos):
     print("Modificación realizada. La nueva dirección es: " + str(estacionamientos[2][seleccion]))
 
 def edit_espacios(seleccion, estacionamientos):
-    print("Espacio actual de '" + str(estacionamientos[0][seleccion]) + "': " + str(estacionamientos[3][seleccion]))
-    cambio = pedir_numero("Ingrese una nueva capacidad de espacio: ")
-    cambio = validar_positivos(cambio)
+    print("="*60)
+    print("1. Espacio total")
+    print("2. Espacio disponible")
+
+    eleccion = pedir_numero("Seleccione una opción: ")
     
-    estacionamientos[3][seleccion] = cambio
-    print("Modificación realizada. La nueva capacidad es: " + str(estacionamientos[3][seleccion]))
+    while eleccion not in [1, 2]:
+        eleccion = pedir_numero("Error, debe elegir una opción disponible: ")
+
+    if eleccion == 1:
+        print("Espacio actual de '" + str(estacionamientos[0][seleccion]) + "': " + str(estacionamientos[3][seleccion]))
+        cambio = pedir_numero("Ingrese una nueva capacidad de espacio: ")
+        cambio = validar_positivos(cambio)
+
+        estacionamientos[3][seleccion] = cambio
+
+        if cambio < estacionamientos[4][seleccion]:
+            estacionamientos[4][seleccion] = cambio
+            print("La capacidad disponible era mayor al cambio de capacidad total, por lo que esta se ajustó al mismo valor.")
+        print("Modificación realizada. La nueva capacidad es: " + str(estacionamientos[3][seleccion]))
+
+    else:
+        print("Espacio disponible de '" + str(estacionamientos[0][seleccion]) + "': " + str(estacionamientos[4][seleccion]))
+        cambio = pedir_numero("Ingrese la nueva capacidad disponible: ")
+        cambio = validar_positivos(cambio)
+
+        while cambio > estacionamientos[3][seleccion]:
+            cambio = pedir_numero("Error, la capacidad disponible no debe ser mayor a la capacidad total: ")
+            cambio = validar_positivos(cambio)
+
+        estacionamientos[4][seleccion] = cambio
+        print("Modificación realizada. La nueva capacidad disponible es: " + str(estacionamientos[4][seleccion]))
 
 def edit_horario(seleccion, horarios):
     '''permite modificar un horario de un dia especifico'''
@@ -402,7 +429,7 @@ def tipo_horario_1():
 
 
 
-# --------------------------------------------------------------- 5. ELIMINACIÓN ---------------------------------------------------------------
+# ------------------------------------------------------------- 5. ELIMINACIÓN -------------------------------------------------------------
 
 def eliminar_estacionamiento(estacionamientos, horarios):
     '''Permite eliminar un estacionamiento de la matriz y sus horarios, exigiendo un código de seguridad.'''
