@@ -57,7 +57,7 @@ def menu_principal():
                 
                 op_sub = "-1"
                 while op_sub != "0":
-                    print("\n" + "="*40)
+                    print("\n" + "="*60)
                     print(f" ADMINISTRANDO: {nombre_actual.upper()}")
                     print("="*60)
                     print("1. Ver / Modificar datos del estacionamiento")
