@@ -9,8 +9,8 @@ def menu_principal():
     # --- INICIALIZACIÓN DE LA BASE DE DATOS EN MEMORIA ---
     
     # 1. Listas de Estacionamientos
-    estacionamientos = [[None], [None], [None], [None]] 
-    horarios = [None]
+    estacionamientos = [[None], [None], [None], [None]] # Nombre, estado, direccion, capacidad
+    horarios = [None] # Cada lista(fila) es un día de la semana(7 fijas de Lunes a Domingo), la columna es cada estacionamiento
     
     # 2. Listas de Usuarios
     nombres = []
