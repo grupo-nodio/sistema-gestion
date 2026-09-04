@@ -1,6 +1,6 @@
 import re
 
-def menu_reservas():
+def menu_reservas(estacionamientos):
     print("=" * 44)
     print("\n------------BIENVENIDO A RESERVAS------------\n")
     print("=" * 44)
@@ -10,7 +10,7 @@ def menu_reservas():
     opcion = int(input("Selecciones la opcion que desea realizar. [1. Generar una reserva / 2. Consultar reservas / 3. Modificar reserva / 4. Cancelar una reserva.] : "))
 
     if opcion == 1:
-        ejecutar_reserva = generar_reserva()
+        ejecutar_reserva = generar_reserva(estacionamientos)
 
 def escritura_digitos(A):
     if A < 10:
@@ -52,14 +52,14 @@ def validar_fecha(dia, mes, año):
                     dia = 0
                     fecha = False
 
-        if fecha != True:
+        if fecha not True:
             if dia == 0:
                 print("La fecha ingresada no es valida, por favor, modifique el dia.")
                 dia = int(input("Ingrese el dia que desea hacer la reserva: "))
-            elif mes == 0:
+            if mes == 0:
                 print("La fecha ingresada no es valida, por favor, modifique el mes.")
                 mes = int(input("Ingrese el mes que desea hacer la reserva: "))
-            elif año == 0:
+            if año == 0:
                 print("La fecha ingresada no es valida, por favor, modifique el año.")
                 año = int(input("Ingrese el año que desea hacer la reserva: "))
 
@@ -139,7 +139,7 @@ def escribir_horario():
 
     return hora, minuto
 
-def generar_reserva():
+def generar_reserva(estacionamientos):
     dia, mes, año = escribir_fecha()
     dia, mes, año = validar_fecha(dia, mes, año)
 
@@ -149,7 +149,7 @@ def generar_reserva():
     duracion = int(input("Ingrese cuanto tiempo durara la reserva (saltos de una hora): "))
     duracion, horaduracion = contar_duracion(duracion, hora)
 
-    print("=" * 44)
+    print("\n=" * 44)
     print("\n CONTROL DE RESERVA \n")
     print("=" * 44)
     print("\n En la fecha DD - MM - YYYY: ",escritura_digitos(dia) ,"-",escritura_digitos(mes) ,"-",escritura_digitos(año))
@@ -195,7 +195,5 @@ def generar_reserva():
     if control in ["Y", "y", "yes", "Yes", "si", "Si"]:
         nombre = input("Ingrese el nombre bajo el cual estara la reserva: ")
         print(f"La reserva se efectuo correctamente, bajo el nombre de {nombre} para la fecha {dia}/ {mes}/ {año}, empezara a las {hora}:{minuto} hs y finalizara a las {escritura_digitos(horaduracion)} : {escritura_digitos(minuto)} hs")
-            
-#---------------programa principal------------
-menu = menu_reservas()
-ejecutar_reserva = generar_reserva()
+
+    opcion = int(input("Seleccione la opcion que desea realizar. [1. Generar una reserva / 2. Consultar reservas / 3. Modificar reserva / 4. Cancelar una reserva.] : "))
