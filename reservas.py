@@ -132,7 +132,7 @@ def generar_reserva(estacionamientos):
     print("=" * 44)
     print("\n CONTROL DE RESERVA \n")
     print("=" * 44)
-    print("\n En la fecha DD - MM - YYYY: ", escritura_digitos(dia), "-", escritura_digitos(mes), "-", escritura_digitos(año))
+    print("\nEn la fecha DD - MM - YYYY: ", escritura_digitos(dia), "-", escritura_digitos(mes), "-", escritura_digitos(año))
     print(f"la reserva comenzara a las: {escritura_digitos(hora)} : {escritura_digitos(minuto)} y durara hasta las: {escritura_digitos(horaduracion)} : {escritura_digitos(minuto)} hs")
 
     control = input("\nVerifique si los datos tomados son los correctos [Y / N]: ")
@@ -167,13 +167,15 @@ def generar_reserva(estacionamientos):
             print("=" * 44)
             print("\n CONTROL DE RESERVA \n")
             print("=" * 44)
-            print("\n En la fecha DD - MM - YYYY: ", escritura_digitos(dia), "-", escritura_digitos(mes), "-", escritura_digitos(año))
+            print("\nEn la fecha DD - MM - YYYY: ", escritura_digitos(dia), "-", escritura_digitos(mes), "-", escritura_digitos(año))
             print(f"la reserva comenzara a las: {escritura_digitos(hora)} : {escritura_digitos(minuto)} hs y durara hasta las: {escritura_digitos(horaduracion)} : {escritura_digitos(minuto)} hs")
             control = input("\nVerifique si los datos tomados son los correctos [Y / N]: ")
 
     if control in ["Y", "y", "yes", "Yes", "si", "Si"]:
         nombre = input("Ingrese el nombre bajo el cual estara la reserva: ")
         print(f"La reserva se efectuo correctamente bajo el nombre de {nombre} para la fecha {dia}/{mes}/{año}, empezara a las {hora}:{minuto} hs y finalizara a las {escritura_digitos(horaduracion)}:{escritura_digitos(minuto)} hs")
+
+    menu = menu_reservas(estacionamientos)
 
 
 def menu_reservas(estacionamientos):
@@ -183,6 +185,5 @@ def menu_reservas(estacionamientos):
     print("\n------------MENU RESERVAS------------\n")
 
     opcion = int(input("Seleccione la opcion que desea realizar. [1. Generar una reserva / 2. Consultar reservas / 3. Modificar reserva / 4. Cancelar una reserva.] : "))
-
     if opcion == 1:
         generar_reserva(estacionamientos)
