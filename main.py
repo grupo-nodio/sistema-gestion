@@ -10,7 +10,7 @@ def menu_principal():
     
     # 1. Listas de Estacionamientos
     estacionamientos = [[None], [None], [None], [None], [None]] # Nombre, estado, direccion, capacidad total, capacidad actual
-    horarios = [None] # Cada lista(fila) es un día de la semana(7 fijas de Lunes a Domingo), la columna es cada estacionamiento
+    horarios = [None] # Cada lista(fila) es un día de la semana(7 fijas de Lunes a Domingo), la columna es cada estacionamiento: True = 24 horas, False = Cerrado, str = "00:00 - 12:30"
     
     # 2. Listas de Usuarios
     nombres = []
