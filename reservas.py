@@ -1,5 +1,13 @@
+from estacionamiento import elegir_estacionamiento, mostrar_estacionamientos
+
 import re
 
+<<<<<<< Updated upstream
+=======
+def generar_cocheras(estacionamiento):
+    
+
+>>>>>>> Stashed changes
 def menu_reservas(estacionamientos):
     print("=" * 44)
     print("\n------------BIENVENIDO A RESERVAS------------\n")
@@ -149,6 +157,13 @@ def generar_reserva(estacionamientos):
     duracion = int(input("Ingrese cuanto tiempo durara la reserva (saltos de una hora): "))
     duracion, horaduracion = contar_duracion(duracion, hora)
 
+<<<<<<< Updated upstream
+=======
+    estacionamiento = elegir_estacionamiento(estacionamientos)
+
+
+
+>>>>>>> Stashed changes
     print("\n=" * 44)
     print("\n CONTROL DE RESERVA \n")
     print("=" * 44)
@@ -196,4 +211,38 @@ def generar_reserva(estacionamientos):
         nombre = input("Ingrese el nombre bajo el cual estara la reserva: ")
         print(f"La reserva se efectuo correctamente, bajo el nombre de {nombre} para la fecha {dia}/ {mes}/ {año}, empezara a las {hora}:{minuto} hs y finalizara a las {escritura_digitos(horaduracion)} : {escritura_digitos(minuto)} hs")
 
+<<<<<<< Updated upstream
     opcion = int(input("Seleccione la opcion que desea realizar. [1. Generar una reserva / 2. Consultar reservas / 3. Modificar reserva / 4. Cancelar una reserva.] : "))
+=======
+    opcion = int(input("Seleccione la opcion que desea realizar. [1. Generar una reserva / 2. Consultar reservas / 3. Modificar reserva / 4. Cancelar una reserva.] : "))
+               
+#---------------programa principal------------
+estacionamientos = [
+    [None, "Parking del sol", "Estacione Recoleta"],  # 0 Nombre
+    [None, 1, 2],                                     # 1 Estado
+    [None, "Av. 123", "Calle 123"],                   # 2 Dirección
+    [None, 100, 24]                                   # 3 Espacios
+    ] #(columna 0 no incluida)
+
+horarios = [None,
+    [
+        ["07:00", "20:00"],  # Lunes
+        ["07:00", "20:00"],  # Martes
+        ["07:00", "20:00"],  # Miércoles
+        ["07:00", "20:00"],  # Jueves
+        ["07:00", "20:00"],  # Viernes
+        ["08:00", "18:00"],  # Sábado
+        False                # Domingo cerrado
+    ],
+    [
+        True,                # Lunes 24 horas
+        True,                # Martes 24 horas
+        True,                # Miércoles 24 horas
+        True,                # Jueves 24 horas
+        True,                # Viernes 24 horas
+        True,                # Sábado 24 horas
+        True                 # Domingo 24 horas
+    ]]#str=Horario, False=cerrado, True=24hs. el largo de cada lista es de 7 por los dias de la semana
+
+menu = menu_reservas(estacionamientos)
+>>>>>>> Stashed changes
