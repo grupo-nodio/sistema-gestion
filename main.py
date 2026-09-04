@@ -88,7 +88,7 @@ def menu_principal():
                             print("0. Volver atrás")
                             op_res = input("Opción: ")
                             if op_res == "1":
-                                reservas.generar_reserva()
+                                reservas.menu_reservas(estacionamientos)
                     
                     # 3. USUARIOS Y VEHÍCULOS (Integrados)
                     elif op_sub == "3":
