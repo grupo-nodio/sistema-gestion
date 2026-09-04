@@ -52,7 +52,7 @@ def validar_fecha(dia, mes, año):
                     dia = 0
                     fecha = False
 
-        if fecha not True:
+        if not fecha:
             if dia == 0:
                 print("La fecha ingresada no es valida, por favor, modifique el dia.")
                 dia = int(input("Ingrese el dia que desea hacer la reserva: "))
