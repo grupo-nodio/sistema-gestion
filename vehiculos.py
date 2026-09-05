@@ -6,6 +6,7 @@ import re
 def validar_patente():
 
     """
+<<<<<<< HEAD
     Expresiones Regulares para validar que la patente ingresada corresponda exactamente a uno de los formatos permitidos.
     Las patentes que acepta son Formato Nuevo o Viejo de Argentina, por ejemplo: AB123CD o ABC123, tambien formato mercosur, por ejemplo: ABC1234 o AB123CD.
     """
@@ -32,6 +33,32 @@ def validar_tipodeauto():
         else:
             print("Tipo de vehículo inválido debe ser moto, auto o camioneta.")
 
+=======
+    Expresiones regulares para que la patente tenga 4 letras MAYUSCULAS y 3 numeros
+    """
+
+    patente = input("Ingrese la patente del vehiculo: ")
+    if re.match(r'^[A-Z]{4}\d{3}$', patente):
+        print("Patente válida.")
+        return patente
+    else:
+        print("Patente inválida. Debe tener 4 letras MAYUSCULAS y 3 numeros.")
+
+#VALIDAR TIPO DE AUTO
+def validar_tipodeauto():
+    """
+    Expresiones Regulares para validar que el tipo de vehículo ingresado corresponda exactamente 
+    a una de las opciones permitidas ('auto', 'moto' o 'camioneta').
+    
+    """
+
+    tipo = input("Ingrese el tipo de vehiculo(moto, auto, camioneta): ")
+    if re.match(r"^(auto|moto|camioneta)$", tipo):
+        print("Tipo de vehículo válido.")
+        return tipo
+    else:
+        print("Tipo de vehículo inválido debe ser moto, auto o camioneta.")
+>>>>>>> develop
 
 #INGRESAR UN VEHICULO
 def ingresar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo, lista_dniusuarios):
@@ -50,10 +77,17 @@ def ingresar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo, lista_dniusu
     tipo = validar_tipodeauto()
 
     #DNI del usuario propietario del vehiculo
+<<<<<<< HEAD
     dni_usuarios = input("Ingrese el DNI del usuario propietario del vehiculo: ")
     while dni_usuarios not in lista_dniusuarios:
         print("el dni ingresado no existe, porfavor ingrese un dni valido")
         dni_usuarios = input("Ingrese el DNI del usuario propietario del vehiculo:")
+=======
+    dni_usuarios = int(input("Ingrese el DNI del usuario propietario del vehiculo: "))
+    while dni_usuarios not in lista_dniusuarios:
+        print("el dni ingresado no existe, porfavor ingrese un dni valido")
+        dni_usuarios = int(input("Ingrese el DNI del usuario propietario del vehiculo:"))
+>>>>>>> develop
 
     lista_patente.append(patente)
     lista_tipo.append(tipo)
@@ -101,6 +135,7 @@ Cuenta y muestra la cantidad de vehículos registrados de cada tipo (moto, auto,
 
 """
 def contar_motos(lista_contar):
+<<<<<<< HEAD
     motos = list(filter(lambda x: x == "moto" or x == "Moto" or x == "MOTO", lista_contar))
     print("Cantidad de motos registradas:", len(motos))
 
@@ -111,4 +146,18 @@ def contar_autos(lista_contar):
 def contar_camionetas(lista_contar):
     camionetas = list(filter(lambda x: x == "camioneta" or x == "Camioneta" or x == "CAMIONETA" , lista_contar))
     print("Cantidad de camionetas registradas:", len(camionetas))
+=======
+    motos = list(filter(lambda x: x == "moto", lista_contar))
+    print("Cantidad de motos registradas:", len(motos))
+
+def contar_autos(lista_contar):
+    autos = list(filter(lambda x: x == "auto", lista_contar))
+    print("Cantidad de autos registrados:", len(autos))
+
+def contar_camionetas(lista_contar):
+    camionetas = list(filter(lambda x: x == "camioneta", lista_contar))
+    print("Cantidad de camionetas registradas:", len(camionetas))
+
+
+>>>>>>> develop
 
