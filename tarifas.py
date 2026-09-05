@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 from reservas import generar_reserva
 
 
@@ -86,3 +87,66 @@ else:
 
 print(f"TOTAL A PAGAR: ${total_pagar}")
 
+=======
+from reservas import duracion
+from vehiculos import lista_patente, lista_tipo
+
+calcular = lambda horas, tarifa: horas * tarifa
+
+
+def calcular_costo(duracion, tipo_vehiculo):
+    if tipo_vehiculo == "moto":
+        return calcular(duracion, 2500)
+    elif tipo_vehiculo == "auto":
+        return calcular(duracion, 4000)
+    elif tipo_vehiculo == "camioneta":
+        return calcular(duracion, 5000)
+
+
+# Listas donde se guardarán los cobros realizados para tener un registro.
+lista_cobros = []
+patente_cobro = []
+
+def cobrar_estacionamiento():
+
+    """Objetivo: Cobra el esracionamiento de un vehículo mediante su patente para identificar el tipo de vehículo.
+    Parámetros: Ninguno.
+    Salida: Muestra el total a pagar con su patente y la cantidad de horas de estadía."""
+
+    print("\n--- COBRO DE SU ESTADÍA ---")
+    
+    patente_cobro = input("Ingrese la patente del vehiculo a cobrar: ")
+
+    # Verifica que la patente ingresada esté registrada en la lista de patentes.
+    
+    while patente_cobro not in lista_patente:
+        print("Error: Esa patente no se encuentra registrada.")
+        patente_cobro = input("Ingrese una patente válida: ")
+        
+
+    # Recorre toda la lista de patentes hasta coincidir con la patente ingresada, en caso de encontrarla se ejecuta el break para detener la búsqueda.
+
+    posicion = 0
+    for i in range(len(lista_patente)):
+        if lista_patente[i] == patente_cobro:
+            posicion = i
+            break
+
+
+    tipo_vehiculo = lista_tipo[posicion]
+    
+    print("Vehículo encontrado:", tipo_vehiculo, "con patente", patente_cobro)
+
+    costo = calcular_costo(duracion, tipo_vehiculo)
+    
+    lista_cobros.append(costo)
+    patente_cobro.append(patente_cobro)
+
+    print("\n------------- RESUMEN DE CUENTA -------------")
+    print("Vehículo cobrado:", tipo_vehiculo, "- Patente:", patente_cobro)
+    print("Costo de la reserva (", duracion, "hs): $", costo)
+    print("TOTAL A PAGAR: $", costo)
+
+
+    
+>>>>>>> Stashed changes
