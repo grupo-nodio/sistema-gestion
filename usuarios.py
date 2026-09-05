@@ -1,3 +1,5 @@
+<<<<<<< HEAD
+=======
 import re
 from functools import reduce
 """
@@ -278,3 +280,4 @@ def quitar_baja(lst_nombre,lst_apellido,lst_dni,lst_mail,lst_telefono,lst_estado
             print("No se encontro ningun usuario con ese DNI")
             lineas()
             return
+>>>>>>> develop

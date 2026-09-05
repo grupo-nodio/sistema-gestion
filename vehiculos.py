@@ -31,6 +31,7 @@ def validar_tipodeauto():
     else:
         print("Tipo de vehículo inválido debe ser moto, auto o camioneta.")
 
+
 #INGRESAR UN VEHICULO
 def ingresar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo, lista_dniusuarios):
     print("Ingresar datos del vehiculo: ")
@@ -103,11 +104,11 @@ def contar_motos(lista_contar):
     print("Cantidad de motos registradas:", len(motos))
 
 def contar_autos(lista_contar):
-    autos = list(filter(lambda x: x == "auto", lista_contar))
+    autos = list(filter(lambda x: x == "auto" or x == "Auto" or x == "AUTO", lista_contar))
     print("Cantidad de autos registrados:", len(autos))
 
 def contar_camionetas(lista_contar):
-    camionetas = list(filter(lambda x: x == "camioneta", lista_contar))
+    camionetas = list(filter(lambda x: x == "camioneta" or x == "Camioneta" or x == "CAMIONETA" , lista_contar))
     print("Cantidad de camionetas registradas:", len(camionetas))
 
 
