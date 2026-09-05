@@ -24,6 +24,7 @@ def menu_principal():
     patentes = []
     tipos = []
     dni_vehiculos = []
+    lista_pantente = []
 
     # --- BUCLE DEL MENÚ PRINCIPAL ---
     opcion_principal = "-1"
