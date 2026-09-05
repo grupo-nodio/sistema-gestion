@@ -6,31 +6,31 @@ import re
 def validar_patente():
 
     """
-    Expresiones regulares para que la patente tenga 4 letras MAYUSCULAS y 3 numeros
+    Expresiones Regulares para validar que la patente ingresada corresponda exactamente a uno de los formatos permitidos.
+    Las patentes que acepta son Formato Nuevo o Viejo de Argentina, por ejemplo: AB123CD o ABC123, tambien formato mercosur, por ejemplo: ABC1234 o AB123CD.
     """
-
-    patente = input("Ingrese la patente del vehiculo: ")
-    if re.match(r'^[A-Z]{4}\d{3}$', patente):
-        print("Patente válida.")
-        return patente
-    else:
-        print("Patente inválida. Debe tener 4 letras MAYUSCULAS y 3 numeros.")
-
+    while True:
+        patente = input("Ingrese la patente del vehiculo (Formato Nuevo o Viejo de Argentina, o formato mercosur) por ejemplo: AB123CD o ABC123: ")
+        if re.match(r'^([A-Za-z]{2}\d{3}[A-Za-z]{2}|[A-Za-z]{3}\d{3}|[A-Za-z]{3}\d{4})$', patente):
+            print("Patente válida.")
+            return patente
+        else:
+            print("Patente inválida. Formatos válidos: AB123CD, ABC123 o ABC1234")
+    
 #VALIDAR TIPO DE AUTO
 def validar_tipodeauto():
     """
     Expresiones Regulares para validar que el tipo de vehículo ingresado corresponda exactamente 
     a una de las opciones permitidas ('auto', 'moto' o 'camioneta').
-    
+
     """
-
-    tipo = input("Ingrese el tipo de vehiculo(moto, auto, camioneta): ")
-    if re.match(r"^(auto|moto|camioneta)$", tipo):
-        print("Tipo de vehículo válido.")
-        return tipo
-    else:
-        print("Tipo de vehículo inválido debe ser moto, auto o camioneta.")
-
+    while True:
+        tipo = input("Ingrese el tipo de vehiculo (moto, auto, camioneta): ")
+        if re.match(r"^(auto|moto|camioneta|Auto|Moto|Camioneta|MOTO|CAMIONETA|AUTO)$", tipo):
+            print("Tipo de vehículo válido.")
+            return tipo
+        else:
+            print("Tipo de vehículo inválido. Debe ser 'moto', 'auto' o 'camioneta'.")
 
 #INGRESAR UN VEHICULO
 def ingresar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo, lista_dniusuarios):
@@ -49,10 +49,10 @@ def ingresar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo, lista_dniusu
     tipo = validar_tipodeauto()
 
     #DNI del usuario propietario del vehiculo
-    dni_usuarios = int(input("Ingrese el DNI del usuario propietario del vehiculo: "))
+    dni_usuarios = input("Ingrese el DNI del usuario propietario del vehiculo: ")
     while dni_usuarios not in lista_dniusuarios:
         print("el dni ingresado no existe, porfavor ingrese un dni valido")
-        dni_usuarios = int(input("Ingrese el DNI del usuario propietario del vehiculo:"))
+        dni_usuarios = input("Ingrese el DNI del usuario propietario del vehiculo:")
 
     lista_patente.append(patente)
     lista_tipo.append(tipo)
@@ -100,7 +100,7 @@ Cuenta y muestra la cantidad de vehículos registrados de cada tipo (moto, auto,
 
 """
 def contar_motos(lista_contar):
-    motos = list(filter(lambda x: x == "moto", lista_contar))
+    motos = list(filter(lambda x: x == "moto" or x == "Moto" or x == "MOTO", lista_contar))
     print("Cantidad de motos registradas:", len(motos))
 
 def contar_autos(lista_contar):
