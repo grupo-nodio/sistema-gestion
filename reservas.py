@@ -1,5 +1,7 @@
 import re
 
+reservas = []
+
 def escritura_digitos(A):
     if A < 10:
         A = "0" + str(A)
@@ -118,7 +120,7 @@ def escribir_horario():
 
     return hora, minuto
 
-def generar_reserva(estacionamientos):
+def generar_reserva():
 
     dia, mes, año = escribir_fecha()
     dia, mes, año = validar_fecha(dia, mes, año)
@@ -173,17 +175,125 @@ def generar_reserva(estacionamientos):
 
     if control in ["Y", "y", "yes", "Yes", "si", "Si"]:
         nombre = input("Ingrese el nombre bajo el cual estara la reserva: ")
-        print(f"La reserva se efectuo correctamente bajo el nombre de {nombre} para la fecha {dia}/{mes}/{año}, empezara a las {hora}:{minuto} hs y finalizara a las {escritura_digitos(horaduracion)}:{escritura_digitos(minuto)} hs")
+        print(f"La reserva se efectuo correctamente bajo el nombre de {nombre} para la fecha {escritura_digitos(dia)}/{escritura_digitos(mes)}/{escritura_digitos(año)}, empezara a las {escritura_digitos(hora)}:{escritura_digitos(minuto)} hs y finalizara a las {escritura_digitos(horaduracion)}:{escritura_digitos(minuto)} hs")
 
-    menu = menu_reservas(estacionamientos)
+    reserva = [nombre, dia, mes, año, hora, minuto, duracion]
+
+    reservas.append(reserva)
+
+    eleccion = elegir_paso()
+
+def consultar_reservas(reservas):
+        for i in range(len(reservas)):
+            print(f"{i + 1}. reserva {i}: Nombre {reservas[i][0]} / dia {escritura_digitos(reservas[i][1])} / mes {escritura_digitos(reservas[i][2])} / año {escritura_digitos(reservas[i][3])} / hora {escritura_digitos(reservas[i][4])} / minuto {escritura_digitos(reservas[i][5])} / duracion {escritura_digitos(reservas[i][6])}. ")
+
+        menu_reservas()
+
+def elegir_paso():
+    eleccion = int(input("\nSeleccione una opcion. [1. Desea volver al menu / 2. Realizar otra reserva]: "))
+
+    if eleccion == 2:
+        reserva = generar_reserva()
+
+    else:
+        menu = menu_reservas()
+
+def modificar_reserva(reservas):
+    consultar_reservas(reservas)
+
+    # 2. Pedimos el número de reserva a modificar
+    reserva_num = int(input("Seleccione la reserva que desea modificar: "))
+    
+    # Validamos que la opción ingresada esté en el rango de reservas cargadas
+    while reserva_num < 1 or reserva_num > len(reservas):
+        print("Opción fuera de rango. Por favor, intente nuevamente.")
+        reserva_num = int(input(f"Seleccione un número entre 1 y {len(reservas)}: "))
+    
+    # Ajustamos el número ingresado al índice real de la lista (base 0)
+    indice = reserva_num - 1
+    
+    # 3. Desempaquetamos los datos de la reserva seleccionada
+    nombre, dia, mes, año, hora, minuto, duracion = reservas[indice]
+    duracion, horaduracion = contar_duracion(duracion, hora)
+
+    print("\n--- MODIFICANDO RESERVA SELECCIONADA ---")
+    control = "N"
+
+    # 4. Bucle para permitir modificar datos
+    while control not in ["Y", "y", "yes", "Yes", "si", "Si"]:
+        print("=" * 44)
+        print(f"Reserva de: {nombre}")
+        print(f"Fecha: {escritura_digitos(dia)}-{escritura_digitos(mes)}-{escritura_digitos(año)}")
+        print(f"Horario: {escritura_digitos(hora)}:{escritura_digitos(minuto)} hs hasta {escritura_digitos(horaduracion)}:{escritura_digitos(minuto)} hs (Duración: {duracion} hs)")
+        print("=" * 44)
+
+        cambio = int(input(f"\n¿Qué dato desea modificar?\n"
+                           f"[1. Nombre ({nombre}) / "
+                           f"2. Día ({escritura_digitos(dia)}) / "
+                           f"3. Mes ({escritura_digitos(mes)}) / "
+                           f"4. Año ({escritura_digitos(año)}) / "
+                           f"5. Hora ({escritura_digitos(hora)}) / "
+                           f"6. Minuto ({escritura_digitos(minuto)}) / "
+                           f"7. Duración ({duracion})]: "))
+
+        match cambio:
+            case 1:
+                nombre = input("Ingrese el nuevo nombre: ")
+            case 2:
+                dia = modificar_datos(dia)
+                dia, mes, año = validar_fecha(dia, mes, año)
+            case 3:
+                mes = modificar_datos(mes)
+                dia, mes, año = validar_fecha(dia, mes, año)
+            case 4:
+                año = modificar_datos(año)
+                dia, mes, año = validar_fecha(dia, mes, año)
+            case 5:
+                hora = modificar_datos(hora)
+                hora, minuto = validar_hora(hora, minuto)
+                duracion, horaduracion = contar_duracion(duracion, hora)
+            case 6:
+                minuto = modificar_datos(minuto)
+                hora, minuto = validar_hora(hora, minuto)
+            case 7:
+                duracion = modificar_datos(duracion)
+                duracion, horaduracion = contar_duracion(duracion, hora)
+            case _:
+                print("Opción no válida.")
+
+        control = input("\n¿Está conforme con las modificaciones hechas? [Y / N]: ")
+
+    # 5. Sobrescribimos la reserva modificada en la lista global
+    reservas[indice] = [nombre, dia, mes, año, hora, minuto, duracion]
+    print("\n¡La reserva ha sido actualizada correctamente!")
+    
+    menu_reservas()
 
 
-def menu_reservas(estacionamientos):
+def menu_reservas():
     print("=" * 44)
     print("\n------------BIENVENIDO A RESERVAS------------\n")
     print("=" * 44)
     print("\n------------MENU RESERVAS------------\n")
 
-    opcion = int(input("Seleccione la opcion que desea realizar. [1. Generar una reserva / 2. Consultar reservas / 3. Modificar reserva / 4. Cancelar una reserva.] : "))
+    opcion = int(input("Seleccione la opcion que desea realizar. [1. Generar una reserva / 2. Consultar reservas / 3. Modificar reserva / 4. Cancelar una reserva / 0. Volver al menu principal.] : "))
     if opcion == 1:
-        generar_reserva(estacionamientos)
+        generar_reserva()
+
+    if opcion == 2:
+        if len(reservas) == 0:
+            print("Debe cargarse una reserva previamente.")
+            menu_reservas()
+
+        else:
+            consultar_reservas(reservas)
+
+    if opcion == 3:
+        if len(reservas) == 0:
+            print("Debe cargarse una reserva previamente.")
+            menu_reservas()
+    
+        else:
+            modificar_reserva(reservas)
+
+menu = menu_reservas()
