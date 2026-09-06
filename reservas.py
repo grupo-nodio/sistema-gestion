@@ -120,6 +120,11 @@ def escribir_horario():
     return hora, minuto
 
 def generar_reserva():
+
+    print("\n" + "=" * 44)
+    print("\n GENERANDO RESERVA \n")
+    print("=" * 44)
+
     dia, mes, año = escribir_fecha()
     dia, mes, año = validar_fecha(dia, mes, año)
 
@@ -131,7 +136,7 @@ def generar_reserva():
 
     print("\n" + "=" * 44)
     print("\n CONTROL DE RESERVA \n")
-    print("= " + "\n" * 44)
+    print("=" * 44)
     print("\nEn la fecha DD - MM - YYYY: ", escritura_digitos(dia), "-", escritura_digitos(mes), "-", escritura_digitos(año))
     print(f"la reserva comenzara a las: {escritura_digitos(hora)} : {escritura_digitos(minuto)} y durara hasta las: {escritura_digitos(horaduracion)} : {escritura_digitos(minuto)} hs")
 
@@ -187,12 +192,15 @@ def mostrar_lista_reservas(reservas):
         print(f"{i + 1}. Nombre: {reservas[i][0]} / dia: {escritura_digitos(reservas[i][1])} / mes: {escritura_digitos(reservas[i][2])} / año: {escritura_digitos(reservas[i][3])} / hora: {escritura_digitos(reservas[i][4])} / minuto: {escritura_digitos(reservas[i][5])} / duracion: {escritura_digitos(reservas[i][6])}hs.")
 
 def consultar_reservas(reservas):
+    print("\n" + "=" * 44)
+    print("\n CONSULTAR RESERVAS \n")
+    print("=" * 44)
     mostrar_lista_reservas(reservas)
     input("\nPresione ENTER para volver al menú de reservas...")
     menu_reservas()
 
 def elegir_paso():
-    eleccion = int(input("\nSeleccione una opcion. [1. Desea volver al menu / 2. Realizar otra reserva]: "))
+    eleccion = int(input("\nSeleccione una opción: [1. Regresar al menú principal / 2. Registrar una nueva reserva]: "))
 
     if eleccion == 2:
         generar_reserva()
@@ -298,7 +306,7 @@ def modificar_reserva(reservas):
 
 def menu_reservas():
     print("\n" + "=" * 44)
-    print("------------BIENVENIDO A RESERVAS------------")
+    print("-----------BIENVENIDO A RESERVAS-----------")
     print("=" * 44)
     print("------------MENU RESERVAS------------\n")
 
@@ -309,26 +317,29 @@ def menu_reservas():
 
     elif opcion == 2:
         if len(reservas) == 0:
-            print("Debe cargarse una reserva previamente.")
+            print("\n---------------- !IMPORTANTE¡ ---------------- \n")
+            print("Debe cargarse una reserva previamente.\n")
             menu_reservas()
         else:
             consultar_reservas(reservas)
 
     elif opcion == 3:
         if len(reservas) == 0:
-            print("Debe cargarse una reserva previamente.")
+            print("\n---------------- !IMPORTANTE¡ ---------------- \n")
+            print("Debe cargarse una reserva previamente.\n")
             menu_reservas()
         else:
             modificar_reserva(reservas)
 
-    elif opcion == 0:
-        print("Saliendo del módulo de reservas.")
-
     elif opcion == 4:
             if len(reservas) == 0:
-                print("Debe cargarse una reserva previamente.")
+                print("\n---------------- !IMPORTANTE¡ ---------------- \n")
+                print("Debe cargarse una reserva previamente.\n")
                 menu_reservas()
             else:
                 cancelar_reserva(reservas)
 
+    elif opcion == 0:
+            print("Saliendo del módulo de reservas.")
+    
 menu_reservas()
