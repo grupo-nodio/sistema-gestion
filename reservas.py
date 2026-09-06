@@ -38,17 +38,16 @@ def validar_fecha(dia, mes, año):
                 if dia > 28:
                     dia = 0
                     fecha = False
-
         if not fecha:
             if dia == 0:
-                print("La fecha ingresada no es valida, por favor, modifique el dia.")
-                dia = int(input("Ingrese el dia que desea hacer la reserva: "))
+                print("La fecha ingresada es errónea. Por favor, reingrese el día correspondiente.")
+                dia = int(input("Ingrese el día de la reserva: "))
             elif mes == 0:
-                print("La fecha ingresada no es valida, por favor, modifique el mes.")
-                mes = int(input("Ingrese el mes que desea hacer la reserva: "))
+                print("La fecha ingresada es errónea. Por favor, reingrese el mes correspondiente.")
+                mes = int(input("Ingrese el mes de la reserva: "))
             elif año == 0:
-                print("La fecha ingresada no es valida, por favor, modifique el año.")
-                año = int(input("Ingrese el año que desea hacer la reserva: "))
+                print("La fecha ingresada es errónea. Por favor, reingrese el año correspondiente.")
+                año = int(input("Ingrese el año de la reserva: "))
 
     return dia, mes, año
 
@@ -66,16 +65,16 @@ def validar_hora(hora, minuto):
 
         if not tiempo:
             if hora == 0:
-                print("La hora ingresada es invalida, por favor, modifique la hora.")
-                hora = int(input("Ingrese la hora de la reserva, (formato de 24 horas): "))
-            elif minuto == 1:
-                print("El o los minuto/s ingresado es invalido, por favor, modifique los minutos.")
-                minuto = int(input("Ingrese el minuto de la reserva: "))
+                print("La hora ingresada es errónea. Por favor, reingrese la hora en el formato especificado.")
+                hora = int(input("Ingrese la hora de la reserva (formato de 24 horas): "))
+        elif minuto == 1:
+                print("El valor de minutos ingresado es erróneo. Por favor, reingrese un valor válido.")
+                minuto = int(input("Ingrese los minutos de la reserva (00 o 30): "))
 
     return hora, minuto
 
 def modificar_datos(A):
-    A = int(input(f"Ingrese el nuevo dato, que modificara al dato [{A}]: "))
+    A = int(input(f"Ingrese el nuevo valor que reemplazará al dato actual [{A}]: "))
     return A
 
 def contar_duracion(duracion, hora):
@@ -121,19 +120,18 @@ def escribir_horario():
     return hora, minuto
 
 def generar_reserva():
-
     dia, mes, año = escribir_fecha()
     dia, mes, año = validar_fecha(dia, mes, año)
 
     hora, minuto = escribir_horario()
     hora, minuto = validar_hora(hora, minuto)
 
-    duracion = int(input("Ingrese cuanto tiempo durara la reserva (saltos de una hora): "))
+    duracion = int(input("Ingrese la duración estimada de la reserva (en intervalos de una hora): "))
     duracion, horaduracion = contar_duracion(duracion, hora)
 
-    print("=" * 44)
+    print("\n" + "=" * 44)
     print("\n CONTROL DE RESERVA \n")
-    print("=" * 44)
+    print("= " + "\n" * 44)
     print("\nEn la fecha DD - MM - YYYY: ", escritura_digitos(dia), "-", escritura_digitos(mes), "-", escritura_digitos(año))
     print(f"la reserva comenzara a las: {escritura_digitos(hora)} : {escritura_digitos(minuto)} y durara hasta las: {escritura_digitos(horaduracion)} : {escritura_digitos(minuto)} hs")
 
@@ -173,61 +171,89 @@ def generar_reserva():
             print(f"la reserva comenzara a las: {escritura_digitos(hora)} : {escritura_digitos(minuto)} hs y durara hasta las: {escritura_digitos(horaduracion)} : {escritura_digitos(minuto)} hs")
             control = input("\nVerifique si los datos tomados son los correctos [Y / N]: ")
 
+    nombre = ""
     if control in ["Y", "y", "yes", "Yes", "si", "Si"]:
-        nombre = input("Ingrese el nombre bajo el cual estara la reserva: ")
+        nombre = input("Ingrese el nombre del titular de la reserva: ")
         print(f"La reserva se efectuo correctamente bajo el nombre de {nombre} para la fecha {escritura_digitos(dia)}/{escritura_digitos(mes)}/{escritura_digitos(año)}, empezara a las {escritura_digitos(hora)}:{escritura_digitos(minuto)} hs y finalizara a las {escritura_digitos(horaduracion)}:{escritura_digitos(minuto)} hs")
 
     reserva = [nombre, dia, mes, año, hora, minuto, duracion]
-
     reservas.append(reserva)
 
-    eleccion = elegir_paso()
+    elegir_paso()
+
+def mostrar_lista_reservas(reservas):
+    """ Muestra únicamente las reservas sin forzar una llamada al menú. """
+    for i in range(len(reservas)):
+        print(f"{i + 1}. Nombre: {reservas[i][0]} / dia: {escritura_digitos(reservas[i][1])} / mes: {escritura_digitos(reservas[i][2])} / año: {escritura_digitos(reservas[i][3])} / hora: {escritura_digitos(reservas[i][4])} / minuto: {escritura_digitos(reservas[i][5])} / duracion: {escritura_digitos(reservas[i][6])}hs.")
 
 def consultar_reservas(reservas):
-        for i in range(len(reservas)):
-            print(f"{i + 1}. reserva {i}: Nombre {reservas[i][0]} / dia {escritura_digitos(reservas[i][1])} / mes {escritura_digitos(reservas[i][2])} / año {escritura_digitos(reservas[i][3])} / hora {escritura_digitos(reservas[i][4])} / minuto {escritura_digitos(reservas[i][5])} / duracion {escritura_digitos(reservas[i][6])}. ")
-
-        menu_reservas()
+    mostrar_lista_reservas(reservas)
+    input("\nPresione ENTER para volver al menú de reservas...")
+    menu_reservas()
 
 def elegir_paso():
     eleccion = int(input("\nSeleccione una opcion. [1. Desea volver al menu / 2. Realizar otra reserva]: "))
 
     if eleccion == 2:
-        reserva = generar_reserva()
-
+        generar_reserva()
     else:
-        menu = menu_reservas()
+        menu_reservas()
 
-def modificar_reserva(reservas):
-    consultar_reservas(reservas)
-
-    # 2. Pedimos el número de reserva a modificar
-    reserva_num = int(input("Seleccione la reserva que desea modificar: "))
+def cancelar_reserva(reservas):
+    print("\n--- RESERVAS EXISTENTES ---")
+    mostrar_lista_reservas(reservas)
     
-    # Validamos que la opción ingresada esté en el rango de reservas cargadas
-    while reserva_num < 1 or reserva_num > len(reservas):
-        print("Opción fuera de rango. Por favor, intente nuevamente.")
+    reserva_num = int(input("\nSeleccione el número de la reserva que desea cancelar: "))
+
+    while reserva_num < 1 and reserva_num > len(reservas):
+        print("Opcion fuera de rango. Reingrese. ")
         reserva_num = int(input(f"Seleccione un número entre 1 y {len(reservas)}: "))
-    
-    # Ajustamos el número ingresado al índice real de la lista (base 0)
+
     indice = reserva_num - 1
-    
-    # 3. Desempaquetamos los datos de la reserva seleccionada
     nombre, dia, mes, año, hora, minuto, duracion = reservas[indice]
     duracion, horaduracion = contar_duracion(duracion, hora)
 
-    print("\n--- MODIFICANDO RESERVA SELECCIONADA ---")
+    print("\n" + "=" * 44)
+    print(f"CANCELAR RESERVA DE: {nombre}")
+    print("=" * 44)
+    print(f"Fecha: {escritura_digitos(dia)}-{escritura_digitos(mes)}-{escritura_digitos(año)}")
+    print(f"Horario: {escritura_digitos(hora)}:{escritura_digitos(minuto)} hs a {escritura_digitos(horaduracion)}:{escritura_digitos(minuto)} hs (Duración: {duracion} hs)")
+
+    confirmacion_cancelar = input("¿Esta seguro de que desea cancelar esta reserva?, [Y / N]: ") 
+
+    if confirmacion_cancelar in ["Y", "y", "yes", "Yes", "si", "Si"]:
+        reservas.remove(reservas[indice])
+
+        input("\nPresione ENTER para volver al menú principal...")
+        menu_reservas()
+
+    else:
+        menu_reservas()
+
+def modificar_reserva(reservas):
+    print("\n--- RESERVAS EXISTENTES ---")
+    mostrar_lista_reservas(reservas)
+
+    reserva_num = int(input("\nSeleccione el número de la reserva que desea modificar: "))
+
+    # Validamos que el rango seleccionado exista
+    while reserva_num < 1 or reserva_num > len(reservas):
+        print("Opción fuera de rango. Reingrese.")
+        reserva_num = int(input(f"Seleccione un número entre 1 y {len(reservas)}: "))
+
+    indice = reserva_num - 1
+    nombre, dia, mes, año, hora, minuto, duracion = reservas[indice]
+    duracion, horaduracion = contar_duracion(duracion, hora)
+
     control = "N"
-
-    # 4. Bucle para permitir modificar datos
     while control not in ["Y", "y", "yes", "Yes", "si", "Si"]:
+        print("\n" + "=" * 44)
+        print(f"MODIFICANDO RESERVA DE: {nombre}")
         print("=" * 44)
-        print(f"Reserva de: {nombre}")
         print(f"Fecha: {escritura_digitos(dia)}-{escritura_digitos(mes)}-{escritura_digitos(año)}")
-        print(f"Horario: {escritura_digitos(hora)}:{escritura_digitos(minuto)} hs hasta {escritura_digitos(horaduracion)}:{escritura_digitos(minuto)} hs (Duración: {duracion} hs)")
-        print("=" * 44)
+        print(f"Horario: {escritura_digitos(hora)}:{escritura_digitos(minuto)} hs a {escritura_digitos(horaduracion)}:{escritura_digitos(minuto)} hs (Duración: {duracion} hs)")
 
-        cambio = int(input(f"\n¿Qué dato desea modificar?\n"
+        cambio = int(input("\n¿Qué dato desea modificar?\n"
                            f"[1. Nombre ({nombre}) / "
                            f"2. Día ({escritura_digitos(dia)}) / "
                            f"3. Mes ({escritura_digitos(mes)}) / "
@@ -261,39 +287,48 @@ def modificar_reserva(reservas):
             case _:
                 print("Opción no válida.")
 
-        control = input("\n¿Está conforme con las modificaciones hechas? [Y / N]: ")
+        control = input("\n¿Está conforme con los datos modificados? [Y / N]: ")
 
-    # 5. Sobrescribimos la reserva modificada en la lista global
+    # Guardamos los cambios sobre la reserva seleccionada en la lista
     reservas[indice] = [nombre, dia, mes, año, hora, minuto, duracion]
-    print("\n¡La reserva ha sido actualizada correctamente!")
+    print("\n¡La reserva fue actualizada exitosamente!")
     
+    input("\nPresione ENTER para volver al menú principal...")
     menu_reservas()
 
-
 def menu_reservas():
+    print("\n" + "=" * 44)
+    print("------------BIENVENIDO A RESERVAS------------")
     print("=" * 44)
-    print("\n------------BIENVENIDO A RESERVAS------------\n")
-    print("=" * 44)
-    print("\n------------MENU RESERVAS------------\n")
+    print("------------MENU RESERVAS------------\n")
 
-    opcion = int(input("Seleccione la opcion que desea realizar. [1. Generar una reserva / 2. Consultar reservas / 3. Modificar reserva / 4. Cancelar una reserva / 0. Volver al menu principal.] : "))
+    opcion = int(input("Seleccione la opcion que desea realizar. [1. Generar una reserva / 2. Consultar reservas / 3. Modificar reserva / 4. Cancelar una reserva / 0. Salir]: "))
+
     if opcion == 1:
         generar_reserva()
 
-    if opcion == 2:
+    elif opcion == 2:
         if len(reservas) == 0:
             print("Debe cargarse una reserva previamente.")
             menu_reservas()
-
         else:
             consultar_reservas(reservas)
 
-    if opcion == 3:
+    elif opcion == 3:
         if len(reservas) == 0:
             print("Debe cargarse una reserva previamente.")
             menu_reservas()
-    
         else:
             modificar_reserva(reservas)
 
-menu = menu_reservas()
+    elif opcion == 0:
+        print("Saliendo del módulo de reservas.")
+
+    elif opcion == 4:
+            if len(reservas) == 0:
+                print("Debe cargarse una reserva previamente.")
+                menu_reservas()
+            else:
+                cancelar_reserva(reservas)
+
+menu_reservas()
