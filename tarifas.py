@@ -1,7 +1,3 @@
-from vehiculos import lista_patente, lista_tipo
-from reservas import duracion
-
-
 # Lambada que calcula el costo con los datos de duración obtenidos de reservas.py y la tarifa según el tipo de vehículo.
 calcular = lambda horas, tarifa: horas * tarifa
 
