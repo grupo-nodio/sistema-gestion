@@ -117,7 +117,7 @@ def escribir_horario():
 
     return hora, minuto
 
-def generar_reserva():
+def generar_reserva(estacionamientos, reservas):
 
     print("\n" + "=" * 44)
     print("\n GENERANDO RESERVA \n")
@@ -195,15 +195,15 @@ def consultar_reservas(reservas):
     print("=" * 44)
     mostrar_lista_reservas(reservas)
     input("\nPresione ENTER para volver al menú de reservas...")
-    menu_reservas(estacionamiento, reservas)
+    menu_reservas(estacionamientos, reservas)
 
 def elegir_paso():
     eleccion = int(input("\nSeleccione una opción: [1. Regresar al menú principal / 2. Registrar una nueva reserva]: "))
 
     if eleccion == 2:
-        generar_reserva()
+        generar_reserva(estacionamientos, reservas)
     else:
-        menu_reservas()
+        menu_reservas(estacionamientos, reservas)
 
 def cancelar_reserva(reservas):
     print("\n--- RESERVAS EXISTENTES ---")
@@ -231,10 +231,10 @@ def cancelar_reserva(reservas):
         reservas.remove(reservas[indice])
 
         input("\nPresione ENTER para volver al menú principal...")
-        menu_reservas(estacionamiento, reservas)
+        menu_reservas(estacionamientos, reservas)
 
     else:
-        menu_reservas(estacionamiento, reservas)
+        menu_reservas(estacionamientos, reservas)
 
 def modificar_reserva(reservas):
     print("\n--- RESERVAS EXISTENTES ---")
@@ -300,9 +300,9 @@ def modificar_reserva(reservas):
     print("\n¡La reserva fue actualizada exitosamente!")
     
     input("\nPresione ENTER para volver al menú principal...")
-    menu_reservas(estacionamiento, reservas)
+    menu_reservas(estacionamientos, reservas)
 
-def menu_reservas(estacionamiento, reservas):
+def menu_reservas(estacionamientos, reservas):
     print("\n" + "=" * 44)
     print("-----------BIENVENIDO A RESERVAS-----------")
     print("=" * 44)
@@ -311,13 +311,13 @@ def menu_reservas(estacionamiento, reservas):
     opcion = int(input("Seleccione la opcion que desea realizar. [1. Generar una reserva / 2. Consultar reservas / 3. Modificar reserva / 4. Cancelar una reserva / 0. Salir]: "))
 
     if opcion == 1:
-        generar_reserva()
+        generar_reserva(estacionamientos, reservas)
 
     elif opcion == 2:
         if len(reservas) == 0:
             print("\n---------------- !IMPORTANTE¡ ---------------- \n")
             print("Debe cargarse una reserva previamente.\n")
-            menu_reservas(estacionamiento, reservas)
+            menu_reservas(estacionamientos, reservas)
         else:
             consultar_reservas(reservas)
 
@@ -325,7 +325,7 @@ def menu_reservas(estacionamiento, reservas):
         if len(reservas) == 0:
             print("\n---------------- !IMPORTANTE¡ ---------------- \n")
             print("Debe cargarse una reserva previamente.\n")
-            menu_reservas(estacionamiento, reservas)
+            menu_reservas(estacionamientos, reservas)
         else:
             modificar_reserva(reservas)
 
@@ -333,7 +333,7 @@ def menu_reservas(estacionamiento, reservas):
             if len(reservas) == 0:
                 print("\n---------------- !IMPORTANTE¡ ---------------- \n")
                 print("Debe cargarse una reserva previamente.\n")
-                menu_reservas(estacionamiento, reservas)
+                menu_reservas(estacionamientos, reservas)
             else:
                 cancelar_reserva(reservas)
 
