@@ -118,7 +118,7 @@ def escribir_horario():
 
     return hora, minuto
 
-def generar_reserva(estacionamientos):
+def generar_reserva(estacionamientos, reservas):
 
     dia, mes, año = escribir_fecha()
     dia, mes, año = validar_fecha(dia, mes, año)
@@ -175,10 +175,7 @@ def generar_reserva(estacionamientos):
         nombre = input("Ingrese el nombre bajo el cual estara la reserva: ")
         print(f"La reserva se efectuo correctamente bajo el nombre de {nombre} para la fecha {dia}/{mes}/{año}, empezara a las {hora}:{minuto} hs y finalizara a las {escritura_digitos(horaduracion)}:{escritura_digitos(minuto)} hs")
 
-    menu = menu_reservas(estacionamientos)
-
-
-def menu_reservas(estacionamientos):
+def menu_reservas(estacionamientos, reservas):
     print("=" * 44)
     print("\n------------BIENVENIDO A RESERVAS------------\n")
     print("=" * 44)
@@ -186,4 +183,4 @@ def menu_reservas(estacionamientos):
 
     opcion = int(input("Seleccione la opcion que desea realizar. [1. Generar una reserva / 2. Consultar reservas / 3. Modificar reserva / 4. Cancelar una reserva.] : "))
     if opcion == 1:
-        generar_reserva(estacionamientos)
+        generar_reserva(estacionamientos, reservas)
