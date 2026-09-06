@@ -64,7 +64,7 @@ def ingresar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo, lista_dniusu
 
 def mostrar_vehiculos(lista_patente, lista_tipo, lista_dnivehiculo):
     """
-    Muestra la información de todos los vehículos registrados en las listas paralelas.
+    Muestra la información de todos los vehículos registrados en las listas.
     """
     if len(lista_patente) == 0:
         print("No hay vehículos registrados.")
@@ -94,22 +94,8 @@ def eliminar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo):
             pos += 1    
     else:
         print("No se encontró un vehículo con esa patente.")
+        
 
-"""
-Cuenta y muestra la cantidad de vehículos registrados de cada tipo (moto, auto, camioneta) en la lista proporcionada.
-
-"""
-def contar_motos(lista_contar):
-    motos = list(filter(lambda x: x == "moto" or x == "Moto" or x == "MOTO", lista_contar))
-    print("Cantidad de motos registradas:", len(motos))
-
-def contar_autos(lista_contar):
-    autos = list(filter(lambda x: x == "auto" or x == "Auto" or x == "AUTO", lista_contar))
-    print("Cantidad de autos registrados:", len(autos))
-
-def contar_camionetas(lista_contar):
-    camionetas = list(filter(lambda x: x == "camioneta" or x == "Camioneta" or x == "CAMIONETA" , lista_contar))
-    print("Cantidad de camionetas registradas:", len(camionetas))
 
 
 
