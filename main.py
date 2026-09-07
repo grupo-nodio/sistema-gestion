@@ -43,7 +43,7 @@ def menu_principal():
         print("="*60)
         
         opcion_principal = input("Seleccione una opción: ")
-        # Se actualizó la lista para permitir las opciones 3 y 4
+        
         while opcion_principal not in ["0", "1", "2", "3", "4"]:
             opcion_principal = input("Error: Opción inválida. Vuelva a seleccionar: ")
 
@@ -61,7 +61,7 @@ def menu_principal():
                 op_sub = "-1"
                 while op_sub != "0":
                     print("\n" + "="*60)
-                    print(f" ADMINISTRANDO: {nombre_actual.upper()}")
+                    print(f" ADMINISTRANDO: {nombre_actual}")
                     print("="*60)
                     print("1. Ver / Modificar datos del estacionamiento")
                     print("2. Administrar Reservas")
@@ -103,8 +103,9 @@ def menu_principal():
                             print("3. Modificar usuario")
                             print("4. Ingresar vehículo nuevo (Requiere DNI)")
                             print("5. Mostrar vehículos registrados")
-                            print("6. Dar de baja al usuario.")
+                            print("6. Dar de baja al usuario")
                             print("7. Reactivar usuario dado de baja")
+                            print("8. Eliminar vehículo")
                             print("0. Volver atrás")
                             op_usu = input("Opción: ")
                             
@@ -119,21 +120,35 @@ def menu_principal():
                                 vehiculos.ingresar_vehiculo(patentes, tipos, dni_vehiculos, dnis)
                             elif op_usu == "5":
                                 vehiculos.mostrar_vehiculos(patentes, tipos, dni_vehiculos)
-
-                            elif op_usu=="6":
-                                usuarios.baja_usuarios(dnis,estados)
-
-                            #Para dar de alta nuevamente a un usuario antiguo.    
-                            elif op_usu=="7":
-                                usuarios.quitar_baja(nombres,apellidos,dnis,emails,telefonos,estados)
+                            elif op_usu == "6":
+                                usuarios.baja_usuarios(dnis, estados)
+                            elif op_usu == "7":
+                                usuarios.quitar_baja(nombres, apellidos, dnis, emails, telefonos, estados)
+                            elif op_usu == "8":
+                                vehiculos.eliminar_vehiculo(patentes, tipos, dni_vehiculos)
                                 
                     # 4. TARIFAS Y COBROS
                     elif op_sub == "4":
-                        print(f"\n[ Módulo Tarifas para {nombre_actual} - En desarrollo ]")
-                        # Aquí podrás enlazar tus funciones de tarifas.py
+                        print(f"\n[ Módulo Tarifas para {nombre_actual} ]")
+                        
+                        # Inyectamos las listas de forma global en el módulo de tarifas
+                        tarifas.lista_patente = patentes
+                        tarifas.lista_tipo = tipos
+                        
+                        entrada_duracion = input("Ingrese la duración de la reserva a cobrar (en horas enteras): ")
+                        
+                        while not entrada_duracion.isdigit():
+                            entrada_duracion = input("Error, ingrese únicamente números para la duración: ")
+                            
+                        duracion = int(entrada_duracion)
+                        tarifas.cobrar_estacionamiento(duracion)
 
             else:
                 print("\nNo hay estacionamientos registrados en el sistema. Por favor, cree uno primero.")
+
+        # --- ESTADÍSTICAS GENERALES ---
+        elif opcion_principal == "3":
+            reportes.mostrar_reportes(estacionamientos, tipos)
 
         # --- ELIMINAR ESTACIONAMIENTO ---
         elif opcion_principal == "4":
