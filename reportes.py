@@ -1,4 +1,5 @@
 from functools import reduce
+from reservas import escritura_digitos
 
 def mostrar_reportes(estacionamientos, lista_tipo, lista_dni, lista_estado):
     '''Llama a todas las estadísticas'''
@@ -50,6 +51,30 @@ def reporte_ocupacion_estacionamiento(lista_tipo):
         print("Cantidad de espacios grandes ocupados (camionetas):", espacios_grandes)
         print("Cantidad de espacios estándar ocupados (autos y motos):", espacios_estandar)
 
+def reporte_reservas(reservar, reservas_canceladas):
+    """ Muestra únicamente las reservas. """
+    print("\n" + "=" * 44)
+    print("\n REPORTE DE RESERVAS REALIZADAS \n")
+    print("=" * 44)
+
+    for i in range(len(reservar)):
+        print(f"{i + 1}. Nombre: {reservar[i][0]} / dia: {escritura_digitos(reservar[i][1])} / mes: {escritura_digitos(reservar[i][2])} / año: {escritura_digitos(reservar[i][3])} / hora: {escritura_digitos(reservar[i][4])} / minuto: {escritura_digitos(reservar[i][5])} / duracion: {escritura_digitos(reservar[i][6])}hs.")
+
+    print(f"Cantindad de reservas realizadas con exito: {len(reservar)}")
+
+    """ Muestra únicamente las reservas canceladas. """
+    print("\n" + "=" * 44)
+    print("\n REPORTE DE RESERVAS CANCELADAS \n")
+    print("=" * 44)
+
+    if len(reservas_canceladas) > 0:
+        for i in range(len(reservas_canceladas)):
+            print(f"{i + 1}. Nombre: {reservas_canceladas[i][0]} / dia: {escritura_digitos(reservas_canceladas[i][1])} / mes: {escritura_digitos(reservas_canceladas[i][2])} / año: {escritura_digitos(reservar[i][3])} / hora: {escritura_digitos(reservas_canceladas[i][4])} / minuto: {escritura_digitos(reservas_canceladas[i][5])} / duracion: {escritura_digitos(reservas_canceladas[i][6])}hs.")
+
+        print(f"Cantindad de reservas canceladas: {len(reservas_canceladas)}")
+
+    else:
+        print("No se cancelo ninguna reserva. ")
 
 def reporte_usuarios_por_estado(lista_dni, lista_estado):
     """

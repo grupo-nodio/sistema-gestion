@@ -212,7 +212,7 @@ def consultar_reservas(reservar):
     mostrar_lista_reservas(reservar)
     input("\nPresione ENTER para volver...")
 
-def cancelar_reserva(sel, estacionamientos, reservar):
+def cancelar_reserva(sel, estacionamientos, reservar, reservas_canceladas):
     ''' Permite ver las reservas hechas y cancelar la reserva seleccionada '''
     print("\n--- RESERVAS EXISTENTES ---")
     mostrar_lista_reservas(reservar)
@@ -236,6 +236,8 @@ def cancelar_reserva(sel, estacionamientos, reservar):
     confirmacion_cancelar = input("¿Esta seguro de que desea cancelar esta reserva?, [Y / N]: ") 
 
     if confirmacion_cancelar in ["Y", "y", "yes", "Yes", "si", "Si"]:
+        reserva_cancelada = [nombre, dia, mes, año, hora, minuto, duracion]
+        reservas_canceladas.append(reserva_cancelada)
         reservar.pop(indice)
         
         # Se verifica que al devolver el espacio no se supere la capacidad total (índice 3)
