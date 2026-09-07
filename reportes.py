@@ -110,7 +110,7 @@ def reporte_usuarios_por_estado(lista_dni, lista_estado):
     print("Total de usuarios registrados:", total_usuarios)
 
 def reporte_recaudacion(lista_cobros):
-    """Muestra la cantidad total de dinero recaudado y cuántos cobros se hicieron."""
+    """Muestra la cantidad total de dinero recaudado"""
     if len(lista_cobros) == 0:
         print("\nREPORTE DE RECAUDACIÓN:")
         print("Todavía no se registró ningún cobro en el sistema.")
