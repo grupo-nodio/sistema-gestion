@@ -64,3 +64,11 @@ def cobrar_estacionamiento(duracion, lista_patente, lista_tipo):
     print("Vehículo cobrado:", tipo_vehiculo, "Patente:", patente_cobro)
     print("Costo base de la reserva (", duracion, "hs): $", costo)
     print("TOTAL A PAGAR: $", total_pagar)
+
+def mostrar_cobros(lista_cobros, lista_patente_cobrada):
+    print("\n--- HISTORIAL DE COBROS ---")
+    if len(lista_cobros) == 0:
+        print("No hay cobros registrados.")
+    else:
+        for i in range(len(lista_cobros)):
+            print(f"Patente: {lista_patente_cobrada[i]} - Importe pagado: ${lista_cobros[i]}")
