@@ -1,7 +1,7 @@
 from functools import reduce
 from reservas import escritura_digitos
 
-def mostrar_reportes(estacionamientos, lista_tipo, lista_dni, lista_estado):
+def mostrar_reportes(estacionamientos, lista_tipo, lista_dni, lista_estado, lista_cobros):
     '''Llama a todas las estadísticas'''
     # Rango de índices válidos (omitiendo la cabecera/índice 0)
     indices = range(1, len(estacionamientos[0]))
@@ -19,6 +19,7 @@ def mostrar_reportes(estacionamientos, lista_tipo, lista_dni, lista_estado):
     reporte_vehiculos_por_tipo(lista_tipo)
     reporte_ocupacion_estacionamiento(lista_tipo)
     reporte_usuarios_por_estado(lista_dni, lista_estado)
+    reporte_recaudacion(lista_cobros)
 
 def capacidad_actual_disponible(estacionamientos):
     '''Muestra la capacidad actual sin reservar en total entre todos los estacionamientos que se encuentren disponibles.'''
@@ -107,3 +108,17 @@ def reporte_usuarios_por_estado(lista_dni, lista_estado):
     print("Usuarios dados de alta:", usuarios_activos)
     print("Usuarios dados de baja:", usuarios_baja)
     print("Total de usuarios registrados:", total_usuarios)
+
+def reporte_recaudacion(lista_cobros):
+    """Muestra la cantidad total de dinero recaudado y cuántos cobros se hicieron."""
+    if len(lista_cobros) == 0:
+        print("\nREPORTE DE RECAUDACIÓN:")
+        print("Todavía no se registró ningún cobro en el sistema.")
+    else:
+        total_dinero = 0
+        for dinero in lista_cobros:
+            total_dinero += dinero
+            
+        print("\nREPORTE DE RECAUDACIÓN:")
+        print("Cantidad de cobros realizados:", len(lista_cobros))
+        print("Total de dinero recaudado: $", total_dinero)
