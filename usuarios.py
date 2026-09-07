@@ -200,7 +200,7 @@ def modificar_usuario(lst_nombre,lst_apellido,lst_dni,lst_mail,lst_telefono,lst_
         print("DNI INVALIDO, TIENE QUE TENER EXACTAMENTE 8 CARACTERES.")
         dni_buscar=input("Ingrese el DNI a buscar:")
 
-    pos=-1
+    posicion= -1
     encontrado=False
     for i in range(len(lst_dni)):
         if lst_dni[i] == dni_buscar and lst_estado[i] == "A":
