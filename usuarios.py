@@ -249,7 +249,7 @@ def modificar_usuario(lst_nombre,lst_apellido,lst_dni,lst_mail,lst_telefono,lst_
 
         print("\n-- USUARIO MODIFICADO CON ÉXITO --")
     else:
-        print("No se encontró un usuario activo con ese DNI.")
+        print("\nNo se encontró un usuario activo con ese DNI.")
 
 def quitar_baja(lst_nombre,lst_apellido,lst_dni,lst_mail,lst_telefono,lst_estado):
     """
@@ -278,27 +278,27 @@ def quitar_baja(lst_nombre,lst_apellido,lst_dni,lst_mail,lst_telefono,lst_estado
             print("Nombre:", lst_nombre[i], "Apellido:", lst_apellido[i], "DNI:", lst_dni[i], "Mail:", lst_mail[i], "Telefono:", lst_telefono[i], "Estado:", lst_estado[i])
 
     while True:
-        dni_usuario = input("Ingrese el dni para dar nuevamente de alta o -1 para salir:")
-        if dni_usuario == "-1":
-            print("Operación cancelada.")
-            lineas()
-            return
-        if not re.match(r"^\d{8}$", dni_usuario):
+            dni_usuario = input("Ingrese el dni para dar nuevamente de alta o -1 para salir:")
+            if dni_usuario == "-1":
+                print("Operación cancelada.")
+                lineas()
+                return
+    
+            if re.match(r"^\d{8}$", dni_usuario):
+                posicion = -1
+                for i in range(len(lst_dni)):
+                    if lst_dni[i] == dni_usuario:
+                        posicion = i
+    
+                if posicion != -1:  
+                    lst_estado[posicion] = "A"
+                    print("\nUSUARIO DADO DE ALTA NUEVAMENTE")
+                    lineas()
+                    return lst_estado
+                else:
+                    print("\nNo se encontro ningun usuario con ese DNI dado de baja.")
+                    lineas()
+                    return
+    
             print("DNI INVALIDO, TIENE QUE TENER EXACTAMENTE 8 CARACTERES.")
-            
-
-        
-        posicion = -1
-        for i in range(len(lst_dni)):
-            if lst_dni[i] == dni_usuario:
-                posicion = i
-                
-        if posicion != -1:  
-            lst_estado[posicion] = "A"
-            print("USUARIO DADO DE ALTA NUEVAMENTE")
             lineas()
-            return lst_estado
-        else:
-            print("No se encontro ningun usuario con ese DNI dado de baja.")
-            lineas()
-            return
