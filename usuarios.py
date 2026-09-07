@@ -156,15 +156,19 @@ def baja_usuarios(lst_dni,lst_estado):
 
     if encontrado==True:
         seguro=input("Esta seguro de darlo de baja? (y/n):")
-        if seguro == "y":
+        while seguro.lower() != "y" and seguro.lower() != "n":
+            print("Opcion invalida, ingrese 'y' para confirmar o 'n' para cancelar.")
+            seguro=input("Esta seguro de darlo de baja? (y/n):")
 
+        if seguro.lower() == "y":
+    
             lst_estado[posicion] = "B"
         
             print("--USUARIO DADO DE BAJA--")
             lineas()
             return lst_estado
         else:
-            print("--OPERACION CANCELADA--")
+            print("\n--OPERACION CANCELADA--")
             lineas()
             return
     else:
@@ -281,7 +285,7 @@ def quitar_baja(lst_nombre,lst_apellido,lst_dni,lst_mail,lst_telefono,lst_estado
             return
         if not re.match(r"^\d{8}$", dni_usuario):
             print("DNI INVALIDO, TIENE QUE TENER EXACTAMENTE 8 CARACTERES.")
-            continue
+            
 
         
         posicion = -1
@@ -295,6 +299,6 @@ def quitar_baja(lst_nombre,lst_apellido,lst_dni,lst_mail,lst_telefono,lst_estado
             lineas()
             return lst_estado
         else:
-            print("No se encontro ningun usuario con ese DNI")
+            print("No se encontro ningun usuario con ese DNI dado de baja.")
             lineas()
             return
