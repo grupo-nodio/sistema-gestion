@@ -17,7 +17,7 @@ def capacidad_actual_disponible(estacionamientos):
 
     indices_disponibles = filter(lambda i: estacionamientos[1][i] == 1, indices)
 
-    return reduce(lambda acumulador, i: acumulador + estacionamientos[4][i], indices_disponibles, 0) No newline at end of file
+    return reduce(lambda acumulador, i: acumulador + estacionamientos[4][i], indices_disponibles, 0)
 
 def reporte_vehiculos_por_tipo(lista_tipo):
     if len(lista_tipo) == 0:
