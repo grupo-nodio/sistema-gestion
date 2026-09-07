@@ -62,5 +62,5 @@ def cobrar_estacionamiento(duracion, lista_patente, lista_tipo):
 
     print("\n------------- RESUMEN DE CUENTA -------------")
     print("Vehículo cobrado:", tipo_vehiculo, "Patente:", patente_cobro)
-    print("Costo base de la reserva (", duracion, "hs): $", costo)
+    print("Costo de la reserva (", duracion, "hs): $", costo)
     print("TOTAL A PAGAR: $", total_pagar)
