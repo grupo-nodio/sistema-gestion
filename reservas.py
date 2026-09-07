@@ -1,6 +1,7 @@
 import re
 
 def escritura_digitos(A):
+    ''' Agrega un 0 por delante a los valores numericos inferiores a 10 '''
     if A < 10:
         A = "0" + str(A)
     else:
@@ -8,6 +9,7 @@ def escritura_digitos(A):
     return A
 
 def validar_fecha(dia, mes, año):
+    ''' Verifica que la fecha sea valida, si el año es menor a 2026 = invalido, si el mes es menor a 1 y mayor a 13 = invalido y los dias si son menores a 1 y mayores a [28, 29, 30, 31], dependiendo del mes '''
     fecha = False
     while not fecha:
         fecha = True
@@ -51,6 +53,7 @@ def validar_fecha(dia, mes, año):
     return dia, mes, año
 
 def validar_hora(hora, minuto):
+    ''' Valida la hora, a traves de un formato de 24 horas y intervalos de 30 minutos '''
     tiempo = False
     while not tiempo:
         tiempo = True
@@ -73,10 +76,12 @@ def validar_hora(hora, minuto):
     return hora, minuto
 
 def modificar_datos(A):
+    ''' Funcion utilizada para modificar los valores dentro de una reserva '''
     A = int(input(f"Ingrese el nuevo valor que reemplazará al dato actual [{A}]: "))
     return A
 
 def contar_duracion(duracion, hora):
+    ''' Permite calcular la hora exacta en la que terminara la reserva, tomando en cuanta a la hora que comienza y la duracion de la misma '''
     horaduracion = hora
     for i in range(duracion):
         if horaduracion == 23:
@@ -86,6 +91,7 @@ def contar_duracion(duracion, hora):
     return duracion, horaduracion
 
 def escribir_fecha():
+    """ Permite escribir la fecha dentro de un mismo input, para luego tomar los valores numericos por separado """
     valido = False
     dia, mes, año = 0, 0, 0
     while not valido:
@@ -104,6 +110,7 @@ def escribir_fecha():
     return dia, mes, año
 
 def escribir_horario():
+    """ Permite escribir el horario dentro de un mismo input, para luego tomar los valores numericos por separado """
     valido = False
     hora, minuto = 0, 0
     while not valido:
@@ -118,7 +125,8 @@ def escribir_horario():
 
     return hora, minuto
 
-def generar_reserva(estacionamientos, reservas):
+def generar_reserva(estacionamientos, reservar):
+    ''' Permite generar una reserva tomando datos como, la fecha, el horario, la duracion, y el nombre del titular de la reserva '''
     print("\n" + "=" * 44)
     print("\n GENERANDO RESERVA \n")
     print("=" * 44)
@@ -176,37 +184,46 @@ def generar_reserva(estacionamientos, reservas):
 
     nombre = ""
     if control in ["Y", "y", "yes", "Yes", "si", "Si"]:
+
+    # Verificar que queden lugares disponibles antes de restar
+        if estacionamientos[0][4] > 0:
+            
+            # --- RESTAR 1 EN LA COLUMNA DE ESPACIOS/LUGARES ---
+            estacionamientos[0][4] -= 1
+
         nombre = input("Ingrese el nombre del titular de la reserva: ")
         print(f"La reserva se efectuo correctamente bajo el nombre de {nombre} para la fecha {escritura_digitos(dia)}/{escritura_digitos(mes)}/{escritura_digitos(año)}, empezara a las {escritura_digitos(hora)}:{escritura_digitos(minuto)} hs y finalizara a las {escritura_digitos(horaduracion)}:{escritura_digitos(minuto)} hs")
 
     reserva = [nombre, dia, mes, año, hora, minuto, duracion]
-    reservas.append(reserva)
+    reservar.append(reserva)
 
-def mostrar_lista_reservas(reservas):
+def mostrar_lista_reservas(reservar):
     """ Muestra únicamente las reservas sin forzar una llamada al menú. """
-    for i in range(len(reservas)):
-        print(f"{i + 1}. Nombre: {reservas[i][0]} / dia: {escritura_digitos(reservas[i][1])} / mes: {escritura_digitos(reservas[i][2])} / año: {escritura_digitos(reservas[i][3])} / hora: {escritura_digitos(reservas[i][4])} / minuto: {escritura_digitos(reservas[i][5])} / duracion: {escritura_digitos(reservas[i][6])}hs.")
+    for i in range(len(reservar)):
+        print(f"{i + 1}. Nombre: {reservar[i][0]} / dia: {escritura_digitos(reservar[i][1])} / mes: {escritura_digitos(reservar[i][2])} / año: {escritura_digitos(reservar[i][3])} / hora: {escritura_digitos(reservar[i][4])} / minuto: {escritura_digitos(reservar[i][5])} / duracion: {escritura_digitos(reservar[i][6])}hs.")
 
-def consultar_reservas(reservas):
+def consultar_reservas(reservar):
+    ''' Permite consultar las reservas realizadas previamente '''
     print("\n" + "=" * 44)
     print("\n CONSULTAR RESERVAS \n")
     print("=" * 44)
-    mostrar_lista_reservas(reservas)
+    mostrar_lista_reservas(reservar)
     input("\nPresione ENTER para volver...")
 
-def cancelar_reserva(reservas):
+def cancelar_reserva(reservar):
+    ''' Permite ver las reservas hechas y cancelar la reserva seleccionada '''
     print("\n--- RESERVAS EXISTENTES ---")
-    mostrar_lista_reservas(reservas)
+    mostrar_lista_reservas(reservar)
     
     reserva_num = int(input("\nSeleccione el número de la reserva que desea cancelar: "))
 
     # Arreglado: uso de 'or' para corregir la condición lógica del rango
-    while reserva_num < 1 or reserva_num > len(reservas):
+    while reserva_num < 1 or reserva_num > len(reservar):
         print("Opción fuera de rango. Reingrese. ")
-        reserva_num = int(input(f"Seleccione un número entre 1 y {len(reservas)}: "))
+        reserva_num = int(input(f"Seleccione un número entre 1 y {len(reservar)}: "))
 
     indice = reserva_num - 1
-    nombre, dia, mes, año, hora, minuto, duracion = reservas[indice]
+    nombre, dia, mes, año, hora, minuto, duracion = reservar[indice]
     duracion, horaduracion = contar_duracion(duracion, hora)
 
     print("\n" + "=" * 44)
@@ -218,22 +235,23 @@ def cancelar_reserva(reservas):
     confirmacion_cancelar = input("¿Esta seguro de que desea cancelar esta reserva?, [Y / N]: ") 
 
     if confirmacion_cancelar in ["Y", "y", "yes", "Yes", "si", "Si"]:
-        reservas.pop(indice)
+        reservar.pop(indice)
         print("Reserva cancelada exitosamente.")
         input("\nPresione ENTER para continuar...")
 
-def modificar_reserva(reservas):
+def modificar_reserva(reservar):
+    """ Permite ver las reservas y modificar algun dato seleccionado de una, habiendo terminado la reserva previamente """
     print("\n--- RESERVAS EXISTENTES ---")
-    mostrar_lista_reservas(reservas)
+    mostrar_lista_reservas(reservar)
 
     reserva_num = int(input("\nSeleccione el número de la reserva que desea modificar: "))
 
-    while reserva_num < 1 or reserva_num > len(reservas):
+    while reserva_num < 1 or reserva_num > len(reservar):
         print("Opción fuera de rango. Reingrese.")
-        reserva_num = int(input(f"Seleccione un número entre 1 y {len(reservas)}: "))
+        reserva_num = int(input(f"Seleccione un número entre 1 y {len(reservar)}: "))
 
     indice = reserva_num - 1
-    nombre, dia, mes, año, hora, minuto, duracion = reservas[indice]
+    nombre, dia, mes, año, hora, minuto, duracion = reservar[indice]
     duracion, horaduracion = contar_duracion(duracion, hora)
 
     control = "N"
@@ -280,41 +298,6 @@ def modificar_reserva(reservas):
 
         control = input("\n¿Está conforme con los datos modificados? [Y / N]: ")
 
-    reservas[indice] = [nombre, dia, mes, año, hora, minuto, duracion]
+    reservar[indice] = [nombre, dia, mes, año, hora, minuto, duracion]
     print("\n¡La reserva fue actualizada exitosamente!")
     input("\nPresione ENTER para continuar...")
-
-def menu_reservas(estacionamientos, reservas):
-    print("\n" + "=" * 44)
-    print("-----------BIENVENIDO A RESERVAS-----------")
-    print("=" * 44)
-    print("------------MENU RESERVAS------------\n")
-
-    opcion = int(input("Seleccione la opcion que desea realizar. [1. Generar una reserva / 2. Consultar reservas / 3. Modificar reserva / 4. Cancelar una reserva / 0. Salir]: "))
-
-    if opcion == 1:
-        generar_reserva(estacionamientos, reservas)
-
-    elif opcion == 2:
-        if len(reservas) == 0:
-            print("\n---------------- !IMPORTANTE¡ ---------------- \n")
-            print("Debe cargarse una reserva previamente.\n")
-        else:
-            consultar_reservas(reservas)
-
-    elif opcion == 3:
-        if len(reservas) == 0:
-            print("\n---------------- !IMPORTANTE¡ ---------------- \n")
-            print("Debe cargarse una reserva previamente.\n")
-        else:
-            modificar_reserva(reservas)
-
-    elif opcion == 4:
-        if len(reservas) == 0:
-            print("\n---------------- !IMPORTANTE¡ ---------------- \n")
-            print("Debe cargarse una reserva previamente.\n")
-        else:
-            cancelar_reserva(reservas)
-
-    elif opcion == 0:
-        print("Saliendo del módulo de reservas.")

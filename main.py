@@ -86,12 +86,37 @@ def menu_principal():
                     elif op_sub == "2":
                         op_res = "-1"
                         while op_res != "0":
-                            print(f"\n--- RESERVAS ({nombre_actual}) ---")
-                            print("1. Crear reserva manual")
-                            print("0. Volver atrás")
+                            print(f"\n ------------ MENU RESERVAS ({nombre_actual}) ---")
+                            print("1. Generar una reserva. ")
+                            print("2. Consultar reservas. ")
+                            print("3. Modificar reserva. ")
+                            print("4. Cancelar una reserva.")
+                            print("0. Volver atrás.")
                             op_res = input("Opción: ")
+                            
                             if op_res == "1":
-                                reservas.menu_reservas(estacionamientos, reservar)
+                                reservas.generar_reserva(estacionamientos, reservar)
+
+                            elif op_res == "2":
+                                if len(reservar) == 0:
+                                    print("\n---------------- !IMPORTANTE¡ ---------------- \n")
+                                    print("Debe cargarse una reserva previamente.\n")
+                                else:
+                                    reservas.consultar_reservas(reservar)
+
+                            elif op_res == "3":
+                                if len(reservar) == 0:
+                                    print("\n---------------- !IMPORTANTE¡ ---------------- \n")
+                                    print("Debe cargarse una reserva previamente.\n")
+                                else:
+                                    reservas.modificar_reserva(reservar)
+
+                            elif op_res == "4":
+                                if len(reservar) == 0:
+                                    print("\n---------------- !IMPORTANTE¡ ---------------- \n")
+                                    print("Debe cargarse una reserva previamente.\n")
+                                else:
+                                    reservas.cancelar_reserva(reservar)
                     
                     # 3. USUARIOS Y VEHÍCULOS (Integrados)
                     elif op_sub == "3":
