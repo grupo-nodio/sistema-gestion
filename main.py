@@ -173,7 +173,7 @@ def menu_principal():
 
         # --- ESTADÍSTICAS GENERALES ---
         elif opcion_principal == "3":
-            reportes.mostrar_reportes(estacionamientos, tipos)
+            reportes.mostrar_reportes(estacionamientos, tipos, dnis, estados)
 
         # --- ELIMINAR ESTACIONAMIENTO ---
         elif opcion_principal == "4":
