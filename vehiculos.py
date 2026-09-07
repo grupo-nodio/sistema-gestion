@@ -52,6 +52,9 @@ def ingresar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo, lista_dniusu
     #DNI del usuario propietario del vehiculo
     dni_usuarios = input("Ingrese el DNI del usuario propietario del vehiculo: ")
     while dni_usuarios not in lista_dniusuarios:
+        if dni_usuarios == "0":
+            print("Operacion cancelada, volviendo al menu principal")
+            return
         print("el dni ingresado no existe, porfavor ingrese un dni valido")
         dni_usuarios = input("Ingrese el DNI del usuario propietario del vehiculo:")
 

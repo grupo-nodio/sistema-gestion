@@ -23,6 +23,7 @@ def capacidad_actual_disponible(estacionamientos):
     return reduce(lambda acumulador, i: acumulador + estacionamientos[4][i], indices_disponibles, 0)
 
 def reporte_vehiculos_por_tipo(lista_tipo):
+    "Muestra un reporte de la cantidad de vehículos registrados por tipo (moto, auto, camioneta), utilizando filter para contar cada tipo de vehículo."
     if len(lista_tipo) == 0:
         print("\nNo hay vehículos registrados.")
     else:
@@ -37,6 +38,8 @@ def reporte_vehiculos_por_tipo(lista_tipo):
         print("Cantidad de camionetas:", camionetas)
 
 def reporte_ocupacion_estacionamiento(lista_tipo):
+    "Muestra un reporte de la ocupación de estacionamientos por tipo de vehículo, utilizando filter para contar los tipos de vehículos.ç"
+    "Si el vehiculo es una camioneta, ocupa un espacio grande; si es un auto o moto, ocupa un espacio estándar."
     if len(lista_tipo) == 0:
         return
     else:
