@@ -200,7 +200,7 @@ def generar_reserva(sel, estacionamientos, reservar):
         reservar.append(reserva)
 
 def mostrar_lista_reservas(reservar):
-    """ Muestra únicamente las reservas sin forzar una llamada al menú. """
+    """ Muestra únicamente las reservas. """
     for i in range(len(reservar)):
         print(f"{i + 1}. Nombre: {reservar[i][0]} / dia: {escritura_digitos(reservar[i][1])} / mes: {escritura_digitos(reservar[i][2])} / año: {escritura_digitos(reservar[i][3])} / hora: {escritura_digitos(reservar[i][4])} / minuto: {escritura_digitos(reservar[i][5])} / duracion: {escritura_digitos(reservar[i][6])}hs.")
 
