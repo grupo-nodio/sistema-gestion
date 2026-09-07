@@ -182,17 +182,11 @@ def generar_reserva(estacionamientos, reservar):
             print(f"la reserva comenzara a las: {escritura_digitos(hora)} : {escritura_digitos(minuto)} hs y durara hasta las: {escritura_digitos(horaduracion)} : {escritura_digitos(minuto)} hs")
             control = input("\nVerifique si los datos tomados son los correctos [Y / N]: ")
 
-    nombre = input("Ingrese el nombre del titular de la reserva: ")
     if control in ["Y", "y", "yes", "Yes", "si", "Si"]:
 
-    capacidad_actual = estacionamientos[3][espacio]
-
-    # Validamos que no sea None y que tenga lugares disponibles
-    if capacidad_actual is not None and capacidad_actual > 0:
-        estacionamientos[3][espacio] -= 1
-
         nombre = input("Ingrese el nombre del titular de la reserva: ")
-        print(f"La reserva se efectuo correctamente bajo el nombre de {nombre} para la fecha {escritura_digitos(dia)}/{escritura_digitos(mes)}/{escritura_digitos(año)}, empezara a las {escritura_digitos(hora)}:{escritura_digitos(minuto)} hs y finalizara a las {escritura_digitos(horaduracion)}:{escritura_digitos(minuto)} hs")
+
+    print(f"La reserva se efectuo correctamente bajo el nombre de {nombre} para la fecha {escritura_digitos(dia)}/{escritura_digitos(mes)}/{escritura_digitos(año)}, empezara a las {escritura_digitos(hora)}:{escritura_digitos(minuto)} hs y finalizara a las {escritura_digitos(horaduracion)}:{escritura_digitos(minuto)} hs")
 
     reserva = [nombre, dia, mes, año, hora, minuto, duracion]
     reservar.append(reserva)
