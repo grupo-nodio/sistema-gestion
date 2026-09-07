@@ -32,6 +32,7 @@ def validar_tipodeauto():
         else:
             print("Tipo de vehículo inválido. Debe ser 'moto', 'auto' o 'camioneta'.")
 
+
 #INGRESAR UN VEHICULO
 def ingresar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo, lista_dniusuarios):
     print("Ingresar datos del vehiculo: ")
