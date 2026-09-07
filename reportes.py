@@ -1,8 +1,7 @@
 from functools import reduce
 
 def mostrar_reportes(estacionamientos, lista_tipo, lista_dni, lista_estado):
-    
-
+    '''Llama a todas las estadísticas'''
     # Rango de índices válidos (omitiendo la cabecera/índice 0)
     indices = range(1, len(estacionamientos[0]))
     
@@ -21,6 +20,7 @@ def mostrar_reportes(estacionamientos, lista_tipo, lista_dni, lista_estado):
     reporte_usuarios_por_estado(lista_dni, lista_estado)
 
 def capacidad_actual_disponible(estacionamientos):
+    '''Muestra la capacidad actual sin reservar en total entre todos los estacionamientos que se encuentren disponibles.'''
     indices = range(1, len(estacionamientos[0]))
     indices_disponibles = filter(lambda i: estacionamientos[1][i] == 1, indices)
     return reduce(lambda acumulador, i: acumulador + estacionamientos[4][i], indices_disponibles, 0)
