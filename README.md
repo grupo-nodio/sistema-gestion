@@ -1,5 +1,3 @@
-Aquí tienes el archivo `README.md` actualizado para reflejar de forma exacta la arquitectura, las validaciones y el flujo de trabajo real que tiene tu código ahora:
-
 ---
 
 # 🅿️ Park Direct
