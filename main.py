@@ -95,7 +95,8 @@ def menu_principal():
                             op_res = input("Opción: ")
                             
                             if op_res == "1":
-                                reservas.generar_reserva(estacionamientos, reservar)
+                                # Se agregó 'sel' como parámetro
+                                reservas.generar_reserva(sel, estacionamientos, reservar)
 
                             elif op_res == "2":
                                 if len(reservar) == 0:
@@ -116,7 +117,8 @@ def menu_principal():
                                     print("\n---------------- !IMPORTANTE¡ ---------------- \n")
                                     print("Debe cargarse una reserva previamente.\n")
                                 else:
-                                    reservas.cancelar_reserva(reservar)
+                                    # Se agregó 'sel' como parámetro
+                                    reservas.cancelar_reserva(sel, estacionamientos, reservar)
                     
                     # 3. USUARIOS Y VEHÍCULOS (Integrados)
                     elif op_sub == "3":
@@ -141,7 +143,6 @@ def menu_principal():
                             elif op_usu == "3":
                                 usuarios.modificar_usuario(nombres, apellidos, dnis, emails, telefonos, estados)
                             elif op_usu == "4":
-                                # Acá se ve la conexión: el vehículo pide un DNI que debe existir en usuarios
                                 vehiculos.ingresar_vehiculo(patentes, tipos, dni_vehiculos, dnis)
                             elif op_usu == "5":
                                 vehiculos.mostrar_vehiculos(patentes, tipos, dni_vehiculos)
@@ -156,7 +157,6 @@ def menu_principal():
                     elif op_sub == "4":
                         print(f"\n[ Módulo Tarifas para {nombre_actual} ]")
                         
-                        # Inyectamos las listas de forma global en el módulo de tarifas
                         tarifas.lista_patente = patentes
                         tarifas.lista_tipo = tipos
                         
@@ -173,11 +173,10 @@ def menu_principal():
 
         # --- ESTADÍSTICAS GENERALES ---
         elif opcion_principal == "3":
-            reportes.mostrar_reportes(estacionamientos, tipos)
+            reportes.mostrar_reportes(estacionamientos, tipos, dnis, estados)
 
         # --- ELIMINAR ESTACIONAMIENTO ---
         elif opcion_principal == "4":
-            # Como los usuarios son globales, solo llamamos a la función de borrado sin afectar a las personas
             estacionamiento.eliminar_estacionamiento(estacionamientos, horarios)
 
         # --- SALIR ---

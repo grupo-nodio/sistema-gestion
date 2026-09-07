@@ -94,16 +94,12 @@ def validar_cierre(apertura, cierre):
 
 # Se usa en crear_nombre 
 def validar_nombre(nombre):
-    '''valida que el nombre ingresado contenga al menos una letra (se permiten números)'''
-    # patron explicado:
-    # (?=.*[a-zA-ZáéíóúÁÉÍÓÚñÑ]) : Condición obligatoria (debe haber al menos una letra)
-    # [a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s]+ : Los caracteres permitidos (letras, números y espacios)
-    # $ : Fin de la cadena
-
-    patron = r"^(?=.*[a-zA-ZáéíóúÁÉÍÓÚñÑ])[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s]+$"
+    '''Valida que el nombre use caracteres permitidos y no sea exclusivamente numérico.'''
+    patron = r"^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$"
     
-    while not re.match(patron, nombre):
-        nombre = input("Error, el nombre debe contener al menos una letra (no solo números). Ingrese nuevamente: ")
+    # Validamos: que coincida con el patrón Y que el string no esté compuesto solo por números
+    while not (re.match(patron, nombre) and not nombre.isdigit()):
+        nombre = input("Error, el nombre debe contener al menos una letra y no tener símbolos. Ingrese nuevamente: ")
 
     return nombre
 
@@ -243,6 +239,7 @@ def elegir_estacionamiento(estacionamientos):
     return seleccion
 
 def ver_estado(seleccion, estacionamientos):
+    '''Devuelve en forma de string el estado del estacionamiento.'''
     estado = estacionamientos[1][seleccion]
 
     posibilidades = ["disponible", "ocupado", "fuera de servicio"]
@@ -262,6 +259,7 @@ def ver_horario(seleccion, horarios):
     print("Domingo:", mostrar_horario(horarios[seleccion][6]))
 
 def mostrar_horario(horario):
+    '''Devuelve en forma de string el horario del estacionamiento'''
     if horario is True:
         return "24 horas"
 
@@ -326,6 +324,7 @@ def edit_direccion(seleccion, estacionamientos):
     print("Modificación realizada. La nueva dirección es: " + str(estacionamientos[2][seleccion]))
 
 def edit_espacios(seleccion, estacionamientos):
+    '''Permite editar la capacidad total o la disponible. Si la nueva cantidad de espacios totales es menor que la cantidad de espacios disponibles, se actualiza la disponibilidad para que coincida con el nuevo total.'''
     print("="*60)
     print("1. Espacio total")
     print("2. Espacio disponible")
@@ -457,6 +456,7 @@ def eliminar_estacionamiento(estacionamientos, horarios):
         del estacionamientos[1][sel]
         del estacionamientos[2][sel]
         del estacionamientos[3][sel]
+        del estacionamientos[4][sel]
         del horarios[sel]
         print(f"Estacionamiento '{nombre_a_borrar}' eliminado correctamente del sistema.")
         return sel # Le avisa al main qué índice se borró

@@ -1,6 +1,7 @@
 from functools import reduce
 
-def mostrar_reportes(estacionamientos, lista_tipo):
+def mostrar_reportes(estacionamientos, lista_tipo, lista_dni, lista_estado):
+    '''Llama a todas las estadísticas'''
     # Rango de índices válidos (omitiendo la cabecera/índice 0)
     indices = range(1, len(estacionamientos[0]))
     
@@ -16,8 +17,10 @@ def mostrar_reportes(estacionamientos, lista_tipo):
     # Llamamos a las sub-funciones de reportes
     reporte_vehiculos_por_tipo(lista_tipo)
     reporte_ocupacion_estacionamiento(lista_tipo)
+    reporte_usuarios_por_estado(lista_dni, lista_estado)
 
 def capacidad_actual_disponible(estacionamientos):
+    '''Muestra la capacidad actual sin reservar en total entre todos los estacionamientos que se encuentren disponibles.'''
     indices = range(1, len(estacionamientos[0]))
     indices_disponibles = filter(lambda i: estacionamientos[1][i] == 1, indices)
     return reduce(lambda acumulador, i: acumulador + estacionamientos[4][i], indices_disponibles, 0)
@@ -49,3 +52,33 @@ def reporte_ocupacion_estacionamiento(lista_tipo):
         print("\nLOGÍSTICA DE ESPACIOS OCUPADOS:")
         print("Cantidad de espacios grandes ocupados (camionetas):", espacios_grandes)
         print("Cantidad de espacios estándar ocupados (autos y motos):", espacios_estandar)
+
+
+def reporte_usuarios_por_estado(lista_dni, lista_estado):
+    """
+    Reporte de usuarios dados de alta y dados de baja.
+    """
+    if len(lista_dni) >= len(lista_estado):
+        total_usuarios = len(lista_dni)
+    else:
+        total_usuarios = len(lista_estado)
+
+    if total_usuarios == 0:
+        print("\nUSUARIOS REGISTRADOS:")
+        print("Usuarios dados de alta: 0")
+        print("Usuarios dados de baja: 0")
+        return
+
+    usuarios_activos = 0
+    usuarios_baja = 0
+
+    for estado in lista_estado:
+        if estado == "A":
+            usuarios_activos += 1
+        elif estado == "B":
+            usuarios_baja += 1
+
+    print("\nUSUARIOS REGISTRADOS:")
+    print("Usuarios dados de alta:", usuarios_activos)
+    print("Usuarios dados de baja:", usuarios_baja)
+    print("Total de usuarios registrados:", total_usuarios)
