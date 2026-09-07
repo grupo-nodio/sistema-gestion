@@ -3,6 +3,16 @@ from reservas import escritura_digitos
 
 def mostrar_reportes(estacionamientos, lista_tipo, lista_dni, lista_estado, lista_cobros):
     '''Llama a todas las estadísticas'''
+    # funciones de estacionamiento
+    reporte_estacionamiento(estacionamientos)
+    
+    # funciones de reportes
+    reporte_vehiculos_por_tipo(lista_tipo)
+    reporte_ocupacion_estacionamiento(lista_tipo)
+    reporte_usuarios_por_estado(lista_dni, lista_estado)
+
+def reporte_estacionamiento(estacionamientos):
+    '''Muestra en pantalla estacionamientos registardos, disponibles, no disponibles, capacidad actual disponible total'''
     # Rango de índices válidos (omitiendo la cabecera/índice 0)
     indices = range(1, len(estacionamientos[0]))
     
@@ -14,12 +24,15 @@ def mostrar_reportes(estacionamientos, lista_tipo, lista_dni, lista_estado, list
     print("Estacionamientos disponibles:", disponibles)
     print("Estacionamientos no disponibles:", (len(estacionamientos[0]) - 1) - disponibles)
     print("Capacidad actual disponible (todos los estacionamientos):", capacidad_actual_disponible(estacionamientos))
+<<<<<<< HEAD
     
     # Llamamos a las sub-funciones de reportes
     reporte_vehiculos_por_tipo(lista_tipo)
     reporte_ocupacion_estacionamiento(lista_tipo)
     reporte_usuarios_por_estado(lista_dni, lista_estado)
     reporte_recaudacion(lista_cobros)
+=======
+>>>>>>> 73e83b47dacacc18160ef0b3e5440b2e09015da7
 
 def capacidad_actual_disponible(estacionamientos):
     '''Muestra la capacidad actual sin reservar en total entre todos los estacionamientos que se encuentren disponibles.'''
