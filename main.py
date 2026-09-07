@@ -1,5 +1,3 @@
-<<<<<<< Updated upstream
-=======
 import estacionamiento
 import tarifas
 import reservas
@@ -159,4 +157,3 @@ def menu_principal():
             print("\nCerrando sesión de administrador. ¡Hasta luego!")
 
 menu_principal()
->>>>>>> Stashed changes
