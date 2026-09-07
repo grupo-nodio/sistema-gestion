@@ -125,8 +125,14 @@ def escribir_horario():
 
     return hora, minuto
 
-def generar_reserva(estacionamientos, reservar):
+def generar_reserva(sel, estacionamientos, reservar):
     ''' Permite generar una reserva tomando datos como, la fecha, el horario, la duracion, y el nombre del titular de la reserva '''
+    
+    # 1. VERIFICACIÓN: Comprobar si hay espacio antes de pedir los datos
+    if estacionamientos[4][sel] <= 0:
+        print("\nNo hay espacios disponibles en este estacionamiento.")
+        return
+
     print("\n" + "=" * 44)
     print("\n GENERANDO RESERVA \n")
     print("=" * 44)
@@ -182,20 +188,16 @@ def generar_reserva(estacionamientos, reservar):
             print(f"la reserva comenzara a las: {escritura_digitos(hora)} : {escritura_digitos(minuto)} hs y durara hasta las: {escritura_digitos(horaduracion)} : {escritura_digitos(minuto)} hs")
             control = input("\nVerifique si los datos tomados son los correctos [Y / N]: ")
 
-    nombre = input("Ingrese el nombre del titular de la reserva: ")
     if control in ["Y", "y", "yes", "Yes", "si", "Si"]:
-
-    capacidad_actual = estacionamientos[3][espacio]
-
-    # Validamos que no sea None y que tenga lugares disponibles
-    if capacidad_actual is not None and capacidad_actual > 0:
-        estacionamientos[3][espacio] -= 1
-
         nombre = input("Ingrese el nombre del titular de la reserva: ")
+        
+        # 2. REDUCCIÓN DE CAPACIDAD: Restamos 1 al espacio disponible actual (índice 4)
+        estacionamientos[4][sel] -= 1
+        
         print(f"La reserva se efectuo correctamente bajo el nombre de {nombre} para la fecha {escritura_digitos(dia)}/{escritura_digitos(mes)}/{escritura_digitos(año)}, empezara a las {escritura_digitos(hora)}:{escritura_digitos(minuto)} hs y finalizara a las {escritura_digitos(horaduracion)}:{escritura_digitos(minuto)} hs")
 
-    reserva = [nombre, dia, mes, año, hora, minuto, duracion]
-    reservar.append(reserva)
+        reserva = [nombre, dia, mes, año, hora, minuto, duracion]
+        reservar.append(reserva)
 
 def mostrar_lista_reservas(reservar):
     """ Muestra únicamente las reservas sin forzar una llamada al menú. """
@@ -210,14 +212,13 @@ def consultar_reservas(reservar):
     mostrar_lista_reservas(reservar)
     input("\nPresione ENTER para volver...")
 
-def cancelar_reserva(reservar):
+def cancelar_reserva(sel, estacionamientos, reservar):
     ''' Permite ver las reservas hechas y cancelar la reserva seleccionada '''
     print("\n--- RESERVAS EXISTENTES ---")
     mostrar_lista_reservas(reservar)
     
     reserva_num = int(input("\nSeleccione el número de la reserva que desea cancelar: "))
 
-    # Arreglado: uso de 'or' para corregir la condición lógica del rango
     while reserva_num < 1 or reserva_num > len(reservar):
         print("Opción fuera de rango. Reingrese. ")
         reserva_num = int(input(f"Seleccione un número entre 1 y {len(reservar)}: "))
@@ -236,6 +237,11 @@ def cancelar_reserva(reservar):
 
     if confirmacion_cancelar in ["Y", "y", "yes", "Yes", "si", "Si"]:
         reservar.pop(indice)
+        
+        # Se verifica que al devolver el espacio no se supere la capacidad total (índice 3)
+        if estacionamientos[4][sel] < estacionamientos[3][sel]:
+            estacionamientos[4][sel] += 1
+            
         print("Reserva cancelada exitosamente.")
         input("\nPresione ENTER para continuar...")
 
