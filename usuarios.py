@@ -79,10 +79,10 @@ def alta(lst_nombre,lst_apellido,lst_dni,lst_email,lst_telefono,lst_estado):
         email_1 = input("Ingrese eMail nuevamente: ")
 
 
-    telefono_1=input("Ingrese telefono (SIN CODIGO DE AREA, EJEMPLO 1167676767):")
-    #Verificacion telefono
-    while not re.match(r"^\d{10}$", telefono_1):
-        print("El telefono tiene que tener exactamente 10 digitos.")
+    telefono_1=input("Ingrese telefono (prefijo 11 o 15 + 8 dígitos, ej. 1112345678):")
+    #Verificacion telefono: debe comenzar con 11 o 15 seguido de 8 dígitos
+    while not re.match(r"^(?:11|15)\d{8}$", telefono_1):
+        print("Teléfono inválido. Debe comenzar con '11' o '15' seguido de 8 dígitos (ej. 1112345678).")
         telefono_1=input("Ingrese telefono:")
 
     estado="A"
@@ -139,7 +139,11 @@ def baja_usuarios(lst_dni,lst_estado):
         lineas()
         return
             
-    baja_dni=input("Ingrese el dni del usuario para darlo de baja:")
+    baja_dni=input("Ingrese el dni del usuario para darlo de baja o -1 para salir:")
+    if baja_dni == "-1":
+        print("Operación cancelada.")
+        lineas()
+        return
     while not re.match(r"^\d{8}$", baja_dni):
         print("DNI INVALIDO, TIENE QUE TENER EXACTAMENTE 8 CARACTERES.")
         baja_dni=input("Ingrese el dni del usuario para darlo de baja:")
@@ -152,15 +156,19 @@ def baja_usuarios(lst_dni,lst_estado):
 
     if encontrado==True:
         seguro=input("Esta seguro de darlo de baja? (y/n):")
-        if seguro == "y":
+        while seguro.lower() != "y" and seguro.lower() != "n":
+            print("Opcion invalida, ingrese 'y' para confirmar o 'n' para cancelar.")
+            seguro=input("Esta seguro de darlo de baja? (y/n):")
 
+        if seguro.lower() == "y":
+    
             lst_estado[posicion] = "B"
         
             print("--USUARIO DADO DE BAJA--")
             lineas()
             return lst_estado
         else:
-            print("--OPERACION CANCELADA--")
+            print("\n--OPERACION CANCELADA--")
             lineas()
             return
     else:
@@ -182,7 +190,12 @@ def modificar_usuario(lst_nombre,lst_apellido,lst_dni,lst_mail,lst_telefono,lst_
         lineas()
         return
 
-    dni_buscar=input("Ingrese el DNI a buscar:")
+    dni_buscar=input("Ingrese el DNI a buscar o -1 para salir:")
+    if dni_buscar == "-1":
+        print("Operación cancelada.")
+        lineas()
+        return
+    
     while not re.match(r"^\d{8}$", dni_buscar):
         print("DNI INVALIDO, TIENE QUE TENER EXACTAMENTE 8 CARACTERES.")
         dni_buscar=input("Ingrese el DNI a buscar:")
@@ -215,9 +228,9 @@ def modificar_usuario(lst_nombre,lst_apellido,lst_dni,lst_mail,lst_telefono,lst_
             nuevo_email = input("Ingrese eMail nuevamente: ")
 
         # se verifica nuevo telefono
-        nuevo_telefono=input("Ingrese el nuevo teléfono: ")
-        while not re.match(r"^\d{10}$", nuevo_telefono):
-            print("El telefono tiene que tener exactamente 10 digitos.")
+        nuevo_telefono=input("Ingrese el nuevo teléfono (ej 11 o 15 + 8 dígitos): ")
+        while not re.match(r"^(?:11|15)\d{8}$", nuevo_telefono):
+            print("Teléfono inválido. Debe comenzar con '11' o '15' seguido de 8 dígitos.")
             nuevo_telefono=input("Ingrese telefono:")
         
 
@@ -236,45 +249,56 @@ def modificar_usuario(lst_nombre,lst_apellido,lst_dni,lst_mail,lst_telefono,lst_
 
         print("\n-- USUARIO MODIFICADO CON ÉXITO --")
     else:
-        print("No se encontró un usuario activo con ese DNI.")
+        print("\nNo se encontró un usuario activo con ese DNI.")
 
 def quitar_baja(lst_nombre,lst_apellido,lst_dni,lst_mail,lst_telefono,lst_estado):
-    """Reactiva a un usuario previamente dado de baja en el sistema.
+    """
+    Reactiva a un usuario previamente dado de baja en el sistema.
 
     
     Muestra la lista de usuarios dados de baja ('B'), solicita el DNI del
     usuario a reactivar y cambia su estado a activo ('A') para evitar
     volver a cargarlo desde cero.
 
-    Retorna:
-        list: La lista 'lst_estado' actualizada, o None si el DNI no existe.
     """
+    if not lst_dni:
+        print("No hay usuarios registrados.")
+        lineas()
+        return
 
+    if "B" not in lst_estado:
+        print("No hay usuarios dados de baja.")
+        lineas()
+        return
 
+    
+    print("USUARIOS DADOS DE BAJA:")
     for i in range(len(lst_dni)):
         if lst_estado[i]=="B":
             print("Nombre:", lst_nombre[i], "Apellido:", lst_apellido[i], "DNI:", lst_dni[i], "Mail:", lst_mail[i], "Telefono:", lst_telefono[i], "Estado:", lst_estado[i])
-            lineas()
-        else:
-            print("No hay usuarios dados de baja")
-            lineas()
 
-    dni_usuario=input("Ingrese el dni para dar nuevamente de alta:")
-    while not re.match(r"^\d{8}$", dni_usuario):
-        print("DNI INVALIDO, TIENE QUE TENER EXACTAMENTE 8 CARACTERES.")
-        dni_usuario=input("Ingrese el dni para dar nuevamente de alta:")
-
-    posicion = -1
-    for i in range(len(lst_dni)):
-        if lst_dni[i] == dni_usuario:
-            posicion = i
-
-    if posicion != -1:  
-        lst_estado[posicion] = "A"
-        print("USUARIO DADO DE ALTA NUEVAMENTE")
-        lineas()
-        return lst_estado
-    else:
-            print("No se encontro ningun usuario con ese DNI")
+    while True:
+            dni_usuario = input("Ingrese el dni para dar nuevamente de alta o -1 para salir:")
+            if dni_usuario == "-1":
+                print("Operación cancelada.")
+                lineas()
+                return
+    
+            if re.match(r"^\d{8}$", dni_usuario):
+                posicion = -1
+                for i in range(len(lst_dni)):
+                    if lst_dni[i] == dni_usuario:
+                        posicion = i
+    
+                if posicion != -1:  
+                    lst_estado[posicion] = "A"
+                    print("\nUSUARIO DADO DE ALTA NUEVAMENTE")
+                    lineas()
+                    return lst_estado
+                else:
+                    print("\nNo se encontro ningun usuario con ese DNI dado de baja.")
+                    lineas()
+                    return
+            
+            print("\nDNI INVALIDO, TIENE QUE TENER EXACTAMENTE 8 CARACTERES.")
             lineas()
-            return

@@ -1,25 +1,81 @@
-'''
-1. Reportes de Usuarios (Marketing y Fidelización)
-    Generador de Mailing (Marketing): Un reporte que extraiga únicamente los correos electrónicos de los usuarios que están Activos ("A"). Sirve para enviarles promociones.
-    Concepto a usar: Comprensión de listas con condición o filter() + map().  Ejemplo: emails_activos = [lst_email[i] for i in range(len(lst_dni)) if lst_estado[i] == "A"].  
+from functools import reduce
+
+def mostrar_reportes(estacionamientos, lista_tipo, lista_dni, lista_estado):
     
-    Tasa de Retención (Auditoría): Calcular qué porcentaje de los usuarios registrados históricos siguen activos versus los que se dieron de baja.
-    Concepto a usar: reduce() para contar y una simple regla de tres.  
+
+    # Rango de índices válidos (omitiendo la cabecera/índice 0)
+    indices = range(1, len(estacionamientos[0]))
     
-2. Reportes de Vehículos (Logística de Espacios)
-    Análisis de Flota por Tipo: Contar cuántos vehículos de cada tipo (Auto, Moto, Camioneta) hay registrados. Esto le sirve al dueño para saber si necesita pintar más espacios chicos para motos o espacios grandes para camionetas.
-    Concepto a usar: filter() y len(). Por ejemplo, filtrar la lista de tipos donde el elemento coincida (sin distinguir mayúsculas) con la palabra "Moto" y medir el largo de la lista resultante.  
+    # Obtenemos la cantidad de estacionamientos disponibles con filter
+    disponibles = len(list(filter(lambda i: estacionamientos[1][i] == 1, indices)))
     
-    Buscador Rápido por Patente: Un reporte donde el administrador escriba los primeros 3 números o letras de una patente y el sistema devuelva todos los vehículos que coincidan.
-    Concepto a usar: re.search() o re.match() para verificar coincidencias parciales de cadenas dentro de un bucle o un filter().  
+    print("\nESTADÍSTICAS DE ESTACIONAMIENTOS:")
+    print("Estacionamientos registrados:", len(estacionamientos[0]) - 1)
+    print("Estacionamientos disponibles:", disponibles)
+    print("Estacionamientos no disponibles:", (len(estacionamientos[0]) - 1) - disponibles)
+    print("Capacidad actual disponible (todos los estacionamientos):", capacidad_actual_disponible(estacionamientos))
     
-3. Reportes Avanzados de Datos (Limpieza y Regex)
-    Auditoría de Procedencia por Teléfono: Agrupar a los usuarios según su código de área telefónico (por ejemplo, los que empiezan con "11" de Buenos Aires u otros prefijos). Sirve para saber de dónde vienen tus clientes.
-    Concepto a usar: Expresiones regulares (re.match(r"^11\d{8}$", telefono)) combinadas con un filtro.  
-    
-    Análisis de Dominios de Email: Extraer qué plataformas de correo usan más tus clientes (gmail.com, hotmail.com, etc.).
-    Concepto a usar: re.findall(r"@[\w.-]+", email) para capturar solo la parte del dominio y luego usar funciones de agregación (count()) para saber cuál es el más popular.  
-    
-¿Cómo estructurarlo?
-En tu archivo reportes.py, podrías crear un menú propio (usando match en lugar de if-elif) que se llame desde la opción de estadísticas del main.py. A este módulo simplemente le pasarías todas las listas por parámetro (reportes.menu_reportes(nombres, emails, estados, patentes, tipos)).  
-'''
+    # Llamamos a las sub-funciones de reportes
+    reporte_vehiculos_por_tipo(lista_tipo)
+    reporte_ocupacion_estacionamiento(lista_tipo)
+    reporte_usuarios_por_estado(lista_dni, lista_estado)
+
+def capacidad_actual_disponible(estacionamientos):
+    indices = range(1, len(estacionamientos[0]))
+    indices_disponibles = filter(lambda i: estacionamientos[1][i] == 1, indices)
+    return reduce(lambda acumulador, i: acumulador + estacionamientos[4][i], indices_disponibles, 0)
+
+def reporte_vehiculos_por_tipo(lista_tipo):
+    if len(lista_tipo) == 0:
+        print("\nNo hay vehículos registrados.")
+    else:
+        # Filtramos directamente comparando contra las opciones en mayúscula, minúscula y título
+        motos = len(list(filter(lambda x: x in ["moto", "Moto", "MOTO"], lista_tipo)))
+        autos = len(list(filter(lambda x: x in ["auto", "Auto", "AUTO"], lista_tipo)))
+        camionetas = len(list(filter(lambda x: x in ["camioneta", "Camioneta", "CAMIONETA"], lista_tipo)))
+
+        print("\nANÁLISIS DE VEHÍCULOS POR TIPO:")
+        print("Cantidad de motos:", motos)
+        print("Cantidad de autos:", autos)
+        print("Cantidad de camionetas:", camionetas)
+
+def reporte_ocupacion_estacionamiento(lista_tipo):
+    if len(lista_tipo) == 0:
+        return
+    else:
+        espacios_grandes = len(list(filter(lambda x: x in ["camioneta", "Camioneta", "CAMIONETA"], lista_tipo)))
+        espacios_estandar = len(list(filter(lambda x: x in ["auto", "Auto", "AUTO", "moto", "Moto", "MOTO"], lista_tipo)))
+
+        print("\nLOGÍSTICA DE ESPACIOS OCUPADOS:")
+        print("Cantidad de espacios grandes ocupados (camionetas):", espacios_grandes)
+        print("Cantidad de espacios estándar ocupados (autos y motos):", espacios_estandar)
+
+
+def reporte_usuarios_por_estado(lista_dni, lista_estado):
+    """
+    Reporte de usuarios dados de alta y dados de baja.
+    """
+    if len(lista_dni) >= len(lista_estado):
+        total_usuarios = len(lista_dni)
+    else:
+        total_usuarios = len(lista_estado)
+
+    if total_usuarios == 0:
+        print("\nUSUARIOS REGISTRADOS:")
+        print("Usuarios dados de alta: 0")
+        print("Usuarios dados de baja: 0")
+        return
+
+    usuarios_activos = 0
+    usuarios_baja = 0
+
+    for estado in lista_estado:
+        if estado == "A":
+            usuarios_activos += 1
+        elif estado == "B":
+            usuarios_baja += 1
+
+    print("\nUSUARIOS REGISTRADOS:")
+    print("Usuarios dados de alta:", usuarios_activos)
+    print("Usuarios dados de baja:", usuarios_baja)
+    print("Total de usuarios registrados:", total_usuarios)
