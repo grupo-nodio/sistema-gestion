@@ -62,11 +62,7 @@ def cobrar_estacionamiento(duracion, lista_patente, lista_tipo):
 
     print("\n------------- RESUMEN DE CUENTA -------------")
     print("Vehículo cobrado:", tipo_vehiculo, "Patente:", patente_cobro)
-<<<<<<< Updated upstream
     print("Costo base de la reserva (", duracion, "hs): $", costo)
-    print("TOTAL A PAGAR: $", total_pagar)
-=======
-    print("Costo de la reserva (", duracion, "hs): $", costo)
     print("TOTAL A PAGAR: $", total_pagar)
 
 def mostrar_cobros(lista_cobros, lista_patente_cobrada):
@@ -76,4 +72,3 @@ def mostrar_cobros(lista_cobros, lista_patente_cobrada):
     else:
         for i in range(len(lista_cobros)):
             print(f"Patente: {lista_patente_cobrada[i]} - Importe pagado: ${lista_cobros[i]}")
->>>>>>> Stashed changes
