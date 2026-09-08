@@ -9,8 +9,8 @@ def menu_principal():
     # --- INICIALIZACIÓN DE LA BASE DE DATOS EN MEMORIA ---
     
     # 1. Listas de Estacionamientos
-    estacionamientos = [[None], [None], [None], [None]] 
-    horarios = [None]
+    estacionamientos = [[None], [None], [None], [None], [None]] # Nombre, estado, direccion, capacidad total, capacidad actual
+    horarios = [None] # Cada lista(fila) es un día de la semana(7 fijas de Lunes a Domingo), la columna es cada estacionamiento: True = 24 horas, False = Cerrado, str = "00:00 - 12:30"
     
     # 2. Listas de Usuarios
     nombres = []
@@ -25,7 +25,11 @@ def menu_principal():
     tipos = []
     dni_vehiculos = []
 
-    # --- BUCLE DEL MENÚ PRINCIPAL (NIVEL 1) ---
+    # 4. Lista de reservas
+    reservar = []
+    reservas_canceladas = []
+
+    # --- BUCLE DEL MENÚ PRINCIPAL ---
     opcion_principal = "-1"
     
     while opcion_principal != "0":
@@ -34,18 +38,21 @@ def menu_principal():
         print("="*60)
         print("1. Seleccionar un estacionamiento existente")
         print("2. Crear un estacionamiento nuevo")
+        print("3. Ver estadísticas generales del sistema")
+        print("4. Eliminar un estacionamiento")
         print("0. Salir del sistema")
         print("="*60)
         
         opcion_principal = input("Seleccione una opción: ")
-        while opcion_principal not in ["0", "1", "2"]:
+        
+        while opcion_principal not in ["0", "1", "2", "3", "4"]:
             opcion_principal = input("Error: Opción inválida. Vuelva a seleccionar: ")
 
         # --- CREAR ESTACIONAMIENTO ---
         if opcion_principal == "2":
             estacionamiento.crear_estacionamiento(estacionamientos, horarios)
 
-        # --- SELECCIONAR ESTACIONAMIENTO (NIVEL 2 - SUBSISTEMAS) ---
+        # --- SELECCIONAR ESTACIONAMIENTO ---
         elif opcion_principal == "1":
             if len(estacionamientos[0]) > 1: 
                 # El administrador elige sobre qué estacionamiento va a trabajar
@@ -54,8 +61,8 @@ def menu_principal():
                 
                 op_sub = "-1"
                 while op_sub != "0":
-                    print("\n" + "="*40)
-                    print(f" ADMINISTRANDO: {nombre_actual.upper()}")
+                    print("\n" + "="*60)
+                    print(f" ADMINISTRANDO: {nombre_actual}")
                     print("="*60)
                     print("1. Ver / Modificar datos del estacionamiento")
                     print("2. Administrar Reservas")
@@ -80,12 +87,39 @@ def menu_principal():
                     elif op_sub == "2":
                         op_res = "-1"
                         while op_res != "0":
-                            print(f"\n--- RESERVAS ({nombre_actual}) ---")
-                            print("1. Crear reserva manual")
-                            print("0. Volver atrás")
+                            print(f"\n -------- MENU RESERVAS ({nombre_actual}) --------")
+                            print("1. Generar una reserva. ")
+                            print("2. Consultar reservas. ")
+                            print("3. Modificar reserva. ")
+                            print("4. Cancelar una reserva.")
+                            print("0. Volver atrás.")
                             op_res = input("Opción: ")
+                            
                             if op_res == "1":
-                                reservas.generar_reserva()
+                                # Se agregó 'sel' como parámetro
+                                reservas.generar_reserva(sel, estacionamientos, reservar)
+
+                            elif op_res == "2":
+                                if len(reservar) == 0:
+                                    print("\n---------------- !IMPORTANTE¡ ---------------- \n")
+                                    print("Debe cargarse una reserva previamente.\n")
+                                else:
+                                    reservas.consultar_reservas(reservar)
+
+                            elif op_res == "3":
+                                if len(reservar) == 0:
+                                    print("\n---------------- !IMPORTANTE¡ ---------------- \n")
+                                    print("Debe cargarse una reserva previamente.\n")
+                                else:
+                                    reservas.modificar_reserva(reservar, sel)
+
+                            elif op_res == "4":
+                                if len(reservar) == 0:
+                                    print("\n---------------- !IMPORTANTE¡ ---------------- \n")
+                                    print("Debe cargarse una reserva previamente.\n")
+                                else:
+                                    # Se agregó 'sel' como parámetro
+                                    reservas.cancelar_reserva(sel, estacionamientos, reservar, reservas_canceladas)
                     
                     # 3. USUARIOS Y VEHÍCULOS (Integrados)
                     elif op_sub == "3":
@@ -97,8 +131,9 @@ def menu_principal():
                             print("3. Modificar usuario")
                             print("4. Ingresar vehículo nuevo (Requiere DNI)")
                             print("5. Mostrar vehículos registrados")
-                            print("6. Dar de baja al usuario.")
+                            print("6. Dar de baja al usuario")
                             print("7. Reactivar usuario dado de baja")
+                            print("8. Eliminar vehículo")
                             print("0. Volver atrás")
                             op_usu = input("Opción: ")
                             
@@ -109,25 +144,41 @@ def menu_principal():
                             elif op_usu == "3":
                                 usuarios.modificar_usuario(nombres, apellidos, dnis, emails, telefonos, estados)
                             elif op_usu == "4":
-                                # Acá se ve la conexión: el vehículo pide un DNI que debe existir en usuarios
                                 vehiculos.ingresar_vehiculo(patentes, tipos, dni_vehiculos, dnis)
                             elif op_usu == "5":
                                 vehiculos.mostrar_vehiculos(patentes, tipos, dni_vehiculos)
-
-                            elif op_usu=="6":
-                                usuarios.baja_usuarios(dnis,estados)
-
-                            #Para dar de alta nuevamente a un usuario antiguo.    
-                            elif op_usu=="7":
-                                usuarios.quitar_baja(nombres,apellidos,dnis,emails,telefonos,estados)
+                            elif op_usu == "6":
+                                usuarios.baja_usuarios(dnis, estados)
+                            elif op_usu == "7":
+                                usuarios.quitar_baja(nombres, apellidos, dnis, emails, telefonos, estados)
+                            elif op_usu == "8":
+                                vehiculos.eliminar_vehiculo(patentes, tipos, dni_vehiculos)
                                 
                     # 4. TARIFAS Y COBROS
                     elif op_sub == "4":
-                        print(f"\n[ Módulo Tarifas para {nombre_actual} - En desarrollo ]")
-                        # Aquí podrás enlazar tus funciones de tarifas.py
+                        print(f"\n[ Módulo Tarifas para {nombre_actual} ]")
+                        
+                        tarifas.lista_patente = patentes
+                        tarifas.lista_tipo = tipos
+                        
+                        entrada_duracion = input("Ingrese la duración de la reserva a cobrar (en horas enteras): ")
+                        
+                        while not entrada_duracion.isdigit():
+                            entrada_duracion = input("Error, ingrese únicamente números para la duración: ")
+                             
+                        duracion = int(entrada_duracion)
+                        tarifas.cobrar_estacionamiento(duracion)
 
             else:
                 print("\nNo hay estacionamientos registrados en el sistema. Por favor, cree uno primero.")
+
+        # --- ESTADÍSTICAS GENERALES ---
+        elif opcion_principal == "3":
+            reportes.mostrar_reportes(estacionamientos, tipos, dnis, estados)
+
+        # --- ELIMINAR ESTACIONAMIENTO ---
+        elif opcion_principal == "4":
+            estacionamiento.eliminar_estacionamiento(estacionamientos, horarios)
 
         # --- SALIR ---
         elif opcion_principal == "0":
