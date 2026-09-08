@@ -29,10 +29,6 @@ def menu_principal():
     reservar = []
     reservas_canceladas = []
 
-    # 5. Lista de tarifas
-    lista_cobros = []
-    lista_patente_cobrada = []
-
     # --- BUCLE DEL MENÚ PRINCIPAL ---
     opcion_principal = "-1"
     
@@ -96,7 +92,6 @@ def menu_principal():
                             print("2. Consultar reservas. ")
                             print("3. Modificar reserva. ")
                             print("4. Cancelar una reserva.")
-                            print("5. ver reportes de estacionamientos")
                             print("0. Volver atrás.")
                             op_res = input("Opción: ")
                             
@@ -125,13 +120,6 @@ def menu_principal():
                                 else:
                                     # Se agregó 'sel' como parámetro
                                     reservas.cancelar_reserva(sel, estacionamientos, reservar, reservas_canceladas)
-
-                            elif op_res == "5":
-                                if len(reservar) == 0:
-                                    print("\n---------------- !IMPORTANTE¡ ---------------- \n")
-                                    print("Debe cargarse una reserva previamente.\n")
-                                else:
-                                    reportes.reporte_reservas(reservar, reservas_canceladas)
                     
                     # 3. USUARIOS Y VEHÍCULOS (Integrados)
                     elif op_sub == "3":
@@ -168,24 +156,25 @@ def menu_principal():
                                 
                     # 4. TARIFAS Y COBROS
                     elif op_sub == "4":
-                        op_tar = "-1"
-                        while op_tar != "0":
-                            print(f"\n--- TARIFAS Y COBROS ({nombre_actual}) ---")
-                            print("1. Cobrar estacionamiento")
-                            print("2. Mostrar historial de cobros")
-                            print("0. Volver atrás")
-                            op_tar = input("Opción: ")
-                            
-                            if op_tar == "1":
-                                tarifas.cobrar_estacionamiento(patentes, tipos, lista_cobros, lista_patente_cobrada)
-                            elif op_tar == "2":
-                                tarifas.mostrar_cobros(lista_cobros, lista_patente_cobrada)
+                        print(f"\n[ Módulo Tarifas para {nombre_actual} ]")
+                        
+                        tarifas.lista_patente = patentes
+                        tarifas.lista_tipo = tipos
+                        
+                        entrada_duracion = input("Ingrese la duración de la reserva a cobrar (en horas enteras): ")
+                        
+                        while not entrada_duracion.isdigit():
+                            entrada_duracion = input("Error, ingrese únicamente números para la duración: ")
+                             
+                        duracion = int(entrada_duracion)
+                        tarifas.cobrar_estacionamiento(duracion)
+
             else:
                 print("\nNo hay estacionamientos registrados en el sistema. Por favor, cree uno primero.")
 
         # --- ESTADÍSTICAS GENERALES ---
         elif opcion_principal == "3":
-            reportes.mostrar_reportes(estacionamientos, tipos, dnis, estados, reservar, reservas_canceladas, lista_cobros)
+            reportes.mostrar_reportes(estacionamientos, tipos, dnis, estados)
 
         # --- ELIMINAR ESTACIONAMIENTO ---
         elif opcion_principal == "4":
