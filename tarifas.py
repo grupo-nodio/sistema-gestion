@@ -2,11 +2,11 @@
 calcular = lambda horas, tarifa: horas * tarifa
 
 def calcular_costo(duracion, tipo_vehiculo):
-    if tipo_vehiculo == "moto":
+    if tipo_vehiculo in ["moto", "Moto", "MOTO"]:
         return calcular(duracion, 2500)
-    elif tipo_vehiculo == "auto":
+    elif tipo_vehiculo in ["auto", "Auto", "AUTO"]:
         return calcular(duracion, 4000)
-    elif tipo_vehiculo == "camioneta":
+    elif tipo_vehiculo in ["camioneta", "Camioneta", "CAMIONETA"]:
         return calcular(duracion, 6000)
 
 lista_cobros = []
@@ -52,7 +52,10 @@ def cobrar_estacionamiento(lista_patente, lista_tipo, lista_cobros, lista_patent
     
     print("Vehículo encontrado:", tipo_vehiculo, "con patente", patente_cobro)
 
-    duracion = int(input("Ingrese la duración de la reserva en horas: "))
+    duracion_str = input("Ingrese la duración de la reserva en horas: ")
+    while not duracion_str.isdigit():
+        duracion_str = input("Error, ingrese únicamente números. Duración en horas: ")
+    duracion = int(duracion_str)
 
     costo = calcular_costo(duracion, tipo_vehiculo)
     total_pagar = costo

@@ -166,7 +166,7 @@ def generar_reserva(sel, estacionamientos, reservar):
 
     if control not in ["Y", "y", "yes", "Yes", "si", "Si"]:
         while control not in ["Y", "y", "yes", "Yes", "si", "Si"]:
-            cambio = int(input(f"¿Cual de los siguientes datos desea modificar?, [1. {escritura_digitos(dia)} / 2. {escritura_digitos(mes)} / 3. {escritura_digitos(año)} / 4. {escritura_digitos(hora)} / 5. {escritura_digitos(minuto)} / 6. {duracion}]: "))
+            cambio = pedir_numero(f"¿Cual de los siguientes datos desea modificar?, [1. {escritura_digitos(dia)} / 2. {escritura_digitos(mes)} / 3. {escritura_digitos(año)} / 4. {escritura_digitos(hora)} / 5. {escritura_digitos(minuto)} / 6. {duracion}]: ")
 
             match cambio:
                 case 1:
@@ -280,14 +280,14 @@ def modificar_reserva(reservar, sel):
         print(f"Fecha: {escritura_digitos(dia)}-{escritura_digitos(mes)}-{escritura_digitos(año)}")
         print(f"Horario: {escritura_digitos(hora)}:{escritura_digitos(minuto)} hs a {escritura_digitos(horaduracion)}:{escritura_digitos(minuto)} hs (Duración: {duracion} hs)")
 
-        cambio = int(input("\n¿Qué dato desea modificar?\n"
+        cambio = pedir_numero("\n¿Qué dato desea modificar?\n"
                            f"[1. Nombre ({nombre}) / "
                            f"2. Día ({escritura_digitos(dia)}) / "
                            f"3. Mes ({escritura_digitos(mes)}) / "
                            f"4. Año ({escritura_digitos(año)}) / "
                            f"5. Hora ({escritura_digitos(hora)}) / "
                            f"6. Minuto ({escritura_digitos(minuto)}) / "
-                           f"7. Duración ({duracion})]: "))
+                           f"7. Duración ({duracion})]: ")
 
         match cambio:
             case 1:

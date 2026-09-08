@@ -29,6 +29,10 @@ def menu_principal():
     reservar = []
     reservas_canceladas = []
 
+    # 5. Lista de tarifas
+    lista_cobros = []
+    lista_patente_cobrada = []
+
     # --- BUCLE DEL MENÚ PRINCIPAL ---
     opcion_principal = "-1"
     
@@ -160,7 +164,7 @@ def menu_principal():
                             elif op_usu == "7":
                                 usuarios.quitar_baja(nombres, apellidos, dnis, emails, telefonos, estados)
                             elif op_usu == "8":
-                                vehiculos.eliminar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo, reservar)
+                                vehiculos.eliminar_vehiculo(patentes, tipos, dni_vehiculos)
                                 
                     # 4. TARIFAS Y COBROS
                     elif op_sub == "4":
@@ -181,7 +185,7 @@ def menu_principal():
 
         # --- ESTADÍSTICAS GENERALES ---
         elif opcion_principal == "3":
-            reportes.mostrar_reportes(estacionamientos, lista_tipo, lista_dni, lista_estado, reservar, reservas_canceladas, lista_cobros)
+            reportes.mostrar_reportes(estacionamientos, tipos, dnis, estados, reservar, reservas_canceladas, lista_cobros)
 
         # --- ELIMINAR ESTACIONAMIENTO ---
         elif opcion_principal == "4":
