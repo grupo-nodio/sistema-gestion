@@ -438,15 +438,16 @@ def eliminar_estacionamiento(estacionamientos, horarios):
     '''Permite eliminar un estacionamiento de la matriz y sus horarios, exigiendo un código de seguridad.'''
     mostrar_estacionamientos(estacionamientos)
     
-    if len(estacionamientos[0]) <= 1:
-        print("No hay estacionamientos registrados para eliminar.")
+    indices = range(1, len(estacionamientos[0])) 
+    activos = list(filter(lambda i: estacionamientos[0][i] != "ELIMINADO", indices))
+    
+    if len(activos) == 0:
+        print("No hay estacionamientos activos registrados para eliminar.")
         return None
 
     sel = pedir_numero("Seleccione el número del estacionamiento que desea eliminar: ")
     
-    while sel < 1 or sel >= len(estacionamientos[0]):
-        print("Opción no válida.")
-        sel = pedir_numero("Seleccione un estacionamiento válido: ")
+    sel = validar_seleccion(sel, estacionamientos)
 
     nombre_a_borrar = estacionamientos[0][sel]
     print(f"\n¡ADVERTENCIA! Está a punto de eliminar el estacionamiento: '{nombre_a_borrar}'")

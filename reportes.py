@@ -29,6 +29,8 @@ def capacidad_actual_disponible(estacionamientos):
 
 def reporte_vehiculos_por_tipo(lista_tipo):
     """Muestra un reporte de la cantidad de vehículos registrados por tipo (moto, auto, camioneta), utilizando filter para contar cada tipo de vehículo."""
+    print("\nANÁLISIS DE VEHÍCULOS POR TIPO:")
+
     if len(lista_tipo) == 0:
         print("\nNo hay vehículos registrados.")
     else:
@@ -36,7 +38,6 @@ def reporte_vehiculos_por_tipo(lista_tipo):
         autos = len(list(filter(lambda x: x in ["auto", "Auto", "AUTO"], lista_tipo)))
         camionetas = len(list(filter(lambda x: x in ["camioneta", "Camioneta", "CAMIONETA"], lista_tipo)))
 
-        print("\nANÁLISIS DE VEHÍCULOS POR TIPO:")
         print("Cantidad de motos:", motos)
         print("Cantidad de autos:", autos)
         print("Cantidad de camionetas:", camionetas)
@@ -46,30 +47,26 @@ def reporte_ocupacion_estacionamiento(lista_tipo):
     Muestra un reporte de la ocupación de estacionamientos por tipo de vehículo, utilizando filter para contar los tipos de vehículos.
     Si el vehículo es una camioneta, ocupa un espacio grande; si es un auto o moto, ocupa un espacio estándar.
     """
+    print("\nLOGÍSTICA DE ESPACIOS OCUPADOS:")
     if len(lista_tipo) == 0:
         return
     else:
         espacios_grandes = len(list(filter(lambda x: x in ["camioneta", "Camioneta", "CAMIONETA"], lista_tipo)))
         espacios_estandar = len(list(filter(lambda x: x in ["auto", "Auto", "AUTO", "moto", "Moto", "MOTO"], lista_tipo)))
 
-        print("\nLOGÍSTICA DE ESPACIOS OCUPADOS:")
         print("Cantidad de espacios grandes ocupados (camionetas):", espacios_grandes)
         print("Cantidad de espacios estándar ocupados (autos y motos):", espacios_estandar)
 
 def reporte_reservas(reservar, reservas_canceladas):
     """ Muestra únicamente las reservas realizadas y canceladas. """
-    print("\n" + "=" * 44)
     print("\n REPORTE DE RESERVAS REALIZADAS \n")
-    print("=" * 44)
 
     for i in range(len(reservar)):
         print(f"{i + 1}. Nombre: {reservar[i][0]} / dia: {escritura_digitos(reservar[i][1])} / mes: {escritura_digitos(reservar[i][2])} / año: {escritura_digitos(reservar[i][3])} / hora: {escritura_digitos(reservar[i][4])} / minuto: {escritura_digitos(reservar[i][5])} / duracion: {escritura_digitos(reservar[i][6])}hs / estacionamiento: {escritura_digitos(reservar[i][7])}.")
 
     print(f"Cantidad de reservas realizadas con éxito: {len(reservar)}")
 
-    print("\n" + "=" * 44)
     print("\n REPORTE DE RESERVAS CANCELADAS \n")
-    print("=" * 44)
 
     if len(reservas_canceladas) > 0:
         for i in range(len(reservas_canceladas)):
