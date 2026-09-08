@@ -13,7 +13,7 @@ lista_cobros = []
 lista_patente_cobrada = []
 
 
-def cobrar_estacionamiento(duracion, lista_patente, lista_tipo):
+def cobrar_estacionamiento(lista_patente, lista_tipo, lista_cobros, lista_patente_cobrada):
 
     """Objetivo: Cobrar el estacionamiento de un vehículo según su tipo y duración de la reserva.
     Parámetros: duracion de la reserva en horas, y las listas de vehículos.
@@ -51,6 +51,8 @@ def cobrar_estacionamiento(duracion, lista_patente, lista_tipo):
     tipo_vehiculo = lista_tipo[posicion]
     
     print("Vehículo encontrado:", tipo_vehiculo, "con patente", patente_cobro)
+
+    duracion = int(input("Ingrese la duración de la reserva en horas: "))
 
     costo = calcular_costo(duracion, tipo_vehiculo)
     total_pagar = costo
