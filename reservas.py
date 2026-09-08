@@ -1,5 +1,14 @@
 import re
 
+def pedir_numero(A):
+    valor = input(A)
+
+    while not re.match(r"^\d+$", valor):
+        print("Valor ingresado invalido. ")
+        valor = input("Ingrese unicamente valores numericos: ")
+
+    return int(valor)
+
 def escritura_digitos(A):
     ''' Agrega un 0 por delante a los valores numericos inferiores a 10 '''
     if A < 10:
@@ -43,12 +52,15 @@ def validar_fecha(dia, mes, año):
             if dia == 0:
                 print("La fecha ingresada es errónea. Por favor, reingrese el día correspondiente.")
                 dia = int(input("Ingrese el día de la reserva: "))
+                dia = pedir_numero(dia)
             elif mes == 0:
                 print("La fecha ingresada es errónea. Por favor, reingrese el mes correspondiente.")
                 mes = int(input("Ingrese el mes de la reserva: "))
+                mes = pedir_numero(mes)
             elif año == 0:
                 print("La fecha ingresada es errónea. Por favor, reingrese el año correspondiente.")
                 año = int(input("Ingrese el año de la reserva: "))
+                año = pedir_numero(año)
 
     return dia, mes, año
 
@@ -69,15 +81,19 @@ def validar_hora(hora, minuto):
             if hora == 0:
                 print("La hora ingresada es errónea. Por favor, reingrese la hora en el formato especificado.")
                 hora = int(input("Ingrese la hora de la reserva (formato de 24 horas): "))
+                hora = pedir_numero(hora)
             elif minuto == 1:
                 print("El valor de minutos ingresado es erróneo. Por favor, reingrese un valor válido.")
                 minuto = int(input("Ingrese los minutos de la reserva (00 o 30): "))
+                minuto = pedir_numero(minuto)
 
     return hora, minuto
 
 def modificar_datos(A):
     ''' Funcion utilizada para modificar los valores dentro de una reserva '''
     A = int(input(f"Ingrese el nuevo valor que reemplazará al dato actual [{A}]: "))
+
+    A = pedir_numero(A)
     return A
 
 def contar_duracion(duracion, hora):
