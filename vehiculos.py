@@ -80,12 +80,19 @@ def mostrar_vehiculos(lista_patente, lista_tipo, lista_dnivehiculo):
             print("DNI del propietario:", lista_dnivehiculo[i])
 
 #Busqueda secuencial para poder eliminar el vehiculo de la lista
-def eliminar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo):
+def eliminar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo, reservar):
     """
     Utilizo el metodo in para buscar la patente en la lista de patentes y eliminar el vehículo correspondiente de las listas paralelas.
+    Agrego una validacion para chequear que el auto eliminado no tenga ninguna reserva activa, en caso de que la tenga, no se podra eliminar el vehiculo y se le informara al usuario.
 
     """
     patente = input("Ingrese la patente del vehiculo que quiere eliminar de la lista(Ingresela en mayusculas): ")
+    i = 0
+    while i < len(reservar):
+        if len(reservar[i]) > 0 and reservar[i][0] == patente:
+            print("No se puede eliminar el vehículo, ya que tiene una reserva activa.")
+            return
+        i += 1
     if patente in lista_patente:
         pos = 0 
         while pos < len(lista_patente):
