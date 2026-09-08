@@ -257,7 +257,7 @@ def cancelar_reserva(sel, estacionamientos, reservar, reservas_canceladas):
         print("Reserva cancelada exitosamente.")
         input("\nPresione ENTER para continuar...")
 
-def modificar_reserva(reservar):
+def modificar_reserva(reservar, sel):
     """ Permite ver las reservas y modificar algun dato seleccionado de una, habiendo terminado la reserva previamente """
     print("\n--- RESERVAS EXISTENTES ---")
     mostrar_lista_reservas(reservar)
