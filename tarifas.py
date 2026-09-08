@@ -1,4 +1,4 @@
-# Lambada que calcula el costo con los datos de duración obtenidos de reservas.py y la tarifa según el tipo de vehículo.
+# Lambda que calcula el costo con los datos de duración obtenidos de reservas.py y la tarifa según el tipo de vehículo.
 calcular = lambda horas, tarifa: horas * tarifa
 
 def calcular_costo(duracion, tipo_vehiculo):
@@ -29,7 +29,7 @@ def cobrar_estacionamiento(lista_patente, lista_tipo, lista_cobros, lista_patent
     print("Escriba '0' si desea cancelar y volver al menú.")
     patente_cobro = input("Ingrese la patente del vehiculo a cobrar: ")
     
-    # Si la persona escribe 0, se cancela todo y vuelve al menú
+    # Si el usuario escribe 0, se cancela todo y vuelve al menú
     if patente_cobro == "0":
         print("Cobro cancelado. Volviendo al menú.")
         return None
@@ -64,7 +64,7 @@ def cobrar_estacionamiento(lista_patente, lista_tipo, lista_cobros, lista_patent
 
     print("\n------------- RESUMEN DE CUENTA -------------")
     print("Vehículo cobrado:", tipo_vehiculo, "Patente:", patente_cobro)
-    print("Costo base de la reserva (", duracion, "hs): $", costo)
+    print("Costo de la reserva (", duracion, "hs): $", costo)
     print("TOTAL A PAGAR: $", total_pagar)
 
 def mostrar_cobros(lista_cobros, lista_patente_cobrada):
