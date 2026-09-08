@@ -139,14 +139,18 @@ def baja_usuarios(lst_dni,lst_estado):
         lineas()
         return
             
-    baja_dni=input("Ingrese el dni del usuario para darlo de baja o -1 para salir:")
+    baja_dni = input("Ingrese el dni del usuario para darlo de baja o -1 para salir:")
     if baja_dni == "-1":
         print("Operación cancelada.")
         lineas()
         return
     while not re.match(r"^\d{8}$", baja_dni):
+        if baja_dni == "-1":
+            print("Operación cancelada.")
+            lineas()
+            return
         print("DNI INVALIDO, TIENE QUE TENER EXACTAMENTE 8 CARACTERES.")
-        baja_dni=input("Ingrese el dni del usuario para darlo de baja:")
+        baja_dni = input("Ingrese el dni del usuario para darlo de baja o -1 para salir:")
     encontrado=False
     posicion = -1
     for i in range(len(lst_dni)):
