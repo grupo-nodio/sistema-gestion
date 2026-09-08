@@ -156,7 +156,7 @@ def menu_principal():
                             elif op_usu == "7":
                                 usuarios.quitar_baja(nombres, apellidos, dnis, emails, telefonos, estados)
                             elif op_usu == "8":
-                                vehiculos.eliminar_vehiculo(patentes, tipos, dni_vehiculos)
+                                vehiculos.eliminar_vehiculo(patentes, tipos, dni_vehiculos, reservar)
                                 
                     # 4. TARIFAS Y COBROS
                     elif op_sub == "4":
