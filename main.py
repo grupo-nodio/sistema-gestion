@@ -173,7 +173,7 @@ def menu_principal():
                         
                         while not entrada_duracion.isdigit():
                             entrada_duracion = input("Error, ingrese únicamente números para la duración: ")
-                            
+                             
                         duracion = int(entrada_duracion)
                         tarifas.cobrar_estacionamiento(duracion)
 
