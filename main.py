@@ -115,7 +115,7 @@ def menu_principal():
                                     print("\n---------------- !IMPORTANTE¡ ---------------- \n")
                                     print("Debe cargarse una reserva previamente.\n")
                                 else:
-                                    reservas.modificar_reserva(reservar)
+                                    reservas.modificar_reserva(reservar, sel)
 
                             elif op_res == "4":
                                 if len(reservar) == 0:

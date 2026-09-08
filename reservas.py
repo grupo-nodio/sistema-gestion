@@ -269,7 +269,7 @@ def modificar_reserva(reservar):
         reserva_num = pedir_numero(f"Seleccione un número entre 1 y {len(reservar)}: ")
 
     indice = reserva_num - 1
-    nombre, dia, mes, año, hora, minuto, duracion = reservar[indice]
+    nombre, dia, mes, año, hora, minuto, duracion, sel = reservar[indice]
     duracion, horaduracion = contar_duracion(duracion, hora)
 
     control = "N"
@@ -316,6 +316,6 @@ def modificar_reserva(reservar):
 
         control = input("\n¿Está conforme con los datos modificados? [Y / N]: ")
 
-    reservar[indice] = [nombre, dia, mes, año, hora, minuto, duracion]
+    reservar[indice] = [nombre, dia, mes, año, hora, minuto, duracion, sel]
     print("\n¡La reserva fue actualizada exitosamente!")
     input("\nPresione ENTER para continuar...")
