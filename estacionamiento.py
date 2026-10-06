@@ -15,12 +15,12 @@ def pedir_numero(mensaje):
 
 # Se usa en elegir_estacionamiento
 def validar_seleccion(seleccion, estacionamientos):
-    '''se llama a la funcion para validar si el rango es correcto'''
-    seleccion = seleccion
-
-    while seleccion < 1 or seleccion >= len(estacionamientos[0]):
-        print("La opción ingresada no es válida.")
-        seleccion = pedir_numero("Seleccione un estacionamiento: ")
+    '''se llama a la funcion para validar si el rango es correcto y si no está eliminado'''
+    
+    # Comprobamos el rango, y también verificamos que el nombre no sea "ELIMINADO"
+    while seleccion < 1 or seleccion >= len(estacionamientos[0]) or estacionamientos[0][seleccion] == "ELIMINADO":
+        print("La opción ingresada no es válida o el estacionamiento ya no existe.")
+        seleccion = pedir_numero("Seleccione un estacionamiento válido: ")
 
     return seleccion
 
@@ -203,14 +203,18 @@ def mostrar_informacion(seleccion, estacionamientos, horarios):
     ver_horario(seleccion, horarios)
 
 def mostrar_estacionamientos(estacionamientos):
-    '''Muestra la lista de los estacionamientos usando map().'''
+    '''Muestra la lista de los estacionamientos usando map(), ocultando los eliminados.'''
     print("Estacionamientos en la base de datos: ")
 
-    # Medimos el largo de la lista nombres para obtener la cantidad real de estacionamientos
     indices = range(1, len(estacionamientos[0])) 
     
-    # [0][i] para el nombre y [2][i] para la dirección
-    list(map(lambda i: print(f"Estacionamiento {i}: '{estacionamientos[0][i]}' - Dirección: {estacionamientos[2][i]}"), indices))
+    # Filtramos para que solo pasen los que no estan eliminados.
+    activos = list(filter(lambda i: estacionamientos[0][i] != "ELIMINADO", indices))
+    
+    if len(activos) == 0:
+        print("No hay estacionamientos activos.")
+    else:
+        list(map(lambda i: print(f"Estacionamiento {i}: '{estacionamientos[0][i]}' - Dirección: {estacionamientos[2][i]}"), activos))
 
 def ver_estacionamientos_disponibles(estacionamientos):
     '''Filtra y muestra únicamente los estacionamientos con estado 1 usando filter() y map().'''
@@ -434,15 +438,16 @@ def eliminar_estacionamiento(estacionamientos, horarios):
     '''Permite eliminar un estacionamiento de la matriz y sus horarios, exigiendo un código de seguridad.'''
     mostrar_estacionamientos(estacionamientos)
     
-    if len(estacionamientos[0]) <= 1:
-        print("No hay estacionamientos registrados para eliminar.")
+    indices = range(1, len(estacionamientos[0])) 
+    activos = list(filter(lambda i: estacionamientos[0][i] != "ELIMINADO", indices))
+    
+    if len(activos) == 0:
+        print("No hay estacionamientos activos registrados para eliminar.")
         return None
 
     sel = pedir_numero("Seleccione el número del estacionamiento que desea eliminar: ")
     
-    while sel < 1 or sel >= len(estacionamientos[0]):
-        print("Opción no válida.")
-        sel = pedir_numero("Seleccione un estacionamiento válido: ")
+    sel = validar_seleccion(sel, estacionamientos)
 
     nombre_a_borrar = estacionamientos[0][sel]
     print(f"\n¡ADVERTENCIA! Está a punto de eliminar el estacionamiento: '{nombre_a_borrar}'")
@@ -452,14 +457,16 @@ def eliminar_estacionamiento(estacionamientos, horarios):
     confirmacion = input(f"Para confirmar la eliminación, escriba exactamente el código '{codigo_seguridad}': ")
 
     if confirmacion == codigo_seguridad:
-        del estacionamientos[0][sel]
-        del estacionamientos[1][sel]
-        del estacionamientos[2][sel]
-        del estacionamientos[3][sel]
-        del estacionamientos[4][sel]
-        del horarios[sel]
+        # Reemplazamos los datos en lugar de borrar la columna entera
+        estacionamientos[0][sel] = "ELIMINADO"
+        estacionamientos[1][sel] = 3  # Pasa a Fuera de servicio
+        estacionamientos[2][sel] = "N/A"
+        estacionamientos[3][sel] = 0  # Capacidad total a 0
+        estacionamientos[4][sel] = 0  # Capacidad disponible a 0
+        horarios[sel] = [False] * 7   # Se marca como cerrado toda la semana
+        
         print(f"Estacionamiento '{nombre_a_borrar}' eliminado correctamente del sistema.")
-        return sel # Le avisa al main qué índice se borró
+        return sel
     else:
         print("\n-- OPERACIÓN CANCELADA: El código de confirmación es incorrecto --")
         return None

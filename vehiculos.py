@@ -52,6 +52,9 @@ def ingresar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo, lista_dniusu
     #DNI del usuario propietario del vehiculo
     dni_usuarios = input("Ingrese el DNI del usuario propietario del vehiculo: ")
     while dni_usuarios not in lista_dniusuarios:
+        if dni_usuarios == "0":
+            print("Operacion cancelada, volviendo al menu principal")
+            return
         print("el dni ingresado no existe, porfavor ingrese un dni valido")
         dni_usuarios = input("Ingrese el DNI del usuario propietario del vehiculo:")
 
@@ -80,6 +83,7 @@ def mostrar_vehiculos(lista_patente, lista_tipo, lista_dnivehiculo):
 def eliminar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo):
     """
     Utilizo el metodo in para buscar la patente en la lista de patentes y eliminar el vehículo correspondiente de las listas paralelas.
+    Agrego una validacion para chequear que el auto eliminado no tenga ninguna reserva activa, en caso de que la tenga, no se podra eliminar el vehiculo y se le informara al usuario.
 
     """
     patente = input("Ingrese la patente del vehiculo que quiere eliminar de la lista(Ingresela en mayusculas): ")
