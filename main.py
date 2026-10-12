@@ -9,8 +9,7 @@ def menu_principal():
     # --- INICIALIZACIÓN DE LA BASE DE DATOS EN MEMORIA ---
     
     # 1. Listas de Estacionamientos
-    estacionamientos = [[None], [None], [None], [None], [None]] # Nombre, estado, direccion, capacidad total, capacidad actual
-    horarios = [None] # Cada lista(fila) es un día de la semana(7 fijas de Lunes a Domingo), la columna es cada estacionamiento: True = 24 horas, False = Cerrado, str = "00:00 - 12:30"
+    estacionamientos = {} # Diccionario principal: { id_estacionamiento: {datos_y_horarios} }, en horarios: True = 24 horas, False = Cerrado, str = "00:00 - 12:30"
     
     # 2. Listas de Usuarios
     nombres = []
@@ -54,14 +53,14 @@ def menu_principal():
 
         # --- CREAR ESTACIONAMIENTO ---
         if opcion_principal == "2":
-            estacionamiento.crear_estacionamiento(estacionamientos, horarios)
+            estacionamiento.crear_estacionamiento(estacionamientos)
 
         # --- SELECCIONAR ESTACIONAMIENTO ---
         elif opcion_principal == "1":
-            if len(estacionamientos[0]) > 1: 
+            if estacionamientos: 
                 # El administrador elige sobre qué estacionamiento va a trabajar
                 sel = estacionamiento.elegir_estacionamiento(estacionamientos)
-                nombre_actual = estacionamientos[0][sel]
+                nombre_actual = estacionamientos[sel]['nombre']
                 
                 op_sub = "-1"
                 while op_sub != "0":
@@ -81,11 +80,11 @@ def menu_principal():
 
                     # 1. DATOS DEL ESTACIONAMIENTO
                     if op_sub == "1":
-                        estacionamiento.mostrar_informacion(sel, estacionamientos, horarios)
+                        estacionamiento.mostrar_informacion(sel, estacionamientos)
                         modificar = input("\n¿Desea modificar este estacionamiento? (y/n): ")
     
                         if modificar in ['y', 'Y', 's', 'S', 'si', 'SI', 'Si', 'sI', 'yes', 'YES', 'Yes']:
-                            estacionamiento.modificar(sel, estacionamientos, horarios)
+                            estacionamiento.modificar(sel, estacionamientos)
                     
                     # 2. RESERVAS
                     elif op_sub == "2":
@@ -182,7 +181,7 @@ def menu_principal():
 
         # --- ELIMINAR ESTACIONAMIENTO ---
         elif opcion_principal == "4":
-            estacionamiento.eliminar_estacionamiento(estacionamientos, horarios)
+            estacionamiento.eliminar_estacionamiento(estacionamientos)
 
         # --- SALIR ---
         elif opcion_principal == "0":
