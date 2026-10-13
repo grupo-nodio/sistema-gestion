@@ -74,7 +74,7 @@ def validar_horario(horario_str):
     '''Valida lógicamente las horas (00-23) y exige minutos estrictamente en 00 o 30.'''
     hora = int(horario_str[0:2])
     minuto = int(horario_str[3:5])
-    return 0 <= hora <= 23 and minuto in [0, 30]
+    return 0 <= hora <= 23 and minuto in (0, 30)
  
 def validar_cierre(apertura, cierre):
     '''Valida con rebanado que la hora de cierre sea lógicamente posterior a la de apertura [9].'''
@@ -155,7 +155,7 @@ def crear_horarios():
     '''crea los horarios haciendo elegir entre horario, 24 horas o cerrado por día de la semana'''
     horarios = []
 
-    dias = [
+    dias = (
         "Lunes",
         "Martes",
         "Miércoles",
@@ -163,7 +163,7 @@ def crear_horarios():
         "Viernes",
         "Sábado",
         "Domingo"
-    ]
+    )
 
     print("1. Horario normal")
     print("2. 24 horas")
@@ -232,7 +232,7 @@ def ver_estado(seleccion, estacionamientos):
     '''Devuelve en forma de string el estado del estacionamiento.'''
     estado = estacionamientos[seleccion]['estado']
 
-    posibilidades = ["disponible", "ocupado", "fuera de servicio"]
+    posibilidades = ("disponible", "ocupado", "fuera de servicio")
 
     estado = posibilidades[estado - 1]
 
@@ -279,7 +279,7 @@ def elegir_modificar():
 def modificar(seleccion, estacionamientos):
     '''llama a una funcion para que el usuario elija que modificar para luego llamar a la funcion que modifique el valor solicitado'''
     eleccion = elegir_modificar()
-    opciones = [edit_nombre, edit_estado, edit_direccion, edit_espacios, edit_horario]
+    opciones = (edit_nombre, edit_estado, edit_direccion, edit_espacios, edit_horario)
 
     if eleccion == 6:
         print("Modificación cancelada.")
@@ -318,7 +318,7 @@ def edit_espacios(seleccion, estacionamientos):
 
     eleccion = pedir_numero("Seleccione una opción: ")
     
-    while eleccion not in [1, 2]:
+    while eleccion not in (1, 2):
         eleccion = pedir_numero("Error, debe elegir una opción disponible: ")
 
     if eleccion == 1:
@@ -352,7 +352,7 @@ def edit_espacios(seleccion, estacionamientos):
 def edit_horario(seleccion, estacionamientos):
     '''permite modificar un horario de un dia especifico'''
 
-    dias = [
+    dias = (
         "Lunes",
         "Martes",
         "Miércoles",
@@ -360,7 +360,7 @@ def edit_horario(seleccion, estacionamientos):
         "Viernes",
         "Sábado",
         "Domingo"
-    ]
+    )
 
     dia = -1
 
@@ -418,7 +418,7 @@ def tipo_horario_1():
         print("Error: El cierre debe ser posterior a la apertura (Máximo 23:30).")
         cierre = input("Ingrese cierre nuevamente: ")
         
-    return [apertura, cierre]
+    return (apertura, cierre)
 
 # ------------------------------------------------------------- 5. ELIMINACIÓN -------------------------------------------------------------
 

@@ -48,7 +48,7 @@ def menu_principal():
         
         opcion_principal = input("Seleccione una opción: ")
         
-        while opcion_principal not in ["0", "1", "2", "3", "4"]:
+        while opcion_principal not in ("0", "1", "2", "3", "4"):
             opcion_principal = input("Error: Opción inválida. Vuelva a seleccionar: ")
 
         # --- CREAR ESTACIONAMIENTO ---
@@ -75,7 +75,7 @@ def menu_principal():
                     print("="*60)
                     
                     op_sub = input("Seleccione un módulo: ")
-                    while op_sub not in ["0", "1", "2", "3", "4"]:
+                    while op_sub not in ("0", "1", "2", "3", "4"):
                         op_sub = input("Error: Opción inválida. Vuelva a seleccionar: ")
 
                     # 1. DATOS DEL ESTACIONAMIENTO
@@ -83,7 +83,7 @@ def menu_principal():
                         estacionamiento.mostrar_informacion(sel, estacionamientos)
                         modificar = input("\n¿Desea modificar este estacionamiento? (y/n): ")
     
-                        if modificar in ['y', 'Y', 's', 'S', 'si', 'SI', 'Si', 'sI', 'yes', 'YES', 'Yes']:
+                        if modificar in ('y', 'Y', 's', 'S', 'si', 'SI', 'Si', 'sI', 'yes', 'YES', 'Yes'):
                             estacionamiento.modificar(sel, estacionamientos)
                     
                     # 2. RESERVAS
