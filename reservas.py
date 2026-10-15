@@ -1,5 +1,14 @@
 import re
 
+def pedir_nombre(A):
+    name = A
+
+    while not re.match(r"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$", name):
+        print("Palabra ingresada invalida. ")
+        name = input("Ingrese unicamente valores alfabeticos: ")
+
+    return name
+
 def pedir_numero(A):
     valor = input(A)
 
@@ -238,14 +247,13 @@ def cancelar_reserva(sel, estacionamientos, reservar, reservas_canceladas):
     print("\n--- RESERVAS EXISTENTES ---")
     mostrar_lista_reservas(reservar)
     
-    reserva_num = pedir_numero("\nSeleccione el número de la reserva que desea cancelar: ")
+    reserva_name = pedir_nombre("\nSeleccione el nombre de la reserva que desea cancelar: ")
 
-    while reserva_num < 1 or reserva_num > len(reservar):
-        print("Opción fuera de rango. Reingrese. ")
-        reserva_num = pedir_numero(f"Seleccione un número entre 1 y {len(reservar)}: ")
+    while reserva_name not in reservar.keys():
+        print("Nombre ingresado no encontrado. Reingrese. ")
+        reserva_name = pedir_nombre(f"Seleccione un nombre relacionado a una reserva: ")
 
-    indice = reserva_num - 1
-    nombre, dia, mes, año, hora, minuto, duracion, sel = reservar[indice]
+    nombre, dia, mes, año, hora, minuto, duracion, sel = reservar[reserva_name]
     duracion, horaduracion = contar_duracion(duracion, hora)
 
     print("\n" + "=" * 44)
@@ -257,9 +265,18 @@ def cancelar_reserva(sel, estacionamientos, reservar, reservas_canceladas):
     confirmacion_cancelar = input("¿Esta seguro de que desea cancelar esta reserva?, [Y / N]: ") 
 
     if confirmacion_cancelar in ["Y", "y", "yes", "Yes", "si", "Si"]:
-        reserva_cancelada = [nombre, dia, mes, año, hora, minuto, duracion, sel]
-        reservas_canceladas.append(reserva_cancelada)
-        reservar.pop(indice)
+        reserva_cance = {
+            'dia':dia, 
+            'mes':mes, 
+            'año':año, 
+            'hora':hora, 
+            'minuto':minuto, 
+            'duracion':duracion, 
+            'estacionamiento':sel
+        }
+
+        reserva_cancelada[reserva_name] = reserva_cance
+        del reservar[reserva_name]
         
         # Se verifica que al devolver el espacio no se supere la capacidad total (índice 3)
         if estacionamientos[4][sel] < estacionamientos[3][sel]:
