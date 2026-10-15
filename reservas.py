@@ -206,13 +206,24 @@ def generar_reserva(sel, estacionamientos, reservar):
         
         print(f"La reserva se efectuo correctamente bajo el nombre de {nombre} para la fecha {escritura_digitos(dia)}/{escritura_digitos(mes)}/{escritura_digitos(año)}, empezara a las {escritura_digitos(hora)}:{escritura_digitos(minuto)} hs y finalizara a las {escritura_digitos(horaduracion)}:{escritura_digitos(minuto)} hs")
 
-        reserva = {'nombre':[nombre], 'dia':[dia], 'mes':[mes], 'año':[año], 'hora':[hora], 'minuto':[minuto], 'duracion':[duracion], 'estacionamiento':sel}
-        reservar.append(reserva)
+        reserva = {
+            'dia':dia, 
+            'mes':mes, 
+            'año':año, 
+            'hora':hora, 
+            'minuto':minuto, 
+            'duracion':duracion, 
+            'estacionamiento':sel
+            }
+
+        reservar[nombre] = reserva
 
 def mostrar_lista_reservas(reservar):
     """ Muestra únicamente las reservas. """
-    for reserva in reservar:
-        print(f"{i + 1}. Nombre: {reservar[i][0]} / dia: {escritura_digitos(reservar[i][1])} / mes: {escritura_digitos(reservar[i][2])} / año: {escritura_digitos(reservar[i][3])} / hora: {escritura_digitos(reservar[i][4])} / minuto: {escritura_digitos(reservar[i][5])} / duracion: {escritura_digitos(reservar[i][6])}hs / estacionamiento: {escritura_digitos(reservar[i][7])}. ")
+    i = 0
+    for nombre, datos in reservar.items():
+        i += 1
+        print(f"{i}. Nombre: {nombre} / dia: {escritura_digitos(datos['dia'])} / mes: {escritura_digitos(datos['mes'])} / año: {escritura_digitos(datos['año'])} / hora: {escritura_digitos(datos['hora'])} / minuto: {escritura_digitos(datos['minuto'])} / duracion: {escritura_digitos(datos['duracion'])}hs / estacionamiento: {escritura_digitos(datos['estacionamiento'])}. ")
 
 def consultar_reservas(reservar):
     ''' Permite consultar las reservas realizadas previamente '''

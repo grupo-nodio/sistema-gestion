@@ -26,8 +26,8 @@ def menu_principal():
     dni_vehiculos = []
 
     # 4. Lista de reservas
-    reservar = []
-    reservas_canceladas = []
+    reservar = {}
+    reservas_canceladas = {}
 
     # 5. Lista de tarifas
     lista_cobros = []
