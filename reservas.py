@@ -281,7 +281,7 @@ def cancelar_reserva(sel, estacionamientos, reservar, reservas_canceladas):
         
         # Se verifica que al devolver el espacio no se supere la capacidad total (índice 3)
         if estacionamientos[sel]["capacidad_total"] < estacionamientos[sel]['capacidad_actual']:
-            estacionamientos[sel]['capacidad_actual']
+            estacionamientos[sel]['capacidad_actual'] += 1
             
         print("Reserva cancelada exitosamente.")
         input("\nPresione ENTER para continuar...")
