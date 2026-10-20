@@ -1,12 +1,12 @@
 import re
 
-def pedir_nombre(A):
-    name = A
+def pedir_nombre(mensaje):
+    name = input(mensaje)
 
     while not re.match(r"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$", name):
-        print("Palabra ingresada invalida. ")
-        name = input("Ingrese unicamente valores alfabeticos: ")
-
+        print("Palabra ingresada inválida.")
+        name = input("Ingrese únicamente valores alfabéticos: ")
+        
     return name
 
 def pedir_numero(A):
@@ -173,8 +173,8 @@ def generar_reserva(sel, estacionamientos, reservar):
 
     control = input("\nVerifique si los datos tomados son los correctos [Y / N]: ")
 
-    if control not in ["Y", "y", "yes", "Yes", "si", "Si"]:
-        while control not in ["Y", "y", "yes", "Yes", "si", "Si"]:
+    if control.lower() not in ("y", "yes", "si"):
+        while control.lower() not in ("y", "yes", "si"):
             cambio = pedir_numero(f"¿Cual de los siguientes datos desea modificar?, [1. {escritura_digitos(dia)} / 2. {escritura_digitos(mes)} / 3. {escritura_digitos(año)} / 4. {escritura_digitos(hora)} / 5. {escritura_digitos(minuto)} / 6. {duracion}]: ")
 
             match cambio:
@@ -207,7 +207,7 @@ def generar_reserva(sel, estacionamientos, reservar):
             print(f"la reserva comenzara a las: {escritura_digitos(hora)} : {escritura_digitos(minuto)} hs y durara hasta las: {escritura_digitos(horaduracion)} : {escritura_digitos(minuto)} hs")
             control = input("\nVerifique si los datos tomados son los correctos [Y / N]: ")
 
-    if control in ["Y", "y", "yes", "Yes", "si", "Si"]:
+    if control.lower() in ("y", "yes", "si"):
         
         nombre = pedir_nombre("Ingrese el nombre del titular de la reserva: ")
         
@@ -265,7 +265,7 @@ def cancelar_reserva(sel, estacionamientos, reservar, reservas_canceladas):
 
     confirmacion_cancelar = input("¿Esta seguro de que desea cancelar esta reserva?, [Y / N]: ") 
 
-    if confirmacion_cancelar in ["Y", "y", "yes", "Yes", "si", "Si"]:
+    if confirmacion_cancelar.lower() in ("y", "yes", "si"):
         reserva_cance = {
             'dia':dia, 
             'mes':mes, 
@@ -280,7 +280,7 @@ def cancelar_reserva(sel, estacionamientos, reservar, reservas_canceladas):
         del reservar[reserva_name]
         
         # Se verifica que al devolver el espacio no se supere la capacidad total (índice 3)
-        if estacionamientos[sel]["capacidad_total"] < estacionamientos[sel]['capacidad_actual']:
+        if estacionamientos[sel]['capacidad_actual'] < estacionamientos[sel]["capacidad_total"]:
             estacionamientos[sel]['capacidad_actual'] += 1
             
         print("Reserva cancelada exitosamente.")
@@ -296,17 +296,16 @@ def modificar_reserva(reservar, sel):
     while reserva_name not in reservar.keys():
         print("Nombre ingresado no encontrado. Reingrese. ")
         reserva_name = pedir_nombre(f"Seleccione un nombre relacionado a una reserva: ")
-    
-    nombre, dia, mes, año, hora, minuto, duracion, sel = reservar[reserva_name]
-    duracion, horaduracion = contar_duracion(duracion, hora)
+
+    horaduracion = contar_duracion(reservar[reserva_name]['duracion'], reservar[reserva_name]['hora'])
 
     control = "N"
-    while control not in ["Y", "y", "yes", "Yes", "si", "Si"]:
+    while control.lower() not in ("y", "yes", "si"):
         print("\n" + "=" * 44)
-        print(f"MODIFICANDO RESERVA DE: {nombre}")
+        print(f"MODIFICANDO RESERVA DE: {reservar[reserva_name]}")
         print("=" * 44)
-        print(f"Fecha: {escritura_digitos(dia)}-{escritura_digitos(mes)}-{escritura_digitos(año)}")
-        print(f"Horario: {escritura_digitos(hora)}:{escritura_digitos(minuto)} hs a {escritura_digitos(horaduracion)}:{escritura_digitos(minuto)} hs (Duración: {duracion} hs)")
+        print(f"Fecha: {escritura_digitos(reservar[reserva_name]['dia'])}-{escritura_digitos(reservar[reserva_name]['mes'])}-{escritura_digitos(reservar[reserva_name]['año'])}")
+        print(f"Horario: {escritura_digitos(reservar[reserva_name]['hora'])}:{escritura_digitos(reservar[reserva_name]['minuto'])} hs a {escritura_digitos(horaduracion)}:{escritura_digitos(reservar[reserva_name]['minuto'])} hs (Duración: {reservar[reserva_name]['duracion']} hs)")
 
         cambio = pedir_numero("\n¿Qué dato desea modificar?\n"
                            f"[1. Nombre ({nombre}) / "
@@ -319,7 +318,7 @@ def modificar_reserva(reservar, sel):
 
         match cambio:
             case 1:
-                nombre = input("Ingrese el nuevo nombre: ")
+                nombre = pedir_nombre("Ingrese el nuevo nombre: ")
             case 2:
                 dia = modificar_datos(dia)
                 dia, mes, año = validar_fecha(dia, mes, año)
