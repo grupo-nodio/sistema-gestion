@@ -2,7 +2,7 @@ import re
 
 # ------------------------------------------------------------- 1. VALIDACIONES -----------------------------------------------------------
 
-# Se usa en validar_seleccion, validar_modificar, validar_cambio_estado, validar_positivos, validar_tipo_horario, validar_dia, elegir_estacionamiento, elegir_modificar, edit_estado, edit_espacios, edit_horario, crear_estado, crear_espacios, crear_horarios, eliminar_estacionamiento
+# Se usa en validar_seleccion, validar_modificar, validar_cambio_estado, validar_positivos, validar_tipo_horario, validar_dia, elegir_estacionamiento, elegir_modificar, edit_estado, edit_espacios, edit_horario, crear_espacios, crear_horarios, eliminar_estacionamiento
 def pedir_numero(mensaje):
     '''Solicita un valor al usuario y verifica con Regex que solo contenga números.'''
     valor = input(mensaje)
@@ -15,13 +15,12 @@ def pedir_numero(mensaje):
 
 # Se usa en elegir_estacionamiento
 def validar_seleccion(seleccion, estacionamientos):
-    '''se llama a la funcion para validar si el rango es correcto y si no está eliminado'''
-    
-    # Comprobamos el rango, y también verificamos que el nombre no sea "ELIMINADO"
-    while seleccion < 1 or seleccion >= len(estacionamientos[0]) or estacionamientos[0][seleccion] == "ELIMINADO":
+    '''Verifica que la clave exista en el diccionario y no esté eliminada.'''
+    while seleccion not in estacionamientos or estacionamientos[seleccion]["nombre"] == "ELIMINADO":
         print("La opción ingresada no es válida o el estacionamiento ya no existe.")
-        seleccion = pedir_numero("Seleccione un estacionamiento válido: ")
 
+        seleccion = pedir_numero("Seleccione un estacionamiento válido: ")
+    
     return seleccion
 
 # Se usa en elegir_modificar
@@ -32,7 +31,7 @@ def validar_modificar(eleccion):
 
     return eleccion
 
-# Se usa en edit_estado, crear_estado
+# Se usa en edit_estado
 def validar_cambio_estado(cambio):
     '''se valida si el estado elegido es correcto(1-3)'''
     while cambio < 1 or cambio > 3:
@@ -72,11 +71,10 @@ def validar_formato_hora(horario_str):
     return re.match(patron, horario_str)
 
 def validar_horario(horario_str):
-    '''Valida lógicamente las horas (00-23) y minutos (00-59) extrayéndolos con rebanado [9].'''
-    # Clase 3: Usamos rebanado para extraer horas y minutos [9, 10]
+    '''Valida lógicamente las horas (00-23) y exige minutos estrictamente en 00 o 30.'''
     hora = int(horario_str[0:2])
     minuto = int(horario_str[3:5])
-    return 0 <= hora <= 23 and 0 <= minuto <= 59
+    return 0 <= hora <= 23 and minuto in {0, 30}
  
 def validar_cierre(apertura, cierre):
     '''Valida con rebanado que la hora de cierre sea lógicamente posterior a la de apertura [9].'''
@@ -115,16 +113,24 @@ def validar_direccion(direccion):
 
 # ------------------------------------------------------------- 2. CREACIÓN -------------------------------------------------------------
 
-def crear_estacionamiento(estacionamientos, horarios):
-    '''llama a todas las funciones necesarias para la creacion del estacionamiento'''
+def crear_estacionamiento(estacionamientos):
+    '''Crea un nuevo diccionario para el estacionamiento y lo añade al diccionario principal'''
     print("Crear nuevo estacionamiento:")
-    estacionamientos[0].append(crear_nombre())
-    estacionamientos[1].append(crear_estado())
-    estacionamientos[2].append(crear_direccion())
-    estacionamientos[3].append(crear_espacios())
-    estacionamientos[4].append(estacionamientos[3][-1])
-
-    horarios.append(crear_horarios())
+    
+    # Genera un ID secuencial basado en las claves existentes
+    nuevo_id = max(estacionamientos.keys(), default=0) + 1
+    
+    capacidad = crear_espacios()
+    
+    estacionamientos[nuevo_id] = {
+        "nombre": crear_nombre(),
+        "estado": 1,
+        "direccion": crear_direccion(),
+        "capacidad_total": capacidad,
+        "capacidad_actual": capacidad,
+        "horarios": crear_horarios()
+    }
+    print(f"Estacionamiento '{estacionamientos[nuevo_id]['nombre']}' creado con éxito.")
 
 def crear_nombre():
     nombre = input("Ingrese nombre: ")
@@ -132,11 +138,6 @@ def crear_nombre():
     nombre = validar_nombre(nombre)
 
     return nombre
-
-def crear_estado():
-    estado = pedir_numero("Ingrese el estado actual (1. Disponible, 2. Ocupado, 3. Fuera de servicio): ")
-    estado = validar_cambio_estado(estado)
-    return estado
 
 def crear_direccion():
     direccion = input("Ingrese la dirección: ")
@@ -154,7 +155,7 @@ def crear_horarios():
     '''crea los horarios haciendo elegir entre horario, 24 horas o cerrado por día de la semana'''
     horarios = []
 
-    dias = [
+    dias = (
         "Lunes",
         "Martes",
         "Miércoles",
@@ -162,7 +163,7 @@ def crear_horarios():
         "Viernes",
         "Sábado",
         "Domingo"
-    ]
+    )
 
     print("1. Horario normal")
     print("2. 24 horas")
@@ -188,11 +189,11 @@ def crear_horarios():
 
 # ----------------------------------------------------- 3. VISUALIZACIÓN Y CONSULTAS -----------------------------------------------------
 
-def mostrar_informacion(seleccion, estacionamientos, horarios):
+def mostrar_informacion(seleccion, estacionamientos):
     '''llama a todas las funciones que muestran la informacion del estacionamiento'''
-    ver_nombre = lambda seleccion, estacionamientos: estacionamientos[0][seleccion]
-    ver_direccion = lambda seleccion, estacionamientos: estacionamientos[2][seleccion]
-    ver_espacios = lambda seleccion, estacionamientos: estacionamientos[3][seleccion]
+    ver_nombre = lambda seleccion, estacionamientos: estacionamientos[seleccion]['nombre']
+    ver_direccion = lambda seleccion, estacionamientos: estacionamientos[seleccion]['direccion']
+    ver_espacios = lambda seleccion, estacionamientos: estacionamientos[seleccion]['capacidad_total']
 
     print("Nombre:", ver_nombre(seleccion, estacionamientos))
     print("Estado:", ver_estado(seleccion, estacionamientos))
@@ -200,34 +201,19 @@ def mostrar_informacion(seleccion, estacionamientos, horarios):
     print("Espacios:", ver_espacios(seleccion, estacionamientos))
 
     print("Horarios:")
-    ver_horario(seleccion, horarios)
+    ver_horario(seleccion, estacionamientos)
 
 def mostrar_estacionamientos(estacionamientos):
-    '''Muestra la lista de los estacionamientos usando map(), ocultando los eliminados.'''
+    '''Itera sobre las claves (IDs) y valores del diccionario.'''
     print("Estacionamientos en la base de datos: ")
-
-    indices = range(1, len(estacionamientos[0])) 
     
-    # Filtramos para que solo pasen los que no estan eliminados.
-    activos = list(filter(lambda i: estacionamientos[0][i] != "ELIMINADO", indices))
+    activos = {k: v for k, v in estacionamientos.items() if v["nombre"] != "ELIMINADO"}
     
-    if len(activos) == 0:
+    if not activos:
         print("No hay estacionamientos activos.")
     else:
-        list(map(lambda i: print(f"Estacionamiento {i}: '{estacionamientos[0][i]}' - Dirección: {estacionamientos[2][i]}"), activos))
-
-def ver_estacionamientos_disponibles(estacionamientos):
-    '''Filtra y muestra únicamente los estacionamientos con estado 1 usando filter() y map().'''
-    indices = range(1, len(estacionamientos[0])) # Usamos el largo de la fila 0
-
-    disponibles = list(filter(lambda i: estacionamientos[1][i] == 1, indices))
-
-    print("\nEstacionamientos Libres/Disponibles:")
-    if len(disponibles) == 0:
-        print("No hay estacionamientos disponibles en este momento.")
-    else:
-        # [0][i] para el nombre y [2][i] para la dirección
-        list(map(lambda i: print(f"- '{estacionamientos[0][i]}' en {estacionamientos[2][i]}"), disponibles))
+        for id_est, datos in activos.items():
+            print(f"Estacionamiento {id_est}: '{datos['nombre']}' - Dirección: {datos['direccion']}")
 
 def elegir_estacionamiento(estacionamientos):
     '''Permite seleccionar cualquier estacionamiento existente para administrarlo, sin restringir por su estado actual.'''
@@ -239,28 +225,28 @@ def elegir_estacionamiento(estacionamientos):
     # Solo validamos que el número esté dentro del rango de estacionamientos creados
     seleccion = validar_seleccion(seleccion, estacionamientos)
 
-    print("'" + str(estacionamientos[0][seleccion]) + "' seleccionado.")
+    print("'" + str(estacionamientos[seleccion]['nombre']) + "' seleccionado.")
     return seleccion
 
 def ver_estado(seleccion, estacionamientos):
     '''Devuelve en forma de string el estado del estacionamiento.'''
-    estado = estacionamientos[1][seleccion]
+    estado = estacionamientos[seleccion]['estado']
 
-    posibilidades = ["disponible", "ocupado", "fuera de servicio"]
+    posibilidades = ("disponible", "ocupado", "fuera de servicio")
 
     estado = posibilidades[estado - 1]
 
     return estado
 
-def ver_horario(seleccion, horarios):
+def ver_horario(seleccion, estacionamientos):
     '''muestra el horario de cada día de la semana'''
-    print("Lunes:", mostrar_horario(horarios[seleccion][0]))
-    print("Martes:", mostrar_horario(horarios[seleccion][1]))
-    print("Miércoles:", mostrar_horario(horarios[seleccion][2]))
-    print("Jueves:", mostrar_horario(horarios[seleccion][3]))
-    print("Viernes:", mostrar_horario(horarios[seleccion][4]))
-    print("Sábado:", mostrar_horario(horarios[seleccion][5]))
-    print("Domingo:", mostrar_horario(horarios[seleccion][6]))
+    print("Lunes:", mostrar_horario(estacionamientos[seleccion]['horarios'][0]))
+    print("Martes:", mostrar_horario(estacionamientos[seleccion]['horarios'][1]))
+    print("Miércoles:", mostrar_horario(estacionamientos[seleccion]['horarios'][2]))
+    print("Jueves:", mostrar_horario(estacionamientos[seleccion]['horarios'][3]))
+    print("Viernes:", mostrar_horario(estacionamientos[seleccion]['horarios'][4]))
+    print("Sábado:", mostrar_horario(estacionamientos[seleccion]['horarios'][5]))
+    print("Domingo:", mostrar_horario(estacionamientos[seleccion]['horarios'][6]))
 
 def mostrar_horario(horario):
     '''Devuelve en forma de string el horario del estacionamiento'''
@@ -271,7 +257,6 @@ def mostrar_horario(horario):
         return "Cerrado"
 
     return horario[0] + " - " + horario[1]
-
 
 
 # ------------------------------------------------------------- 4. MODIFICACIÓN -------------------------------------------------------------
@@ -291,41 +276,39 @@ def elegir_modificar():
 
     return eleccion
 
-def modificar(seleccion, estacionamientos, horarios):
+def modificar(seleccion, estacionamientos):
     '''llama a una funcion para que el usuario elija que modificar para luego llamar a la funcion que modifique el valor solicitado'''
     eleccion = elegir_modificar()
-    opciones = [edit_nombre, edit_estado, edit_direccion, edit_espacios, edit_horario]
+    opciones = (edit_nombre, edit_estado, edit_direccion, edit_espacios, edit_horario)
 
     if eleccion == 6:
         print("Modificación cancelada.")
-    elif eleccion == 5:
-        opciones[eleccion - 1](seleccion, horarios)
     else:
         opciones[eleccion - 1](seleccion, estacionamientos)
 
 def edit_nombre(seleccion, estacionamientos):
-    print("Nombre actual: " + str(estacionamientos[0][seleccion]))
+    print("Nombre actual: " + str(estacionamientos[seleccion]['nombre']))
     cambio = input("Ingrese un nuevo nombre: ")
     cambio = validar_nombre(cambio)
 
-    estacionamientos[0][seleccion] = cambio
+    estacionamientos[seleccion]['nombre'] = cambio
 
 def edit_estado(seleccion, estacionamientos):
-    print("Estado actual de '" + str(estacionamientos[0][seleccion]) + "': " + str(ver_estado(seleccion, estacionamientos)))
+    print("Estado actual de '" + str(estacionamientos[seleccion]['nombre']) + "': " + str(ver_estado(seleccion, estacionamientos)))
     print("\n1. Disponible \n2. Ocupado \n3. Fuera de servicio")
     cambio = pedir_numero("Ingrese un nuevo estado: ")
     cambio = validar_cambio_estado(cambio)
     
-    estacionamientos[1][seleccion] = cambio
+    estacionamientos[seleccion]['estado'] = cambio
     print("Modificación realizada. El nuevo estado es: " + str(ver_estado(seleccion, estacionamientos)))
 
 def edit_direccion(seleccion, estacionamientos):
-    print("Dirección actual de '" + str(estacionamientos[0][seleccion]) + "': " + str(estacionamientos[2][seleccion]))
+    print("Dirección actual de '" + str(estacionamientos[seleccion]['nombre']) + "': " + str(estacionamientos[seleccion]['estado']))
     cambio = input("Ingrese una nueva dirección: ")
     cambio = validar_direccion(cambio)
 
-    estacionamientos[2][seleccion] = cambio
-    print("Modificación realizada. La nueva dirección es: " + str(estacionamientos[2][seleccion]))
+    estacionamientos[seleccion]['estado'] = cambio
+    print("Modificación realizada. La nueva dirección es: " + str(estacionamientos[seleccion]['estado']))
 
 def edit_espacios(seleccion, estacionamientos):
     '''Permite editar la capacidad total o la disponible. Si la nueva cantidad de espacios totales es menor que la cantidad de espacios disponibles, se actualiza la disponibilidad para que coincida con el nuevo total.'''
@@ -335,37 +318,41 @@ def edit_espacios(seleccion, estacionamientos):
 
     eleccion = pedir_numero("Seleccione una opción: ")
     
-    while eleccion not in [1, 2]:
+    while eleccion not in {1, 2}:
         eleccion = pedir_numero("Error, debe elegir una opción disponible: ")
 
     if eleccion == 1:
-        print("Espacio actual de '" + str(estacionamientos[0][seleccion]) + "': " + str(estacionamientos[3][seleccion]))
+        print("Espacio actual de '" + str(estacionamientos[seleccion]['nombre']) + "': " + str(estacionamientos[seleccion]['capacidad_total']))
         cambio = pedir_numero("Ingrese una nueva capacidad de espacio: ")
         cambio = validar_positivos(cambio)
 
-        estacionamientos[3][seleccion] = cambio
+        estacionamientos[seleccion]['capacidad_total'] = cambio
 
         if cambio < estacionamientos[4][seleccion]:
             estacionamientos[4][seleccion] = cambio
             print("La capacidad disponible era mayor al cambio de capacidad total, por lo que esta se ajustó al mismo valor.")
-        print("Modificación realizada. La nueva capacidad es: " + str(estacionamientos[3][seleccion]))
+        print("Modificación realizada. La nueva capacidad es: " + str(estacionamientos[seleccion]['capacidad_total']))
 
     else:
-        print("Espacio disponible de '" + str(estacionamientos[0][seleccion]) + "': " + str(estacionamientos[4][seleccion]))
+        print("Espacio disponible de '" + str(estacionamientos[seleccion]['nombre']) + "': " + str(estacionamientos[seleccion]['capacidad_actual']))
         cambio = pedir_numero("Ingrese la nueva capacidad disponible: ")
         cambio = validar_positivos(cambio)
 
-        while cambio > estacionamientos[3][seleccion]:
+        while cambio > estacionamientos[seleccion]['capacidad_total']:
             cambio = pedir_numero("Error, la capacidad disponible no debe ser mayor a la capacidad total: ")
             cambio = validar_positivos(cambio)
 
-        estacionamientos[4][seleccion] = cambio
-        print("Modificación realizada. La nueva capacidad disponible es: " + str(estacionamientos[4][seleccion]))
+        estacionamientos[seleccion]['capacidad_actual'] = cambio
+        print("Modificación realizada. La nueva capacidad disponible es: " + str(estacionamientos[seleccion]['capacidad_actual']))
 
-def edit_horario(seleccion, horarios):
+    # Al final de edit_espacios, evaluamos el estado:
+    if estacionamientos[seleccion]['capacidad_actual'] == 0 and estacionamientos[seleccion]['estado'] != 3:
+        estacionamientos[seleccion]['estado'] = 2
+
+def edit_horario(seleccion, estacionamientos):
     '''permite modificar un horario de un dia especifico'''
 
-    dias = [
+    dias = (
         "Lunes",
         "Martes",
         "Miércoles",
@@ -373,7 +360,7 @@ def edit_horario(seleccion, horarios):
         "Viernes",
         "Sábado",
         "Domingo"
-    ]
+    )
 
     dia = -1
 
@@ -392,7 +379,7 @@ def edit_horario(seleccion, horarios):
 
             opcion -= 1  # Restamos 1 solo al índice para buscar correctamente en la lista
 
-            horario = horarios[seleccion][opcion]
+            horario = estacionamientos[seleccion]['horarios'][opcion]
 
             print("Horario actual:", mostrar_horario(horario))
 
@@ -405,51 +392,51 @@ def edit_horario(seleccion, horarios):
             tipo = validar_tipo_horario(tipo)
 
             if tipo == 1:
-                horarios[seleccion][opcion] = tipo_horario_1()
+                estacionamientos[seleccion]['horarios'][opcion] = tipo_horario_1()
 
             elif tipo == 2:
-                horarios[seleccion][opcion] = True
+                estacionamientos[seleccion]['horarios'][opcion] = True
 
             else:
-                horarios[seleccion][opcion] = False
+                estacionamientos[seleccion]['horarios'][opcion] = False
 
             print("Modificación realizada.")
-            print("Nuevo horario:", mostrar_horario(horarios[seleccion][opcion]))
+            print("Nuevo horario:", mostrar_horario(estacionamientos[seleccion]['horarios'][opcion]))
 
 def tipo_horario_1():
-    '''Solicita el ingreso de horario en una sola cadena HH:MM, aplicando todas las validaciones.'''
+    '''Solicita el ingreso de horario en el mismo día en intervalos de media hora.'''
+    print("Nota: El horario debe iniciar y terminar en el mismo día. Minutos permitidos: 00 o 30.")
     apertura = input("Ingrese hora de apertura (Formato HH:MM, ej. 08:30): ")
-    while not (validar_formato_hora(apertura) and validar_horario(apertura)):
-        apertura = input("Formato o rango incorrecto. Ingrese apertura nuevamente (HH:MM): ")
+    
+    # Prohibimos "23:30" como apertura, porque el cierre no podría ser mayor en el mismo día
+    while not (validar_formato_hora(apertura) and validar_horario(apertura) and apertura != "23:30"):
+        apertura = input("Formato incorrecto o no hay margen de cierre (Máximo 23:00). Ingrese apertura nuevamente: ")
         
     cierre = input("Ingrese hora de cierre (Formato HH:MM, ej. 22:00): ")
+    
     while not (validar_formato_hora(cierre) and validar_horario(cierre) and validar_cierre(apertura, cierre)):
-        print("Error: El cierre debe tener un formato válido y ser posterior a la apertura.")
-        cierre = input("Ingrese cierre nuevamente (HH:MM): ")
+        print("Error: El cierre debe ser posterior a la apertura (Máximo 23:30).")
+        cierre = input("Ingrese cierre nuevamente: ")
         
-    # Retorna la lista con los dos límites cargados listos para guardar en tu matriz de horarios
-    return [apertura, cierre]
-
-
+    return (apertura, cierre)
 
 # ------------------------------------------------------------- 5. ELIMINACIÓN -------------------------------------------------------------
 
-def eliminar_estacionamiento(estacionamientos, horarios):
+def eliminar_estacionamiento(estacionamientos):
     '''Permite eliminar un estacionamiento de la matriz y sus horarios, exigiendo un código de seguridad.'''
     mostrar_estacionamientos(estacionamientos)
     
-    indices = range(1, len(estacionamientos[0])) 
-    activos = list(filter(lambda i: estacionamientos[0][i] != "ELIMINADO", indices))
+    activos = {k: v for k, v in estacionamientos.items() if v["nombre"] != "ELIMINADO"}
     
-    if len(activos) == 0:
-        print("No hay estacionamientos activos registrados para eliminar.")
+    if not activos:
+        print("No hay estacionamientos activos.")
         return None
 
     sel = pedir_numero("Seleccione el número del estacionamiento que desea eliminar: ")
     
     sel = validar_seleccion(sel, estacionamientos)
 
-    nombre_a_borrar = estacionamientos[0][sel]
+    nombre_a_borrar = estacionamientos[sel]['nombre']
     print(f"\n¡ADVERTENCIA! Está a punto de eliminar el estacionamiento: '{nombre_a_borrar}'")
     
     # Protocolo de seguridad por código
@@ -458,12 +445,12 @@ def eliminar_estacionamiento(estacionamientos, horarios):
 
     if confirmacion == codigo_seguridad:
         # Reemplazamos los datos en lugar de borrar la columna entera
-        estacionamientos[0][sel] = "ELIMINADO"
-        estacionamientos[1][sel] = 3  # Pasa a Fuera de servicio
-        estacionamientos[2][sel] = "N/A"
-        estacionamientos[3][sel] = 0  # Capacidad total a 0
-        estacionamientos[4][sel] = 0  # Capacidad disponible a 0
-        horarios[sel] = [False] * 7   # Se marca como cerrado toda la semana
+        estacionamientos[sel]['nombre'] = "ELIMINADO"
+        estacionamientos[sel]['estado'] = 3  # Pasa a Fuera de servicio
+        estacionamientos[sel]['direccion'] = "N/A"
+        estacionamientos[sel]['capacidad_total'] = 0  # Capacidad total a 0
+        estacionamientos[sel]['capacidad_actual'] = 0  # Capacidad disponible a 0
+        estacionamientos[sel]['horarios'] = [False] * 7   # Se marca como cerrado toda la semana
         
         print(f"Estacionamiento '{nombre_a_borrar}' eliminado correctamente del sistema.")
         return sel

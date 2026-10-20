@@ -148,7 +148,7 @@ def generar_reserva(sel, estacionamientos, reservar):
     ''' Permite generar una reserva tomando datos como, la fecha, el horario, la duracion, y el nombre del titular de la reserva '''
     
     # 1. VERIFICACIÓN: Comprobar si hay espacio antes de pedir los datos
-    if estacionamientos[4][sel] <= 0:
+    if estacionamientos[sel]['capacidad_actual'] <= 0:
         print("\nNo hay espacios disponibles en este estacionamiento.")
         return
 
@@ -208,10 +208,11 @@ def generar_reserva(sel, estacionamientos, reservar):
             control = input("\nVerifique si los datos tomados son los correctos [Y / N]: ")
 
     if control in ["Y", "y", "yes", "Yes", "si", "Si"]:
-        nombre = input("Ingrese el nombre del titular de la reserva: ")
+        
+        nombre = pedir_nombre("Ingrese el nombre del titular de la reserva: ")
         
         # 2. REDUCCIÓN DE CAPACIDAD: Restamos 1 al espacio disponible actual (índice 4)
-        estacionamientos[4][sel] -= 1
+        estacionamientos[sel]['capacidad_actual'] -= 1
         
         print(f"La reserva se efectuo correctamente bajo el nombre de {nombre} para la fecha {escritura_digitos(dia)}/{escritura_digitos(mes)}/{escritura_digitos(año)}, empezara a las {escritura_digitos(hora)}:{escritura_digitos(minuto)} hs y finalizara a las {escritura_digitos(horaduracion)}:{escritura_digitos(minuto)} hs")
 
@@ -270,7 +271,7 @@ def cancelar_reserva(sel, estacionamientos, reservar, reservas_canceladas):
             'mes':mes, 
             'año':año, 
             'hora':hora, 
-            'minuto':minuto, 
+            'minuto':minuto,               
             'duracion':duracion, 
             'estacionamiento':sel
         }
@@ -279,8 +280,8 @@ def cancelar_reserva(sel, estacionamientos, reservar, reservas_canceladas):
         del reservar[reserva_name]
         
         # Se verifica que al devolver el espacio no se supere la capacidad total (índice 3)
-        if estacionamientos[4][sel] < estacionamientos[3][sel]:
-            estacionamientos[4][sel] += 1
+        if estacionamientos[sel]["capacidad_total"] < estacionamientos[sel]['capacidad_actual']:
+            estacionamientos[sel]['capacidad_actual']
             
         print("Reserva cancelada exitosamente.")
         input("\nPresione ENTER para continuar...")
@@ -290,14 +291,13 @@ def modificar_reserva(reservar, sel):
     print("\n--- RESERVAS EXISTENTES ---")
     mostrar_lista_reservas(reservar)
 
-    reserva_num = pedir_numero("\nSeleccione el número de la reserva que desea modificar: ")
-
-    while reserva_num < 1 or reserva_num > len(reservar):
-        print("Opción fuera de rango. Reingrese.")
-        reserva_num = pedir_numero(f"Seleccione un número entre 1 y {len(reservar)}: ")
-
-    indice = reserva_num - 1
-    nombre, dia, mes, año, hora, minuto, duracion, sel = reservar[indice]
+    reserva_name = pedir_nombre("\nSeleccione el nombre de la reserva que desea cancelar: ")
+    
+    while reserva_name not in reservar.keys():
+        print("Nombre ingresado no encontrado. Reingrese. ")
+        reserva_name = pedir_nombre(f"Seleccione un nombre relacionado a una reserva: ")
+    
+    nombre, dia, mes, año, hora, minuto, duracion, sel = reservar[reserva_name]
     duracion, horaduracion = contar_duracion(duracion, hora)
 
     control = "N"
@@ -342,8 +342,24 @@ def modificar_reserva(reservar, sel):
             case _:
                 print("Opción no válida.")
 
+        print("\n" + "=" * 44)
+        print(f"MODIFICANDO RESERVA DE: {nombre}")
+        print("=" * 44)
+        print(f"Fecha: {escritura_digitos(dia)}-{escritura_digitos(mes)}-{escritura_digitos(año)}")
+        print(f"Horario: {escritura_digitos(hora)}:{escritura_digitos(minuto)} hs a {escritura_digitos(horaduracion)}:{escritura_digitos(minuto)} hs (Duración: {duracion} hs)")
+
         control = input("\n¿Está conforme con los datos modificados? [Y / N]: ")
 
-    reservar[indice] = [nombre, dia, mes, año, hora, minuto, duracion, sel]
+    reserva_modif = {
+                'dia':dia, 
+                'mes':mes, 
+                'año':año, 
+                'hora':hora, 
+                'minuto':minuto, 
+                'duracion':duracion, 
+                'estacionamiento':sel
+                }
+
+    reservar[reserva_name] = reserva_modif
     print("\n¡La reserva fue actualizada exitosamente!")
     input("\nPresione ENTER para continuar...")
