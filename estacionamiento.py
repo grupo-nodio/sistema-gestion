@@ -74,7 +74,7 @@ def validar_horario(horario_str):
     '''Valida lógicamente las horas (00-23) y exige minutos estrictamente en 00 o 30.'''
     hora = int(horario_str[0:2])
     minuto = int(horario_str[3:5])
-    return 0 <= hora <= 23 and minuto in (0, 30)
+    return 0 <= hora <= 23 and minuto in {0, 30}
  
 def validar_cierre(apertura, cierre):
     '''Valida con rebanado que la hora de cierre sea lógicamente posterior a la de apertura [9].'''
@@ -318,7 +318,7 @@ def edit_espacios(seleccion, estacionamientos):
 
     eleccion = pedir_numero("Seleccione una opción: ")
     
-    while eleccion not in (1, 2):
+    while eleccion not in {1, 2}:
         eleccion = pedir_numero("Error, debe elegir una opción disponible: ")
 
     if eleccion == 1:
