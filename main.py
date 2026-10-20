@@ -12,13 +12,8 @@ def menu_principal():
     estacionamientos = [[None], [None], [None], [None], [None]] # Nombre, estado, direccion, capacidad total, capacidad actual
     horarios = [None] # Cada lista(fila) es un día de la semana(7 fijas de Lunes a Domingo), la columna es cada estacionamiento: True = 24 horas, False = Cerrado, str = "00:00 - 12:30"
     
-    # 2. Listas de Usuarios
-    nombres = []
-    apellidos = []
-    dnis = []
-    emails = []
-    telefonos = []
-    estados = []
+    # 2. Diccionario de Usuarios
+    usuarios_registrados = {}
 
     # 3. Listas de Vehículos
     patentes = []
@@ -142,19 +137,19 @@ def menu_principal():
                             op_usu = input("Opción: ")
                             
                             if op_usu == "1":
-                                usuarios.alta(nombres, apellidos, dnis, emails, telefonos, estados)
+                                usuarios.alta(usuarios_registrados)
                             elif op_usu == "2":
-                                usuarios.mostrar_usuarios(nombres, apellidos, dnis, emails, telefonos, estados)
+                                usuarios.mostrar_usuarios(usuarios_registrados)
                             elif op_usu == "3":
-                                usuarios.modificar_usuario(nombres, apellidos, dnis, emails, telefonos, estados)
+                                usuarios.modificar_usuario(usuarios_registrados)
                             elif op_usu == "4":
-                                vehiculos.ingresar_vehiculo(patentes, tipos, dni_vehiculos, dnis)
+                                vehiculos.ingresar_vehiculo(patentes, tipos, dni_vehiculos, usuarios_registrados)
                             elif op_usu == "5":
                                 vehiculos.mostrar_vehiculos(patentes, tipos, dni_vehiculos)
                             elif op_usu == "6":
-                                usuarios.baja_usuarios(dnis, estados)
+                                usuarios.baja_usuarios(usuarios_registrados)
                             elif op_usu == "7":
-                                usuarios.quitar_baja(nombres, apellidos, dnis, emails, telefonos, estados)
+                                usuarios.quitar_baja(usuarios_registrados)
                             elif op_usu == "8":
                                 vehiculos.eliminar_vehiculo(patentes, tipos, dni_vehiculos)
                                 
@@ -178,7 +173,7 @@ def menu_principal():
 
         # --- ESTADÍSTICAS GENERALES ---
         elif opcion_principal == "3":
-            reportes.mostrar_reportes(estacionamientos, tipos, dnis, estados, reservar, reservas_canceladas, lista_cobros)
+            reportes.mostrar_reportes(estacionamientos, tipos, usuarios_registrados, reservar, reservas_canceladas, lista_cobros)
 
         # --- ELIMINAR ESTACIONAMIENTO ---
         elif opcion_principal == "4":
