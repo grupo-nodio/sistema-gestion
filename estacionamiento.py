@@ -2,26 +2,16 @@ import re
 
 # ------------------------------------------------------------- 1. VALIDACIONES -----------------------------------------------------------
 
-# Se usa en validar_seleccion, validar_modificar, validar_cambio_estado, validar_positivos, validar_tipo_horario, validar_dia, elegir_estacionamiento, elegir_modificar, edit_estado, edit_espacios, edit_horario, crear_espacios, crear_horarios, eliminar_estacionamiento
+# Se usa en validar_modificar, validar_cambio_estado, validar_positivos, validar_tipo_horario, validar_dia, elegir_estacionamiento, elegir_modificar, edit_estado, edit_espacios, edit_horario, crear_espacios, crear_horarios, eliminar_estacionamiento
 def pedir_numero(mensaje):
-    '''Solicita un valor al usuario y verifica con Regex que solo contenga números.'''
-    valor = input(mensaje)
-    
-    while not re.match(r"^\d+$", valor):
-        valor = input("Error, debe ingresar únicamente números. " + mensaje)
-        
-    # Como ya validamos que son números, podemos convertirlo a int() de forma segura
-    return int(valor)
+    '''Solicita un valor al usuario y verifica con try si se puede converir en entero.'''
+    while True:
+        valor = input(mensaje)
 
-# Se usa en elegir_estacionamiento
-def validar_seleccion(seleccion, estacionamientos):
-    '''Verifica que la clave exista en el diccionario y no esté eliminada.'''
-    while seleccion not in estacionamientos or estacionamientos[seleccion]["nombre"] == "ELIMINADO":
-        print("La opción ingresada no es válida o el estacionamiento ya no existe.")
-
-        seleccion = pedir_numero("Seleccione un estacionamiento válido: ")
-    
-    return seleccion
+        try:
+            return int(valor)
+        except ValueError:
+            print("Error, debe ingresar únicamente números.")
 
 # Se usa en elegir_modificar
 def validar_modificar(eleccion):
@@ -219,14 +209,18 @@ def elegir_estacionamiento(estacionamientos):
     '''Permite seleccionar cualquier estacionamiento existente para administrarlo, sin restringir por su estado actual.'''
     mostrar_estacionamientos(estacionamientos)
 
-    # Usamos pedir_numero para evitar errores si ingresan letras
-    seleccion = pedir_numero("Seleccione un estacionamiento: ")
+    while True:
+        try:
+            # Usamos pedir_numero para evitar errores si ingresan letras
+            seleccion = pedir_numero("Seleccione un estacionamiento: ")
 
-    # Solo validamos que el número esté dentro del rango de estacionamientos creados
-    seleccion = validar_seleccion(seleccion, estacionamientos)
+            if seleccion < 0 or estacionamientos[seleccion]['nombre'] == "ELIMINADO":
+                raise KeyError
 
-    print("'" + str(estacionamientos[seleccion]['nombre']) + "' seleccionado.")
-    return seleccion
+            print("'" + str(estacionamientos[seleccion]['nombre']) + "' seleccionado.")
+            return seleccion
+        except KeyError:
+            print("Error: La opción ingresada no es válida o el estacionamiento ya no existe.")
 
 def ver_estado(seleccion, estacionamientos):
     '''Devuelve en forma de string el estado del estacionamiento.'''
@@ -432,9 +426,7 @@ def eliminar_estacionamiento(estacionamientos):
         print("No hay estacionamientos activos.")
         return None
 
-    sel = pedir_numero("Seleccione el número del estacionamiento que desea eliminar: ")
-    
-    sel = validar_seleccion(sel, estacionamientos)
+    sel = elegir_estacionamiento(estacionamientos)
 
     nombre_a_borrar = estacionamientos[sel]['nombre']
     print(f"\n¡ADVERTENCIA! Está a punto de eliminar el estacionamiento: '{nombre_a_borrar}'")
