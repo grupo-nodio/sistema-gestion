@@ -254,7 +254,15 @@ def cancelar_reserva(sel, estacionamientos, reservar, reservas_canceladas):
         print("Nombre ingresado no encontrado. Reingrese. ")
         reserva_name = pedir_nombre(f"Seleccione un nombre relacionado a una reserva: ")
 
-    nombre, dia, mes, año, hora, minuto, duracion, sel = reservar[reserva_name]
+    datos = reservar[reserva_name]
+    nombre = reserva_name
+    dia = datos['dia']
+    mes = datos['mes']
+    año = datos['año']
+    hora = datos['hora']
+    minuto = datos['minuto']
+    duracion = datos['duracion']
+
     duracion, horaduracion = contar_duracion(duracion, hora)
 
     print("\n" + "=" * 44)
@@ -287,34 +295,43 @@ def cancelar_reserva(sel, estacionamientos, reservar, reservas_canceladas):
         input("\nPresione ENTER para continuar...")
 
 def modificar_reserva(reservar, sel):
-    """ Permite ver las reservas y modificar algun dato seleccionado de una, habiendo terminado la reserva previamente """
+    """ Permite ver las reservas y modificar algun dato seleccionado de una """
     print("\n--- RESERVAS EXISTENTES ---")
     mostrar_lista_reservas(reservar)
 
-    reserva_name = pedir_nombre("\nSeleccione el nombre de la reserva que desea cancelar: ")
+    reserva_name = pedir_nombre("\nSeleccione el nombre de la reserva que desea modificar: ")
     
     while reserva_name not in reservar.keys():
         print("Nombre ingresado no encontrado. Reingrese. ")
-        reserva_name = pedir_nombre(f"Seleccione un nombre relacionado a una reserva: ")
+        reserva_name = pedir_nombre("Seleccione un nombre relacionado a una reserva: ")
 
-    horaduracion = contar_duracion(reservar[reserva_name]['duracion'], reservar[reserva_name]['hora'])
+    datos = reservar[reserva_name]
+    nombre = reserva_name
+    dia = datos['dia']
+    mes = datos['mes']
+    año = datos['año']
+    hora = datos['hora']
+    minuto = datos['minuto']
+    duracion = datos['duracion']
+
+    duracion, horaduracion = contar_duracion(duracion, hora)
 
     control = "N"
     while control.lower() not in ("y", "yes", "si"):
         print("\n" + "=" * 44)
-        print(f"MODIFICANDO RESERVA DE: {reservar[reserva_name]}")
+        print(f"MODIFICANDO RESERVA DE: {nombre}")
         print("=" * 44)
-        print(f"Fecha: {escritura_digitos(reservar[reserva_name]['dia'])}-{escritura_digitos(reservar[reserva_name]['mes'])}-{escritura_digitos(reservar[reserva_name]['año'])}")
-        print(f"Horario: {escritura_digitos(reservar[reserva_name]['hora'])}:{escritura_digitos(reservar[reserva_name]['minuto'])} hs a {escritura_digitos(horaduracion)}:{escritura_digitos(reservar[reserva_name]['minuto'])} hs (Duración: {reservar[reserva_name]['duracion']} hs)")
+        print(f"Fecha: {escritura_digitos(dia)}-{escritura_digitos(mes)}-{escritura_digitos(año)}")
+        print(f"Horario: {escritura_digitos(hora)}:{escritura_digitos(minuto)} hs a {escritura_digitos(horaduracion)}:{escritura_digitos(minuto)} hs (Duración: {escritura_digitos(duracion)} hs)")
 
         cambio = pedir_numero("\n¿Qué dato desea modificar?\n"
-                           f"[1. Nombre ({nombre}) / "
-                           f"2. Día ({escritura_digitos(dia)}) / "
-                           f"3. Mes ({escritura_digitos(mes)}) / "
-                           f"4. Año ({escritura_digitos(año)}) / "
-                           f"5. Hora ({escritura_digitos(hora)}) / "
-                           f"6. Minuto ({escritura_digitos(minuto)}) / "
-                           f"7. Duración ({duracion})]: ")
+                               f"[1. Nombre ({nombre}) / "
+                               f"2. Día ({escritura_digitos(dia)}) / "
+                               f"3. Mes ({escritura_digitos(mes)}) / "
+                               f"4. Año ({escritura_digitos(año)}) / "
+                               f"5. Hora ({escritura_digitos(hora)}) / "
+                               f"6. Minuto ({escritura_digitos(minuto)}) / "
+                               f"7. Duración ({duracion})]: ")
 
         match cambio:
             case 1:
@@ -349,16 +366,19 @@ def modificar_reserva(reservar, sel):
 
         control = input("\n¿Está conforme con los datos modificados? [Y / N]: ")
 
-    reserva_modif = {
-                'dia':dia, 
-                'mes':mes, 
-                'año':año, 
-                'hora':hora, 
-                'minuto':minuto, 
-                'duracion':duracion, 
-                'estacionamiento':sel
-                }
+    # CORRECCIÓN 2: Eliminar la reserva previa si el nombre cambió
+    if nombre != reserva_name:
+        del reservar[reserva_name]
 
-    reservar[reserva_name] = reserva_modif
+    reservar[nombre] = {
+        'dia': dia, 
+        'mes': mes, 
+        'año': año, 
+        'hora': hora, 
+        'minuto': minuto, 
+        'duracion': duracion, 
+        'estacionamiento': sel
+    }
+
     print("\n¡La reserva fue actualizada exitosamente!")
     input("\nPresione ENTER para continuar...")
