@@ -34,7 +34,7 @@ def validar_tipodeauto():
 
 
 #INGRESAR UN VEHICULO
-def ingresar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo, lista_dniusuarios):
+def ingresar_vehiculo(vehiculos, lista_dniusuarios):
     print("Ingresar datos del vehiculo: ")
     """
     Solicita y valida los datos necesarios para registrar un nuevo vehículo 
@@ -42,7 +42,7 @@ def ingresar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo, lista_dniusu
     
     #Patente
     patente = validar_patente()
-    while patente in lista_patente:
+    while patente in vehiculos:
         print("la patente ya existe, porfavor ingrese otra patente")
         patente=validar_patente()
 
@@ -58,47 +58,40 @@ def ingresar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo, lista_dniusu
         print("el dni ingresado no existe, porfavor ingrese un dni valido")
         dni_usuarios = input("Ingrese el DNI del usuario propietario del vehiculo:")
 
-    lista_patente.append(patente)
-    lista_tipo.append(tipo)
-    lista_dnivehiculo.append(dni_usuarios)
+        vehiculos[patente] = {
+        "tipo": tipo,
+        "dni": dni_usuarios
+    }
+    
+    print("Vehículo registrado correctamente.")
 
 
-    print("Vehículo ingresado correctamente.")
-
-
-def mostrar_vehiculos(lista_patente, lista_tipo, lista_dnivehiculo):
+def mostrar_vehiculos(vehiculos):
     """
-    Muestra la información de todos los vehículos registrados en las listas.
+    Muestra la información de todos los vehículos registrados en el diccionario.
     """
-    if len(lista_patente) == 0:
+    if len(vehiculos) == 0:
         print("No hay vehículos registrados.")
     else:
         print("Vehículos registrados:")
-        for i in range(len(lista_patente)):
-            print("patente:", lista_patente[i])
-            print("tipo:", lista_tipo[i])
-            print("DNI del propietario:", lista_dnivehiculo[i])
+        for patente in vehiculos:
+            print("Patente:", patente)
+            print("tipo:", vehiculos[patente]["tipo"])
+            print("DNI del propietario:", vehiculos[patente]["dni"])
 
 #Busqueda secuencial para poder eliminar el vehiculo de la lista
-def eliminar_vehiculo(lista_patente, lista_tipo, lista_dnivehiculo):
+def eliminar_vehiculo(vehiculos):
     """
-    Utilizo el metodo in para buscar la patente en la lista de patentes y eliminar el vehículo correspondiente de las listas paralelas.
-    Agrego una validacion para chequear que el auto eliminado no tenga ninguna reserva activa, en caso de que la tenga, no se podra eliminar el vehiculo y se le informara al usuario.
-
+    Utilizo el metodo in y la instruccion del para eliminar el vehiculo de la lista, si no se encuentra el vehiculo con la patente ingresada, se le informa al usuario que no se encontro el vehiculo.
     """
     patente = input("Ingrese la patente del vehiculo que quiere eliminar de la lista(Ingresela en mayusculas): ")
-    if patente in lista_patente:
-        pos = 0 
-        while pos < len(lista_patente):
-            if lista_patente[pos] == patente:
-                del lista_patente[pos]
-                del lista_tipo[pos]
-                del lista_dnivehiculo[pos]
-                print("Vehículo eliminado correctamente.")
-                return
-            pos += 1    
+    try:
+        del vehiculos[patente]
+    except KeyError:
+        print("No se encontró el vehículo con la patente ingresada.")
     else:
-        print("No se encontró un vehículo con esa patente.")
+        print("Vehículo eliminado correctamente.")
+
         
 
 
