@@ -299,9 +299,9 @@ def modificar_reserva(reservar, sel):
     print("\n--- RESERVAS EXISTENTES ---")
     mostrar_lista_reservas(reservar)
 
-    reserva_name = pedir_nombre("\nSeleccione el nombre de la reserva que desea modificar: ")
+    indice = pedir_numero("Ingrese el indice de la reserva: ")
     
-    while reserva_name not in reservar.keys():
+    while indice == 0 or indice > len(reservar):
         print("Nombre ingresado no encontrado. Reingrese. ")
         reserva_name = pedir_nombre("Seleccione un nombre relacionado a una reserva: ")
 
