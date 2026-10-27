@@ -147,16 +147,16 @@ def crear_estacionamiento(estacionamientos, archivo_json):
     # Genera un ID secuencial basado en las claves existentes
     nuevo_id = max(estacionamientos.keys(), default=0) + 1
     
-    capacidad = crear_espacios()
-    
     estacionamientos[nuevo_id] = {
         "nombre": crear_nombre(),
         "estado": 1,
         "direccion": crear_direccion(),
-        "capacidad_total": capacidad,
-        "capacidad_actual": capacidad,
+        "capacidad_total": crear_espacios(),
+        "capacidad_actual": None,
         "horarios": crear_horarios()
     }
+
+    estacionamientos[nuevo_id]["capacidad_actual"] = estacionamientos[nuevo_id]["capacidad_total"]
 
     guardar_estacionamiento(archivo_json, estacionamientos[nuevo_id])
     print(f"Estacionamiento '{estacionamientos[nuevo_id]['nombre']}' creado con éxito.")
@@ -213,8 +213,6 @@ def crear_horarios():
             horarios.append(False)
 
     return horarios
-
-
 
 # ----------------------------------------------------- 3. VISUALIZACIÓN Y CONSULTAS -----------------------------------------------------
 
