@@ -1,4 +1,4 @@
-import re
+import re, json
 
 # ------------------------------------------------------------- 1. VALIDACIONES -----------------------------------------------------------
 
@@ -99,11 +99,48 @@ def validar_direccion(direccion):
 
     return direccion
 
+# Manejo de Archivos JSON
+def guardar_estacionamiento(archivo_json, datos):
+    '''reemplaza los datos antiguos del archivo JSON con los nuevos del diccionario en Python'''
+    with open(archivo_json, 'w', encoding= 'UTF-8') as f:
+        json.dump(datos, f, indent=4, ensure_ascii=False)
 
+def cargar_estacionamiento(archivo_json):
+    '''carga el diccionario desde el archivo JSON, si no existe crea el archivo e inicializa el diccionario'''
+    try:
+        with open(archivo_json, 'r', encoding= 'UTF-8') as f:
+            datos_json = json.load(f)
+
+        datos_convertidos = {}
+
+        for clave, valor in datos_json.items():
+            if int(clave) <= 0:
+                raise ValueError
+
+            datos_convertidos[int(clave)] = valor
+
+        return datos_convertidos
+
+    except (json.JSONDecodeError, ValueError, AttributeError):
+        decision = input(f"Error: {archivo_json} debe sobreescribirse ya que no cumple con las condiciones de diccionario con indices naturales positivos consecutivos. ¿Desea continuar?: ")
+
+        if decision.lower() in ('y', 'yes', 's', 'si'):
+            datos_iniciales = {}
+            guardar_estacionamiento(archivo_json, datos_iniciales)
+            return datos_iniciales
+        
+        else:
+            print(f"Se inicializara con un diccionario vacío en memoria, en caso de querer utilizar el programa, deberá cambiar de fichero o renombrar su '{archivo_json}'")
+            return {}
+
+    except FileNotFoundError:
+        datos_iniciales = {}
+        guardar_estacionamiento(archivo_json, datos_iniciales)
+        return datos_iniciales
 
 # ------------------------------------------------------------- 2. CREACIÓN -------------------------------------------------------------
 
-def crear_estacionamiento(estacionamientos):
+def crear_estacionamiento(estacionamientos, archivo_json):
     '''Crea un nuevo diccionario para el estacionamiento y lo añade al diccionario principal'''
     print("Crear nuevo estacionamiento:")
     
@@ -120,6 +157,8 @@ def crear_estacionamiento(estacionamientos):
         "capacidad_actual": capacidad,
         "horarios": crear_horarios()
     }
+
+    guardar_estacionamiento(archivo_json, estacionamientos[nuevo_id])
     print(f"Estacionamiento '{estacionamientos[nuevo_id]['nombre']}' creado con éxito.")
 
 def crear_nombre():
@@ -270,7 +309,7 @@ def elegir_modificar():
 
     return eleccion
 
-def modificar(seleccion, estacionamientos):
+def modificar(seleccion, estacionamientos, archivo_json):
     '''llama a una funcion para que el usuario elija que modificar para luego llamar a la funcion que modifique el valor solicitado'''
     eleccion = elegir_modificar()
     opciones = (edit_nombre, edit_estado, edit_direccion, edit_espacios, edit_horario)
@@ -279,6 +318,7 @@ def modificar(seleccion, estacionamientos):
         print("Modificación cancelada.")
     else:
         opciones[eleccion - 1](seleccion, estacionamientos)
+        guardar_estacionamiento(estacionamientos, archivo_json)
 
 def edit_nombre(seleccion, estacionamientos):
     print("Nombre actual: " + str(estacionamientos[seleccion]['nombre']))
@@ -416,7 +456,7 @@ def tipo_horario_1():
 
 # ------------------------------------------------------------- 5. ELIMINACIÓN -------------------------------------------------------------
 
-def eliminar_estacionamiento(estacionamientos):
+def eliminar_estacionamiento(estacionamientos, archivo_json):
     '''Permite eliminar un estacionamiento de la matriz y sus horarios, exigiendo un código de seguridad.'''
     mostrar_estacionamientos(estacionamientos)
     
@@ -443,7 +483,8 @@ def eliminar_estacionamiento(estacionamientos):
         estacionamientos[sel]['capacidad_total'] = 0  # Capacidad total a 0
         estacionamientos[sel]['capacidad_actual'] = 0  # Capacidad disponible a 0
         estacionamientos[sel]['horarios'] = [False] * 7   # Se marca como cerrado toda la semana
-        
+
+        guardar_estacionamiento(estacionamientos, archivo_json)
         print(f"Estacionamiento '{nombre_a_borrar}' eliminado correctamente del sistema.")
         return sel
     else:

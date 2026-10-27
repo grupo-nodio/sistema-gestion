@@ -9,7 +9,8 @@ def menu_principal():
     # --- INICIALIZACIÓN DE LA BASE DE DATOS EN MEMORIA ---
     
     # 1. Listas de Estacionamientos
-    estacionamientos = {} # Diccionario principal: { id_estacionamiento: {datos_y_horarios} }, en horarios: True = 24 horas, False = Cerrado, str = "00:00 - 12:30"
+    EST_JSON = 'estacionamientos.json'
+    estacionamientos = estacionamiento.cargar_estacionamiento(EST_JSON) # Diccionario principal: { id_estacionamiento: {datos_y_horarios} }, en horarios: True = 24 horas, False = Cerrado, str = "00:00 - 12:30"
     
     # 2. Listas de Usuarios
     nombres = []
@@ -53,7 +54,7 @@ def menu_principal():
 
         # --- CREAR ESTACIONAMIENTO ---
         if opcion_principal == "2":
-            estacionamiento.crear_estacionamiento(estacionamientos)
+            estacionamiento.crear_estacionamiento(estacionamientos, EST_JSON)
 
         # --- SELECCIONAR ESTACIONAMIENTO ---
         elif opcion_principal == "1":
@@ -84,7 +85,7 @@ def menu_principal():
                         modificar = input("\n¿Desea modificar este estacionamiento? (y/n): ")
     
                         if modificar in {'y', 'Y', 's', 'S', 'si', 'SI', 'Si', 'sI', 'yes', 'YES', 'Yes'}:
-                            estacionamiento.modificar(sel, estacionamientos)
+                            estacionamiento.modificar(sel, estacionamientos, EST_JSON)
                     
                     # 2. RESERVAS
                     elif op_sub == "2":
@@ -181,7 +182,7 @@ def menu_principal():
 
         # --- ELIMINAR ESTACIONAMIENTO ---
         elif opcion_principal == "4":
-            estacionamiento.eliminar_estacionamiento(estacionamientos)
+            estacionamiento.eliminar_estacionamiento(estacionamientos, EST_JSON)
 
         # --- SALIR ---
         elif opcion_principal == "0":
