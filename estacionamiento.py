@@ -158,7 +158,7 @@ def crear_estacionamiento(estacionamientos, archivo_json):
 
     estacionamientos[nuevo_id]["capacidad_actual"] = estacionamientos[nuevo_id]["capacidad_total"]
 
-    guardar_estacionamiento(archivo_json, estacionamientos[nuevo_id])
+    guardar_estacionamiento(archivo_json, estacionamientos)
     print(f"Estacionamiento '{estacionamientos[nuevo_id]['nombre']}' creado con éxito.")
 
 def crear_nombre():
@@ -316,7 +316,7 @@ def modificar(seleccion, estacionamientos, archivo_json):
         print("Modificación cancelada.")
     else:
         opciones[eleccion - 1](seleccion, estacionamientos)
-        guardar_estacionamiento(estacionamientos, archivo_json)
+        guardar_estacionamiento(archivo_json, estacionamientos)
 
 def edit_nombre(seleccion, estacionamientos):
     print("Nombre actual: " + str(estacionamientos[seleccion]['nombre']))
@@ -482,7 +482,7 @@ def eliminar_estacionamiento(estacionamientos, archivo_json):
         estacionamientos[sel]['capacidad_actual'] = 0  # Capacidad disponible a 0
         estacionamientos[sel]['horarios'] = [False] * 7   # Se marca como cerrado toda la semana
 
-        guardar_estacionamiento(estacionamientos, archivo_json)
+        guardar_estacionamiento(archivo_json, estacionamientos)
         print(f"Estacionamiento '{nombre_a_borrar}' eliminado correctamente del sistema.")
         return sel
     else:
