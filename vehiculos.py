@@ -1,6 +1,29 @@
 from usuarios import *
 import re
+import json
 #FUNCIONES PARA VEHICULOS
+
+#JSON
+def cargar_vehiculosjson(nombre_archivo):
+    try:
+        with open(nombre_archivo, "r", encoding="utf-8") as archivo:
+            vehiculos = json.load(archivo)
+    except FileNotFoundError:
+        vehiculos = []
+    except (OSError, json.JSONDecodeError):
+        print("Error al leer el archivo JSON")
+        vehiculos = None
+    return vehiculos
+
+def guardar_vehiculosjson(nombre_archivo, vehiculos):
+    guardado = False
+    try:
+        with open(nombre_archivo, "w", encoding="utf-8") as archivo:
+            json.dump(vehiculos, ensure_ascii=False, indent=4)
+            guardado = True
+    except OSError as error:
+        print("Error al guardar el archivo JSON:", error)
+    return guardado
 
 #VALIDAR PATENTE
 def validar_patente():
@@ -32,9 +55,12 @@ def validar_tipodeauto():
         else:
             print("Tipo de vehículo inválido. Debe ser 'moto', 'auto' o 'camioneta'.")
 
-
 #INGRESAR UN VEHICULO
-def ingresar_vehiculo(vehiculos, lista_dniusuarios):
+def ingresar_vehiculo(nombre_archivo, lista_dniusuarios):
+    vehiculos = cargar_vehiculosjson(nombre_archivo)
+    if vehiculos is None:
+        print("No se pudo cargar la lista de vehículos. No se puede registrar un nuevo vehículo.")
+        return
     print("Ingresar datos del vehiculo: ")
     """
     Solicita y valida los datos necesarios para registrar un nuevo vehículo 
