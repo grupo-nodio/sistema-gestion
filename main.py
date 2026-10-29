@@ -25,8 +25,12 @@ def menu_principal():
     dni_vehiculos = []
 
     # 4. Lista de reservas
-    reservar = {}
-    reservas_canceladas = {}
+    reservar = [
+        None
+                ]
+    reservas_canceladas = [
+        None
+    ]
 
     # 5. Lista de tarifas
     lista_cobros = []
@@ -103,21 +107,21 @@ def menu_principal():
                                 reservas.generar_reserva(sel, estacionamientos, reservar)
 
                             elif op_res == "2":
-                                if len(reservar) == 0:
+                                if len(reservar) == 1:
                                     print("\n---------------- !IMPORTANTE¡ ---------------- \n")
                                     print("Debe cargarse una reserva previamente.\n")
                                 else:
                                     reservas.consultar_reservas(reservar)
 
                             elif op_res == "3":
-                                if len(reservar) == 0:
+                                if len(reservar) == 1:
                                     print("\n---------------- !IMPORTANTE¡ ---------------- \n")
                                     print("Debe cargarse una reserva previamente.\n")
                                 else:
                                     reservas.modificar_reserva(reservar, sel)
 
                             elif op_res == "4":
-                                if len(reservar) == 0:
+                                if len(reservar) == 1:
                                     print("\n---------------- !IMPORTANTE¡ ---------------- \n")
                                     print("Debe cargarse una reserva previamente.\n")
                                 else:
