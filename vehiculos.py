@@ -68,9 +68,10 @@ def ingresar_vehiculo(nombre_archivo, lista_dniusuarios):
     
     #Patente
     patente = validar_patente()
-    while patente in vehiculos:
-        print("la patente ya existe, porfavor ingrese otra patente")
-        patente=validar_patente()
+    for v in vehiculos:
+        if v["patente"] == patente.upper():
+            print("La patente ingresada ya existe en la lista de vehículos. No se puede registrar un nuevo vehículo con la misma patente.")
+            return
 
     #Tipo de vehiculo
     tipo = validar_tipodeauto()
@@ -84,40 +85,50 @@ def ingresar_vehiculo(nombre_archivo, lista_dniusuarios):
         print("el dni ingresado no existe, porfavor ingrese un dni valido")
         dni_usuarios = input("Ingrese el DNI del usuario propietario del vehiculo:")
 
-        vehiculos[patente] = {
-        "tipo": tipo,
-        "dni": dni_usuarios
-    }
-    
-    print("Vehículo registrado correctamente.")
+        nuevo_vehiculo = {
+            "patente": patente,
+            "tipo": tipo,
+            "dni": dni_usuarios
+        }
+        vehiculos.append(nuevo_vehiculo)
+
+    if guardar_vehiculosjson(nombre_archivo, vehiculos):
+        print("Vehículo registrado correctamente.")
 
 
 def mostrar_vehiculos(vehiculos):
-    """
-    Muestra la información de todos los vehículos registrados en el diccionario.
-    """
-    if len(vehiculos) == 0:
-        print("No hay vehículos registrados.")
-    else:
-        print("Vehículos registrados:")
-        for patente in vehiculos:
-            print("Patente:", patente)
-            print("tipo:", vehiculos[patente]["tipo"])
-            print("DNI del propietario:", vehiculos[patente]["dni"])
+    
+    vehiculos = cargar_vehiculosjson(nombre_archivo)
+    if vehiculos is not None:
+        if len(vehiculos) == 0:
+            print("No hay vehículos registrados.")
+        else:
+           print("Vehículos registrados:")
+           print(f"{'Patente':<15}{'Tipo':<15}{'DNI Propietario':<15}")
+           print("-" * 45)
+           for v in vehiculos:
+                print(f"{v['patente']:<15}{v['tipo']:<15}{v['dni']:<15}")
 
-#Busqueda secuencial para poder eliminar el vehiculo de la lista
 def eliminar_vehiculo(vehiculos):
-    """
-    Utilizo el metodo in y la instruccion del para eliminar el vehiculo de la lista, si no se encuentra el vehiculo con la patente ingresada, se le informa al usuario que no se encontro el vehiculo.
-    """
-    patente = input("Ingrese la patente del vehiculo que quiere eliminar de la lista(Ingresela en mayusculas): ")
-    try:
-        del vehiculos[patente]
-    except KeyError:
-        print("No se encontró el vehículo con la patente ingresada.")
-    else:
-        print("Vehículo eliminado correctamente.")
+    vehiculos = cargar_vehiculosjson(nombre_archivo)
+    if vehiculos is not None:
+        patente = input("Ingrese la patente del vehículo que desea eliminar: ")
+        encontrado = False
+        actualizados = []
 
+        for v in vehiculos:
+            if v["patente"].upper() == patente:
+                encontrado = True
+            else:
+                actualizados.append(v)
+
+        if encontrado:
+            if guardar_vehiculosjson(nombre_archivo, actualizados):
+                print("Vehículo eliminado correctamente.")
+        else:
+            print("No se encontró un vehículo con la patente ingresada.")
+   
+#NOMBRE_ARCHIVO LO LLAMO EN EL MAIN
         
 
 
