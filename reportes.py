@@ -59,19 +59,23 @@ def reporte_ocupacion_estacionamiento(lista_tipo):
 
 def reporte_reservas(reservar, reservas_canceladas):
     """ Muestra únicamente las reservas realizadas y canceladas. """
-    print("\n REPORTE DE RESERVAS REALIZADAS \n")
+    if len(reservar) > 1:
+        print("\n REPORTE DE RESERVAS REALIZADAS \n")
 
-    for i in range(len(reservar)):
-        print(f"{i + 1}. Nombre: {reservar[i][0]} / dia: {escritura_digitos(reservar[i][1])} / mes: {escritura_digitos(reservar[i][2])} / año: {escritura_digitos(reservar[i][3])} / hora: {escritura_digitos(reservar[i][4])} / minuto: {escritura_digitos(reservar[i][5])} / duracion: {escritura_digitos(reservar[i][6])}hs / estacionamiento: {escritura_digitos(reservar[i][7])}.")
+        for i in range(1, len(reservar)):
+            print(f"{i}. Nombre: {reservar[i]['nombre']} / dia: {escritura_digitos(reservar[i]['dia'])} / mes: {escritura_digitos(reservar[i]['mes'])} / año: {escritura_digitos(reservar[i]['año'])} / hora: {escritura_digitos(reservar[i]['hora'])} / minuto: {escritura_digitos(reservar[i]['minuto'])} / duracion: {escritura_digitos(reservar[i]['duracion'])}hs / estacionamiento: {escritura_digitos(reservar[i]['estacionamiento'])}.")
 
-    print(f"Cantidad de reservas realizadas con éxito: {len(reservar)}")
+        print(f"Cantidad de reservas realizadas con éxito: {len(reservar)}")
 
-    print("\n REPORTE DE RESERVAS CANCELADAS \n")
+    else:
+        print("No se realizaron reservas.")
 
-    if len(reservas_canceladas) > 0:
-        for i in range(len(reservas_canceladas)):
+        print("\n REPORTE DE RESERVAS CANCELADAS \n")
+
+    if len(reservas_canceladas) > 1:
+        for i in range(1, len(reservas_canceladas)):
             # CORREGIDO: Se usa reservas_canceladas en lugar de reservar, y se aplica escritura_digitos al año
-            print(f"{i + 1}. Nombre: {reservas_canceladas[i][0]} / dia: {escritura_digitos(reservas_canceladas[i][1])} / mes: {escritura_digitos(reservas_canceladas[i][2])} / año: {escritura_digitos(reservas_canceladas[i][3])} / hora: {escritura_digitos(reservas_canceladas[i][4])} / minuto: {escritura_digitos(reservas_canceladas[i][5])} / duracion: {escritura_digitos(reservas_canceladas[i][6])}hs / estacionamiento: {escritura_digitos(reservas_canceladas[i][7])}.")
+            print(f"{i}. Nombre: {reservas_canceladas[i]['nombre']} / dia: {escritura_digitos(reservas_canceladas[i]['dia'])} / mes: {escritura_digitos(reservas_canceladas[i]['mes'])} / año: {escritura_digitos(reservas_canceladas[i]['año'])} / hora: {escritura_digitos(reservas_canceladas[i]['hora'])} / minuto: {escritura_digitos(reservas_canceladas[i]['minuto'])} / duracion: {escritura_digitos(reservas_canceladas[i]['duracion'])}hs / estacionamiento: {escritura_digitos(reservas_canceladas[i]['estacionamiento'])}.")
 
         print(f"Cantidad de reservas canceladas: {len(reservas_canceladas)}")
     else:

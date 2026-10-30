@@ -99,6 +99,7 @@ def menu_principal():
                             print("2. Consultar reservas. ")
                             print("3. Modificar reserva. ")
                             print("4. Cancelar una reserva.")
+                            print("5. Recuperar una reserva.")
                             print("0. Volver atrás.")
                             op_res = input("Opción: ")
                             
@@ -127,6 +128,14 @@ def menu_principal():
                                 else:
                                     # Se agregó 'sel' como parámetro
                                     reservas.cancelar_reserva(sel, estacionamientos, reservar, reservas_canceladas)
+
+                            elif op_res == '5':
+                                if len(reservas_canceladas) == 1:
+                                    print("\n---------------- !IMPORTANTE¡ ---------------- \n")
+                                    print("No se puede recuperar ninguna reserva. Debido a que no hay reservas canceldas.\n")
+                                else:
+                                    # Se agregó 'sel' como parámetro
+                                    reservas.recuperar_reserva(sel, estacionamientos, reservar, reservas_canceladas)
                     
                     # 3. USUARIOS Y VEHÍCULOS (Integrados)
                     elif op_sub == "3":

@@ -9,8 +9,8 @@ def pedir_nombre(mensaje):
         
     return name
 
-def pedir_numero(A):
-    valor = input(A)
+def pedir_numero(mensaje):
+    valor = input(mensaje)
 
     while not re.match(r"^\d+$", valor):
         print("Valor ingresado invalido. ")
@@ -43,7 +43,7 @@ def validar_fecha(dia, mes, año):
             dia = 0
             fecha = False
 
-        if mes in [4, 6, 9, 11] and dia > 30:
+        if mes in (4, 6, 9, 1) and dia > 30:
             dia = 0
             fecha = False
 
@@ -79,7 +79,7 @@ def validar_hora(hora, minuto):
             hora = 0
             tiempo = False
 
-        if minuto not in [0, 30]:
+        if minuto not in (0, 30):
             minuto = 1
             tiempo = False
 
@@ -163,6 +163,9 @@ def generar_reserva(sel, estacionamientos, reservar):
     hora, minuto = validar_hora(hora, minuto)
 
     duracion = pedir_numero("Ingrese la duración estimada de la reserva (en intervalos de una hora): ")
+    while duracion <= 0:
+        print("Duracion ingresada invalida.")
+        duracion = pedir_numero("Ingrese la duración estimada de la reserva (en intervalos de una hora): ")
     duracion, horaduracion = contar_duracion(duracion, hora)
 
     print("\n" + "=" * 44)
@@ -196,6 +199,9 @@ def generar_reserva(sel, estacionamientos, reservar):
                     hora, minuto = validar_hora(hora, minuto)
                 case 6:
                     duracion = modificar_datos(duracion)
+                    while duracion <= 0:
+                        print("Duracion ingresada invalida.")
+                        duracion = modificar_datos(duracion)
                     duracion, horaduracion = contar_duracion(duracion, hora)
                 case _:
                     print("Opción no válida.")
@@ -207,7 +213,7 @@ def generar_reserva(sel, estacionamientos, reservar):
             print(f"la reserva comenzara a las: {escritura_digitos(hora)} : {escritura_digitos(minuto)} hs y durara hasta las: {escritura_digitos(horaduracion)} : {escritura_digitos(minuto)} hs")
             control = input("\nVerifique si los datos tomados son los correctos [Y / N]: ")
 
-    if control.lower() not in ("y", "yes", "si"):
+    if control.lower() in ("y", "yes", "si"):
         nombre = pedir_nombre("Ingrese el nombre del titular de la reserva: ")
         
         # 2. REDUCCIÓN DE CAPACIDAD: Restamos 1 al espacio disponible actual (índice 4)
@@ -227,10 +233,10 @@ def generar_reserva(sel, estacionamientos, reservar):
         }
         reservar.append(reserva)
 
-def mostrar_lista_reservas(reservar):
+def mostrar_lista_reservas(lista):
     """ Muestra únicamente las reservas. """
-    for i in range(1, len(reservar)):
-        print(f"{i}. Nombre: {reservar[i]['nombre']} / dia: {escritura_digitos(reservar[i]['dia'])} / mes: {escritura_digitos(reservar[i]['mes'])} / año: {escritura_digitos(reservar[i]['año'])} / hora: {escritura_digitos(reservar[i]['hora'])} / minuto: {escritura_digitos(reservar[i]['minuto'])} / duracion: {escritura_digitos(reservar[i]['duracion'])}hs / estacionamiento: {escritura_digitos(reservar[i]['estacionamiento'])}. ")
+    for i in range(1, len(lista)):
+        print(f"{i}. Nombre: {lista[i]['nombre']} / dia: {escritura_digitos(lista[i]['dia'])} / mes: {escritura_digitos(lista[i]['mes'])} / año: {escritura_digitos(lista[i]['año'])} / hora: {escritura_digitos(lista[i]['hora'])} / minuto: {escritura_digitos(lista[i]['minuto'])} / duracion: {escritura_digitos(lista[i]['duracion'])}hs / estacionamiento: {escritura_digitos(lista[i]['estacionamiento'])}. ")
 
 def consultar_reservas(reservar):
     ''' Permite consultar las reservas realizadas previamente '''
@@ -239,38 +245,6 @@ def consultar_reservas(reservar):
     print("=" * 44)
     mostrar_lista_reservas(reservar)
     input("\nPresione ENTER para volver...")
-
-def cancelar_reserva(sel, estacionamientos, reservar, reservas_canceladas):
-    ''' Permite ver las reservas hechas y cancelar la reserva seleccionada '''
-    print("\n--- RESERVAS EXISTENTES ---")
-    mostrar_lista_reservas(reservar)
-
-    reserva_num = pedir_numero("\nSeleccione el número de la reserva que desea cancelar: ")
-
-    while reserva_num < 1 or reserva_num > len(reservar):
-        print("Opción fuera de rango. Reingrese. ")
-        reserva_num = pedir_numero(f"Seleccione un número entre 1 y {len(reservar)}: ")
-
-    _, horaduracion = contar_duracion(reservar[reserva_num]['duracion'], reservar[reserva_num]['hora'])
-
-    print("\n" + "=" * 44)
-    print(f"CANCELAR RESERVA DE: {reservar[reserva_num]['nombre']}")
-    print("=" * 44)
-    print(f"Fecha: {escritura_digitos(reservar[reserva_num]['dia'])}-{escritura_digitos(reservar[reserva_num]['mes'])}-{escritura_digitos(reservar[reserva_num]['año'])}")
-    print(f"Horario: {escritura_digitos(reservar[reserva_num]['hora'])}:{escritura_digitos(reservar[reserva_num]['minuto'])} hs a {escritura_digitos(horaduracion)}:{escritura_digitos(reservar[reserva_num]['minuto'])} hs (Duración: {reservar[reserva_num]['duracion']} hs)")
-
-    confirmacion_cancelar = input("¿Esta seguro de que desea cancelar esta reserva?, [Y / N]: ") 
-
-    if confirmacion_cancelar.lower() in ("y", "yes", "si"):
-        reservas_canceladas.append(reservar[reserva_num])
-        del reservar[reserva_num]
-        
-        # Se verifica que al devolver el espacio no se supere la capacidad total (índice 3)
-        if estacionamientos[sel]['capacidad_actual'] < estacionamientos[sel]["capacidad_total"]:
-            estacionamientos[sel]['capacidad_actual'] += 1
-            
-        print("Reserva cancelada exitosamente.")
-        input("\nPresione ENTER para continuar...")
 
 def modificar_reserva(reservar, sel):
     """ Permite ver las reservas y modificar algun dato seleccionado de una, habiendo terminado la reserva previamente """
@@ -350,3 +324,70 @@ def modificar_reserva(reservar, sel):
     
     print("\n¡La reserva fue actualizada exitosamente!")
     input("\nPresione ENTER para continuar...")
+
+def cancelar_reserva(sel, estacionamientos, reservar, reservas_canceladas):
+    ''' Permite ver las reservas hechas y cancelar la reserva seleccionada '''
+    print("\n--- RESERVAS EXISTENTES ---")
+    mostrar_lista_reservas(reservar)
+
+    reserva_num = pedir_numero("\nSeleccione el número de la reserva que desea cancelar: ")
+
+    while reserva_num < 1 or reserva_num > len(reservar):
+        print("Opción fuera de rango. Reingrese. ")
+        reserva_num = pedir_numero(f"Seleccione un número entre 1 y {len(reservar)}: ")
+
+    _, horaduracion = contar_duracion(reservar[reserva_num]['duracion'], reservar[reserva_num]['hora'])
+
+    print("\n" + "=" * 44)
+    print(f"CANCELAR RESERVA DE: {reservar[reserva_num]['nombre']}")
+    print("=" * 44)
+    print(f"Fecha: {escritura_digitos(reservar[reserva_num]['dia'])}-{escritura_digitos(reservar[reserva_num]['mes'])}-{escritura_digitos(reservar[reserva_num]['año'])}")
+    print(f"Horario: {escritura_digitos(reservar[reserva_num]['hora'])}:{escritura_digitos(reservar[reserva_num]['minuto'])} hs a {escritura_digitos(horaduracion)}:{escritura_digitos(reservar[reserva_num]['minuto'])} hs (Duración: {reservar[reserva_num]['duracion']} hs)")
+
+    confirmacion_cancelar = input("¿Esta seguro de que desea cancelar esta reserva?, [Y / N]: ") 
+
+    if confirmacion_cancelar.lower() in ("y", "yes", "si"):
+        reservas_canceladas.append(reservar[reserva_num])
+        del reservar[reserva_num]
+        
+        # Se verifica que al devolver el espacio no se supere la capacidad total (índice 3)
+        if estacionamientos[sel]['capacidad_actual'] < estacionamientos[sel]["capacidad_total"]:
+            estacionamientos[sel]['capacidad_actual'] += 1
+            
+        print("Reserva cancelada exitosamente.")
+        input("\nPresione ENTER para continuar...")
+
+def recuperar_reserva(sel, estacionamientos, reservar, reservas_canceladas):
+    ''' Permite ver las reservas hechas y cancelar la reserva seleccionada '''
+    print("\n--- RESERVAS CANCELADAS ---")
+    mostrar_lista_reservas(reservas_canceladas)
+
+    reserva_num = pedir_numero("\nSeleccione el número de la reserva que desea recuperar: ")
+
+    while reserva_num < 1 or reserva_num > len(reservas_canceladas):
+        print("Opción fuera de rango. Reingrese. ")
+        reserva_num = pedir_numero(f"Seleccione un número entre 1 y {len(reservas_canceladas)}: ")
+
+    _, horaduracion = contar_duracion(reservas_canceladas[reserva_num]['duracion'], reservas_canceladas[reserva_num]['hora'])
+
+    print("\n" + "=" * 44)
+    print(f"RECUPERAR RESERVA DE: {reservas_canceladas[reserva_num]['nombre']}")
+    print("=" * 44)
+    print(f"Fecha: {escritura_digitos(reservas_canceladas[reserva_num]['dia'])}-{escritura_digitos(reservas_canceladas[reserva_num]['mes'])}-{escritura_digitos(reservas_canceladas[reserva_num]['año'])}")
+    print(f"Horario: {escritura_digitos(reservas_canceladas[reserva_num]['hora'])}:{escritura_digitos(reservas_canceladas[reserva_num]['minuto'])} hs a {escritura_digitos(horaduracion)}:{escritura_digitos(reservas_canceladas[reserva_num]['minuto'])} hs (Duración: {reservas_canceladas[reserva_num]['duracion']} hs)")
+
+    confirmacion_cancelar = input("¿Esta seguro de que desea cancelar esta reserva?, [Y / N]: ") 
+
+    if confirmacion_cancelar.lower() in ("y", "yes", "si"):
+        reservar.append(reservas_canceladas[reserva_num])
+        del reservas_canceladas[reserva_num]
+        
+        # Se verifica que al devolver el espacio no se supere la capacidad total (índice 3)
+        if estacionamientos[sel]['capacidad_actual'] <= 0:
+            print("\nNo hay espacios disponibles en este estacionamiento.")
+            return
+        else:
+            estacionamientos[sel]['capacidad_actual'] -= 1
+            
+        print("Reserva recuperada exitosamente.")
+        input("\nPresione ENTER para continuar...")
