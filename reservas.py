@@ -10,13 +10,13 @@ def pedir_nombre(mensaje):
     return name
 
 def pedir_numero(mensaje):
-    valor = input(mensaje)
+    while True:
+        valor = input(mensaje)
 
-    while not re.match(r"^\d+$", valor):
-        print("Valor ingresado invalido. ")
-        valor = input("Ingrese unicamente valores numericos: ")
-
-    return int(valor)
+        try:
+            return int(valor)
+        except ValueError:
+            print("El valor ingresado no es de valor numerico. Vuelva a ingresar.")
 
 def escritura_digitos(A):
     ''' Agrega un 0 por delante a los valores numericos inferiores a 10 '''
@@ -144,6 +144,19 @@ def escribir_horario():
 
     return hora, minuto
 
+def generar_archivo(nombre_archivo, reservar, estacionamientos, sel, indice):
+        archivo = open(nombre_archivo, 'w', encoding="UTF-8")
+
+        archivo.write("=" * 44)
+        archivo.write("-" * 10 + f"{estacionamientos[sel]['nombre']}" + "-" * 10)
+        archivo.write("=" * 44 + "\n")
+        archivo.write("-" * 3 + "RESERVA REALIZADA EXCITOSAMENTE" + "-" * 3)
+        archivo.write(f"\n Reserva realizada bajo el nombre de {reservar[indice]["nombre"]}")
+
+        archivo.close()
+
+        print("Recibo realizado con excito.")
+
 def generar_reserva(sel, estacionamientos, reservar):
     ''' Permite generar una reserva tomando datos como, la fecha, el horario, la duracion, y el nombre del titular de la reserva '''
     
@@ -232,6 +245,11 @@ def generar_reserva(sel, estacionamientos, reservar):
             'estacionamiento':sel
         }
         reservar.append(reserva)
+
+        indice = len(reservar)
+
+        nombre_archivo = 'recibos.txt'
+        generar_archivo(nombre_archivo, reservar, estacionamientos, sel, indice)
 
 def mostrar_lista_reservas(lista):
     """ Muestra únicamente las reservas. """
@@ -358,6 +376,7 @@ def cancelar_reserva(sel, estacionamientos, reservar, reservas_canceladas):
         input("\nPresione ENTER para continuar...")
 
 def recuperar_reserva(sel, estacionamientos, reservar, reservas_canceladas):
+
     ''' Permite ver las reservas hechas y cancelar la reserva seleccionada '''
     print("\n--- RESERVAS CANCELADAS ---")
     mostrar_lista_reservas(reservas_canceladas)
