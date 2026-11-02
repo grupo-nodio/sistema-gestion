@@ -1,6 +1,37 @@
 import re
+import json
 from functools import reduce
 
+def crea_archivo():
+    try:
+        with open("Usuarios.json", "r", encoding="utf-8") as archivo:
+            json.load(archivo)
+    except FileNotFoundError:
+        with open("Usuarios.json", "w", encoding="utf-8") as archivo:
+            archivo.write("{}")
+    except json.JSONDecodeError:
+        raise ValueError("Usuarios.json esta dañado; no se sobrescribio para proteger los datos.")
+
+
+def cargar_usuarios():
+    """Carga el diccionario de usuarios guardado en Usuarios.json."""
+    try:
+        with open("Usuarios.json", "r", encoding="utf-8") as archivo:
+            usuarios = json.load(archivo)
+    except FileNotFoundError:
+        return {}
+    except json.JSONDecodeError:
+        raise ValueError("Usuarios.json esta dañado; revisa el archivo antes de continuar.")
+
+    if not isinstance(usuarios, dict):
+        raise ValueError("Usuarios.json debe contener un objeto con los usuarios.")
+
+    campos_requeridos = ("nombre", "apellido", "email", "telefono", "estado")
+    for dni, datos in usuarios.items():
+        if not isinstance(datos, dict) or any(campo not in datos for campo in campos_requeridos):
+            raise ValueError(f"El registro del DNI {dni} no tiene todos los campos requeridos.")
+
+    return usuarios
 
 
 def validar_nombre(texto):
@@ -33,6 +64,27 @@ def lineas():
     print("-" * 60)
 
 
+def pedir_dato_validado(mensaje, validador, mensaje_error):
+    """Pide un dato hasta que sea valido o devuelve None si se ingresa -1."""
+    while True:
+        dato = input(mensaje)
+        if dato == "-1":
+            return None
+        if validador(dato):
+            return dato
+        print(mensaje_error)
+
+def escribir_archivo(usuarios):
+    """Guarda todos los usuarios en formato JSON."""
+    with open("Usuarios.json", "w", encoding="utf-8") as archivo:
+        json.dump(usuarios, archivo, ensure_ascii=False, indent=4)
+
+
+def actualizar_estado_archivo(usuarios, dni, nuevo_estado):
+    """Actualiza el estado del usuario y guarda el diccionario en JSON."""
+    usuarios[dni]["estado"] = nuevo_estado
+    escribir_archivo(usuarios)
+
 def alta(usuarios):
     """
     Solicita y valida datos para registrar un usuario.
@@ -40,37 +92,62 @@ def alta(usuarios):
     print("CREACION DE USUARIO")
     lineas()
 
-    nombre = input("Ingrese su nombre:")
-    while not validar_nombre(nombre):
-        print("Nombre invalido. Solo se permiten letras, espacios, guiones y apostrofes.")
-        nombre = input("Ingrese su nombre nuevamente: ")
+    nombre = pedir_dato_validado(
+        "Ingrese su nombre o -1 para cancelar: ", validar_nombre,
+        "Nombre invalido. Solo se permiten letras, espacios, guiones y apostrofes.",
+    )
+    if nombre is None:
+        print("Operacion cancelada.")
+        lineas()
+        return usuarios
 
-    apellido = input("Ingrese su apellido:")
-    while not validar_nombre(apellido):
-        print("Apellido invalido. Solo se permiten letras, espacios, guiones y apostrofes.")
-        apellido = input("Ingrese su apellido nuevamente: ")
+    apellido = pedir_dato_validado(
+        "Ingrese su apellido o -1 para cancelar: ", validar_nombre,
+        "Apellido invalido. Solo se permiten letras, espacios, guiones y apostrofes.",
+    )
+    if apellido is None:
+        print("Operacion cancelada.")
+        lineas()
+        return usuarios
 
-    dni = input("Ingrese su DNI:")
-    while not validar_dni(dni):
-        print("DNI INVALIDO, TIENE QUE TENER EXACTAMENTE 8 CARACTERES.")
-        dni = input("Ingrese su DNI:")
+    dni = pedir_dato_validado(
+        "Ingrese su DNI o -1 para cancelar: ", validar_dni,
+        "DNI INVALIDO, TIENE QUE TENER EXACTAMENTE 8 CARACTERES.",
+    )
+    if dni is None:
+        print("Operacion cancelada.")
+        lineas()
+        return usuarios
 
     while dni in usuarios:
         print("ERROR, EL DNI YA EXISTE, un dni no puede estar duplicado.")
-        dni = input("Ingrese su DNI:")
-        while not validar_dni(dni):
-            print("DNI INVALIDO, TIENE QUE TENER EXACTAMENTE 8 CARACTERES.")
-            dni = input("Ingrese su DNI:")
+        dni = pedir_dato_validado(
+            "Ingrese otro DNI o -1 para cancelar: ", validar_dni,
+            "DNI INVALIDO, TIENE QUE TENER EXACTAMENTE 8 CARACTERES.",
+        )
+        if dni is None:
+            print("Operacion cancelada.")
+            lineas()
+            return usuarios
 
-    email = input("Ingrese eMail:")
-    while not validar_email(email):
-        print("Correo invalido. Ejemplo valido: nombre@dominio.com")
-        email = input("Ingrese eMail nuevamente: ")
+    email = pedir_dato_validado(
+        "Ingrese eMail o -1 para cancelar: ", validar_email,
+        "Correo invalido. Ejemplo valido: nombre@dominio.com",
+    )
+    if email is None:
+        print("Operacion cancelada.")
+        lineas()
+        return usuarios
 
-    telefono = input("Ingrese telefono (prefijo 11 o 15 + 8 digitos, ej. 1112345678):")
-    while not re.match(r"^(?:11|15)\d{8}$", telefono):
-        print("Telefono invalido. Debe comenzar con '11' o '15' seguido de 8 digitos (ej. 1112345678).")
-        telefono = input("Ingrese telefono:")
+    telefono = pedir_dato_validado(
+        "Ingrese telefono (11 o 15 + 8 digitos) o -1 para cancelar: ",
+        lambda numero: re.fullmatch(r"(?:11|15)\d{8}", numero),
+        "Telefono invalido. Debe comenzar con '11' o '15' seguido de 8 digitos.",
+    )
+    if telefono is None:
+        print("Operacion cancelada.")
+        lineas()
+        return usuarios
 
     usuarios[dni] = {
         "nombre": nombre,
@@ -80,9 +157,24 @@ def alta(usuarios):
         "estado": "A",
     }
 
+    escribir_archivo(usuarios)
+    
     print("--USUARIO CREADO--")
     return usuarios
 
+def formatear_usuario(item):
+    #Sirve para convertir cada usuario en una linea de texto antes de imprimirlo, mas que nada esta para tener
+    # implementado el map en algun lugar del codigo
+
+    dni, datos = item
+    return (
+        "Nombre: " + datos["nombre"]
+        + " Apellido: " + datos["apellido"]
+        + " DNI: " + dni
+        + " Mail: " + datos["email"]
+        + " Telefono: " + datos["telefono"]
+        + " Estado: " + datos["estado"]
+    )
 
 def mostrar_usuarios(usuarios):
     """
@@ -107,16 +199,7 @@ def mostrar_usuarios(usuarios):
         lineas()
 
 
-def formatear_usuario(item):
-    dni, datos = item
-    return (
-        "Nombre: " + datos["nombre"]
-        + " Apellido: " + datos["apellido"]
-        + " DNI: " + dni
-        + " Mail: " + datos["email"]
-        + " Telefono: " + datos["telefono"]
-        + " Estado: " + datos["estado"]
-    )
+
 
 
 def baja_usuarios(usuarios):
@@ -143,13 +226,15 @@ def baja_usuarios(usuarios):
         baja_dni = input("Ingrese el dni del usuario para darlo de baja o -1 para salir:")
 
     if baja_dni in usuarios and usuarios[baja_dni]["estado"] == "A":
-        seguro = input("Esta seguro de darlo de baja? (y/n):")
-        while seguro.lower() != "y" and seguro.lower() != "n":
-            print("Opcion invalida, ingrese 'y' para confirmar o 'n' para cancelar.")
-            seguro = input("Esta seguro de darlo de baja? (y/n):")
+        seguro = ("yes", "y", "no", "n")
+        respuesta = input("Esta seguro de darlo de baja? (yes/no, y/n): ").lower()
+        while respuesta not in seguro:
+            print("Opcion invalida, ingrese 'yes' o 'y' para confirmar, 'no' o 'n' para cancelar.")
+            respuesta = input("Esta seguro de darlo de baja? (yes/no, y/n): ").lower()
 
-        if seguro.lower() == "y":
+        if respuesta in ("yes", "y"):
             usuarios[baja_dni]["estado"] = "B"
+            actualizar_estado_archivo(usuarios, baja_dni, "B")
             print("--USUARIO DADO DE BAJA--")
             lineas()
             return usuarios
@@ -171,44 +256,62 @@ def modificar_usuario(usuarios):
         lineas()
         return
 
-    dni_buscar = input("Ingrese el DNI a buscar o -1 para salir:")
-    if dni_buscar == "-1":
+    dni_buscar = pedir_dato_validado(
+        "Ingrese el DNI a buscar o -1 para salir: ",
+        validar_dni,
+        "DNI INVALIDO, TIENE QUE TENER EXACTAMENTE 8 CARACTERES.",
+    )
+    if dni_buscar is None:
         print("Operacion cancelada.")
         lineas()
         return
-
-    while not validar_dni(dni_buscar):
-        print("DNI INVALIDO, TIENE QUE TENER EXACTAMENTE 8 CARACTERES.")
-        dni_buscar = input("Ingrese el DNI a buscar:")
 
     if dni_buscar in usuarios and usuarios[dni_buscar]["estado"] == "A":
         print("Modificando datos para el usuario con DNI", dni_buscar)
         lineas()
 
-        nuevo_nombre = input("Ingrese el nuevo nombre: ")
-        while not validar_nombre(nuevo_nombre):
-            print("Nombre invalido. Solo se permiten letras, espacios, guiones y apostrofes.")
-            nuevo_nombre = input("Ingrese su nombre nuevamente: ")
+        nuevo_nombre = pedir_dato_validado(
+            "Ingrese el nuevo nombre o -1 para cancelar: ", validar_nombre,
+            "Nombre invalido. Solo se permiten letras, espacios, guiones y apostrofes.",
+        )
+        if nuevo_nombre is None:
+            print("Operacion cancelada.")
+            lineas()
+            return
 
-        nuevo_apellido = input("Ingrese el nuevo apellido: ")
-        while not validar_nombre(nuevo_apellido):
-            print("Apellido invalido. Solo se permiten letras, espacios, guiones y apostrofes.")
-            nuevo_apellido = input("Ingrese su apellido nuevamente: ")
+        nuevo_apellido = pedir_dato_validado(
+            "Ingrese el nuevo apellido o -1 para cancelar: ", validar_nombre,
+            "Apellido invalido. Solo se permiten letras, espacios, guiones y apostrofes.",
+        )
+        if nuevo_apellido is None:
+            print("Operacion cancelada.")
+            lineas()
+            return
 
-        nuevo_email = input("Ingrese el nuevo eMail: ")
-        while not validar_email(nuevo_email):
-            print("Correo invalido. Ejemplo valido: nombre@dominio.com")
-            nuevo_email = input("Ingrese eMail nuevamente: ")
+        nuevo_email = pedir_dato_validado(
+            "Ingrese el nuevo eMail o -1 para cancelar: ", validar_email,
+            "Correo invalido. Ejemplo valido: nombre@dominio.com",
+        )
+        if nuevo_email is None:
+            print("Operacion cancelada.")
+            lineas()
+            return
 
-        nuevo_telefono = input("Ingrese el nuevo telefono (ej 11 o 15 + 8 digitos): ")
-        while not re.match(r"^(?:11|15)\d{8}$", nuevo_telefono):
-            print("Telefono invalido. Debe comenzar con '11' o '15' seguido de 8 digitos.")
-            nuevo_telefono = input("Ingrese telefono:")
+        nuevo_telefono = pedir_dato_validado(
+            "Ingrese el nuevo telefono o -1 para cancelar: ",
+            lambda telefono: re.fullmatch(r"(?:11|15)\d{8}", telefono),
+            "Telefono invalido. Debe comenzar con '11' o '15' seguido de 8 digitos.",
+        )
+        if nuevo_telefono is None:
+            print("Operacion cancelada.")
+            lineas()
+            return
 
         usuarios[dni_buscar]["nombre"] = nuevo_nombre
         usuarios[dni_buscar]["apellido"] = nuevo_apellido
         usuarios[dni_buscar]["email"] = nuevo_email
         usuarios[dni_buscar]["telefono"] = nuevo_telefono
+        escribir_archivo(usuarios)
 
         print("\n-- USUARIO MODIFICADO CON EXITO --")
         return usuarios
@@ -252,6 +355,7 @@ def quitar_baja(usuarios):
         if validar_dni(dni_usuario):
             if dni_usuario in usuarios_baja:
                 usuarios[dni_usuario]["estado"] = "A"
+                escribir_archivo(usuarios)
                 print("\nUSUARIO DADO DE ALTA NUEVAMENTE")
                 lineas()
                 return usuarios
