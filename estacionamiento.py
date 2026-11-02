@@ -1,6 +1,6 @@
 import re, json
 
-# ------------------------------------------------------------- 1. VALIDACIONES -----------------------------------------------------------
+# --------------------------------------------------- 1. VALIDACIONES Y MANEJO DE ARCHIVOS -------------------------------------------------
 
 # Se usa en validar_modificar, validar_cambio_estado, validar_positivos, validar_tipo_horario, validar_dia, elegir_estacionamiento, elegir_modificar, edit_estado, edit_espacios, edit_horario, crear_espacios, crear_horarios, eliminar_estacionamiento
 def pedir_numero(mensaje):
