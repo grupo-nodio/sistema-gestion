@@ -1,0 +1,18 @@
+{
+    "1": {
+        "nombre": "Park",
+        "estado": 1,
+        "direccion": "123",
+        "capacidad_total": 12,
+        "capacidad_actual": 12,
+        "horarios": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+        ]
+    }
+}

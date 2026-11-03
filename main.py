@@ -6,21 +6,19 @@ import vehiculos
 import reportes
 
 def menu_principal():
-    # --- INICIALIZACIÓN DE LA BASE DE DATOS EN MEMORIA ---
+    # --- INICIALIZACIÓN DE LA BASE DE DATOS EN MEMORIA Y ESTRUCTURAS ---
     
-    # 1. Listas de Estacionamientos
+    # 1. Estacionamientos
     EST_JSON = 'estacionamientos.json'
-    estacionamientos = estacionamiento.cargar_estacionamiento(EST_JSON) # Diccionario principal: { id_estacionamiento: {datos_y_horarios} }, en horarios: True = 24 horas, False = Cerrado, str = "00:00 - 12:30"
+    estacionamientos = estacionamiento.cargar_estacionamiento(EST_JSON)
     
-    # 2. Listas de Usuarios
-    nombres = []
-    apellidos = []
-    dnis = []
-    emails = []
-    telefonos = []
-    estados = []
-
-    # 3. Listas de Vehículos
+    # 2. Usuarios
+    usuarios.crea_archivo()
+    usuarios_registrados = usuarios.cargar_usuarios()
+    
+    
+    # 3. Vehículos
+    VHC_JSON = 'vehiculos.json'
     patentes = []
     tipos = []
     dni_vehiculos = []
@@ -29,7 +27,7 @@ def menu_principal():
     reservar = []
     reservas_canceladas = []
 
-    # 5. Lista de tarifas
+    # 5. Lista de tarifas y cobros
     lista_cobros = []
     lista_patente_cobrada = []
 
@@ -44,12 +42,13 @@ def menu_principal():
         print("2. Crear un estacionamiento nuevo")
         print("3. Ver estadísticas generales del sistema")
         print("4. Eliminar un estacionamiento")
+        print("5. Exportar reportes a TXT")
         print("0. Salir del sistema")
         print("="*60)
         
         opcion_principal = input("Seleccione una opción: ")
         
-        while opcion_principal not in {"0", "1", "2", "3", "4"}:
+        while opcion_principal not in {"0", "1", "2", "3", "4", "5"}:
             opcion_principal = input("Error: Opción inválida. Vuelva a seleccionar: ")
 
         # --- CREAR ESTACIONAMIENTO ---
@@ -92,15 +91,14 @@ def menu_principal():
                         op_res = "-1"
                         while op_res != "0":
                             print(f"\n -------- MENU RESERVAS ({nombre_actual}) --------")
-                            print("1. Generar una reserva. ")
-                            print("2. Consultar reservas. ")
-                            print("3. Modificar reserva. ")
+                            print("1. Generar una reserva.")
+                            print("2. Consultar reservas.")
+                            print("3. Modificar reserva.")
                             print("4. Cancelar una reserva.")
                             print("0. Volver atrás.")
                             op_res = input("Opción: ")
                             
                             if op_res == "1":
-                                # Se agregó 'sel' como parámetro
                                 reservas.generar_reserva(sel, estacionamientos, reservar)
 
                             elif op_res == "2":
@@ -122,7 +120,6 @@ def menu_principal():
                                     print("\n---------------- !IMPORTANTE¡ ---------------- \n")
                                     print("Debe cargarse una reserva previamente.\n")
                                 else:
-                                    # Se agregó 'sel' como parámetro
                                     reservas.cancelar_reserva(sel, estacionamientos, reservar, reservas_canceladas)
                     
                     # 3. USUARIOS Y VEHÍCULOS (Integrados)
@@ -142,21 +139,21 @@ def menu_principal():
                             op_usu = input("Opción: ")
                             
                             if op_usu == "1":
-                                usuarios.alta(nombres, apellidos, dnis, emails, telefonos, estados)
+                                usuarios.alta(usuarios_registrados)
                             elif op_usu == "2":
-                                usuarios.mostrar_usuarios(nombres, apellidos, dnis, emails, telefonos, estados)
+                                usuarios.alta(usuarios_registrados)
                             elif op_usu == "3":
-                                usuarios.modificar_usuario(nombres, apellidos, dnis, emails, telefonos, estados)
+                                usuarios.alta(usuarios_registrados)
                             elif op_usu == "4":
-                                vehiculos.ingresar_vehiculo(patentes, tipos, dni_vehiculos, dnis)
+                                vehiculos.ingresar_vehiculo(VHC_JSON, usuarios_registrados)
                             elif op_usu == "5":
-                                vehiculos.mostrar_vehiculos(patentes, tipos, dni_vehiculos)
+                                vehiculos.mostrar_vehiculos(VHC_JSON, usuarios_registrados)
                             elif op_usu == "6":
-                                usuarios.baja_usuarios(dnis, estados)
+                                usuarios.alta(usuarios_registrados)
                             elif op_usu == "7":
-                                usuarios.quitar_baja(nombres, apellidos, dnis, emails, telefonos, estados)
+                                usuarios.alta(usuarios_registrados)
                             elif op_usu == "8":
-                                vehiculos.eliminar_vehiculo(patentes, tipos, dni_vehiculos)
+                                vehiculos.eliminar_vehiculo(VHC_JSON)
                                 
                     # 4. TARIFAS Y COBROS
                     elif op_sub == "4":
@@ -184,8 +181,33 @@ def menu_principal():
         elif opcion_principal == "4":
             estacionamiento.eliminar_estacionamiento(estacionamientos, EST_JSON)
 
+        # --- EXPORTAR REPORTES A TXT ---
+        elif opcion_principal == "5":
+            op_txt = "-1"
+            while op_txt != "0":
+                print("\n" + "="*60)
+                print(" MÓDULO DE EXPORTACIÓN A TXT")
+                print("="*60)
+                print("1. Imprimir informe de un estacionamiento")
+                print("2. Imprimir todos los estacionamientos")
+                print("3. Imprimir base de datos (Usuarios y Vehículos)")
+                print("0. Volver al menú principal")
+                print("="*60)
+                
+                op_txt = input("Seleccione una opción: ")
+                while op_txt not in {"0", "1", "2", "3"}:
+                    op_txt = input("Error: Opción inválida. Vuelva a seleccionar: ")
+
+                if op_txt == "1":
+                    reportes.imprimir_datos_estacionamiento(estacionamientos, reservar, lista_cobros)
+                elif op_txt == "2":
+                    reportes.imprimir_estacionamientos(estacionamientos, reservar, lista_cobros)
+                elif op_txt == "3":
+                    reportes.imprimir_usuarios(usuarios_registrados, VHC_JSON)
+
         # --- SALIR ---
         elif opcion_principal == "0":
             print("\nCerrando sesión de administrador. ¡Hasta luego!")
 
-menu_principal()
+if __name__ == "__main__":
+    menu_principal() 
