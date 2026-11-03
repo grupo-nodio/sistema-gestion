@@ -118,6 +118,54 @@ def reporte_recaudacion(lista_cobros):
         print("Total de dinero recaudado: $", total_dinero)
 
 def imprimir_datos_estacionamiento(estacionamientos, reservas, tarifas):
+    '''Genera un archivo de texto con los datos de un estacionamiento seleccionado'''
+    nombre_archivo = input("Ingrese el nombre del archivo: ").strip()
+
+    if not nombre_archivo.endswith(".txt"):
+        nombre_archivo += ".txt"
+
+    try:
+        with open(nombre_archivo, "r", encoding="utf-8"):
+            confirmacion = input("El archivo ya existe. Presione 1 para sobrescribirlo, 2 para agregar los datos al final, 3 para cancelar: ").lower()
+
+            if confirmacion not in ("1", "2"):
+                print("Operación cancelada.")
+                return
+            else:
+                eleccion = ("w", "a")
+
+                confirmacion = eleccion[int(confirmacion) - 1]
+
+    except FileNotFoundError:
+        confirmacion = "w"
+
+    with open(nombre_archivo, confirmacion, encoding="utf-8") as archivo:
+        archivo.write("=" * 45 + "\n")
+        archivo.write("       INFORMACIÓN DEL ESTACIONAMIENTO\n")
+        archivo.write("=" * 45 + "\n\n")
+
+        seleccion = estacionamiento.elegir_estacionamiento(estacionamientos)
+
+        dias = ('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo')
+
+        archivo.write(f"Nombre: {estacionamientos[seleccion]['nombre']}")
+        archivo.write(f"Nombre: {estacionamientos[seleccion]['direccion']}")
+        archivo.write(f"Estado: {estacionamiento.ver_estado}")
+        archivo.write(f"Capacidad ocupada: {estacionamientos[seleccion]['capacidad_total']}/{estacionamientos[seleccion]['capacidad_actual']}")
+        
+        archivo.write(f"\nHorarios:")
+        
+        for dia in range(len(dias)):
+            archivo.write(f"{dias[dia]}: {estacionamiento.mostrar_horario(estacionamientos[seleccion]['horarios'][dia])}")
+
+        # PONER ACA ABAJO ESCRITURA DE DATOS DE RESERVA Y TARIFAS
+
+        archivo.write("\n" + "=" * 45 + "\n")
+
+    print(f"Archivo '{nombre_archivo}' creado correctamente.")
+
+''' VERLO
+def imprimir_estacionamientos(estacionamientos, reservas, tarifas):
     nombre_archivo = input("Ingrese el nombre del archivo: ").strip()
 
     if not nombre_archivo.endswith(".txt"):
@@ -139,16 +187,14 @@ def imprimir_datos_estacionamiento(estacionamientos, reservas, tarifas):
         archivo.write("       INFORMACIÓN DEL ESTACIONAMIENTO\n")
         archivo.write("=" * 45 + "\n\n")
 
-        '''
-        el usuario debe elegir un estacionamiento para imprimir en el archivo
-        '''
-
-        seleccion = estacionamiento.elegir_estacionamiento(estacionamientos)
+        #funciona igual que la funcion de imprimir un estacionamiento, pero impime a todos.
 
         archivo.write("\n" + "=" * 45 + "\n")
 
     print(f"Archivo '{nombre_archivo}' creado correctamente.")
+'''
 
+    
 def imprimir_usuarios(usuarios, vehiculos):
     nombre_archivo = input("Ingrese el nombre del archivo: ").strip()
 
