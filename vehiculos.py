@@ -19,11 +19,11 @@ def guardar_vehiculosjson(nombre_archivo, vehiculos):
     guardado = False
     try:
         with open(nombre_archivo, "w", encoding="utf-8") as archivo:
-            json.dump(vehiculos, archivo, indent=4, ensure_ascii=False)
-            return True
+            json.dump(vehiculos, archivo, ensure_ascii=False, indent=4)
+            guardado = True
     except OSError as error:
         print("Error al guardar el archivo JSON:", error)
-        return False
+    return guardado
 
 #VALIDAR PATENTE
 def validar_patente():
@@ -56,21 +56,49 @@ def validar_tipodeauto():
             print("Tipo de vehículo inválido. Debe ser 'moto', 'auto' o 'camioneta'.")
 
 #INGRESAR UN VEHICULO
-def eliminar_vehiculo(nombre_archivo):
+def ingresar_vehiculo(nombre_archivo, lista_dniusuarios):
     vehiculos = cargar_vehiculosjson(nombre_archivo)
     if vehiculos is None:
+        print("No se pudo cargar la lista de vehículos. No se puede registrar un nuevo vehículo.")
         return
-    patente = input("Ingrese la patente del vehículo que desea eliminar: ").strip().upper()
-    actualizados = [v for v in vehiculos if v["patente"] != patente]
-    if len(actualizados) == len(vehiculos):
-        print("No se encontró un vehículo con la patente ingresada.")
-        return
-    if guardar_vehiculosjson(nombre_archivo, actualizados):
-        print("Vehículo eliminado correctamente.")
+    print("Ingresar datos del vehiculo: ")
+    """
+    Solicita y valida los datos necesarios para registrar un nuevo vehículo 
+    """
+    
+    #Patente
+    patente = validar_patente()
+    
+    for v in vehiculos:
+        if v["patente"] == patente.upper():
+            print("La patente ingresada ya existe en la lista de vehículos. No se puede registrar un nuevo vehículo con la misma patente.")
+            return
+
+    #Tipo de vehiculo
+    tipo = validar_tipodeauto()
+
+    #DNI del usuario propietario del vehiculo
+    dni_usuarios = input("Ingrese el DNI del usuario propietario del vehiculo: ")
+    while dni_usuarios not in lista_dniusuarios:
+        if dni_usuarios == "0":
+            print("Operacion cancelada, volviendo al menu principal")
+            return
+        print("el dni ingresado no existe, porfavor ingrese un dni valido")
+        dni_usuarios = input("Ingrese el DNI del usuario propietario del vehiculo:")
+
+        nuevo_vehiculo = {
+            "patente": patente,
+            "tipo": tipo,
+            "dni": dni_usuarios
+        }
+        vehiculos.append(nuevo_vehiculo)
+        
+
+    if guardar_vehiculosjson(nombre_archivo, vehiculos):
+        print("Vehículo registrado correctamente.")
 
 
-
-def mostrar_vehiculos(nombre_archivo):
+def mostrar_vehiculos(nombre_archivo, usuarios_registrados):
     
     vehiculos = cargar_vehiculosjson(nombre_archivo)
     if vehiculos is not None:
@@ -85,15 +113,20 @@ def mostrar_vehiculos(nombre_archivo):
 
 def eliminar_vehiculo(nombre_archivo):
     vehiculos = cargar_vehiculosjson(nombre_archivo)
-    if vehiculos is None:
-        return
+    if vehiculos is not None:
+        patente = input("Ingrese la patente del vehículo que desea eliminar: ")
+        encontrado = False
+        actualizados = []
 
-    patente = input("Ingrese la patente del vehículo a eliminar: ")
-    actualizados = [v for v in vehiculos if v["patente"] != patente]
+        for v in vehiculos:
+            if v["patente"].upper() == patente:
+                encontrado = True
+            else:
+                actualizados.append(v)
 
-    if len(actualizados) == len(vehiculos):
-        print("No se encontró un vehículo con esa patente.")    
-        return
-
-    if guardar_vehiculosjson(nombre_archivo, actualizados):
-        print("Vehículo eliminado correctamente.")
+        if encontrado:
+            if guardar_vehiculosjson(nombre_archivo, actualizados):
+                print("Vehículo eliminado correctamente.")
+        else:
+            print("No se encontró un vehículo con la patente ingresada.")
+   
