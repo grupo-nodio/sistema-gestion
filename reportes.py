@@ -13,20 +13,36 @@ def mostrar_reportes(estacionamientos, lista_tipo, lista_dni, lista_estado, rese
 
 def reporte_estacionamiento(estacionamientos):
     '''Muestra en pantalla estacionamientos registrados, disponibles, no disponibles y capacidad actual disponible total'''
-    indices = range(1, len(estacionamientos[0]))
-    disponibles = len(list(filter(lambda i: estacionamientos[1][i] == 1, indices)))
+    # Se obtienen únicamente los estacionamientos activos (excluyendo los marcados como "ELIMINADO")
+    activos = list(filter(lambda est: est["nombre"] != "ELIMINADO", estacionamientos.values()))
+    
+    # Se filtran los estacionamientos cuyo estado es 1 (disponible)
+    disponibles = list(filter(lambda est: est["estado"] == 1, activos))
+    
+    cant_registrados = len(activos)
+    cant_disponibles = len(disponibles)
+    cant_no_disponibles = cant_registrados - cant_disponibles
     
     print("\nESTADÍSTICAS DE ESTACIONAMIENTOS:")
-    print("Estacionamientos registrados:", len(estacionamientos[0]) - 1)
-    print("Estacionamientos disponibles:", disponibles)
-    print("Estacionamientos no disponibles:", (len(estacionamientos[0]) - 1) - disponibles)
+    print("Estacionamientos registrados:", cant_registrados)
+    print("Estacionamientos disponibles:", cant_disponibles)
+    print("Estacionamientos no disponibles:", cant_no_disponibles)
     print("Capacidad actual disponible (todos los estacionamientos):", capacidad_actual_disponible(estacionamientos))
 
 def capacidad_actual_disponible(estacionamientos):
     '''Muestra la capacidad actual sin reservar en total entre todos los estacionamientos que se encuentren disponibles.'''
-    indices = range(1, len(estacionamientos[0]))
-    indices_disponibles = filter(lambda i: estacionamientos[1][i] == 1, indices)
-    return reduce(lambda acumulador, i: acumulador + estacionamientos[4][i], indices_disponibles, 0)
+    # Filtrar estacionamientos que estén activos y disponibles (estado == 1)
+    estacionamientos_disponibles = filter(
+        lambda est: est["nombre"] != "ELIMINADO" and est["estado"] == 1,
+        estacionamientos.values()
+    )
+    
+    # Sumar la capacidad_actual de los estacionamientos filtrados
+    return reduce(
+        lambda acumulador, est: acumulador + est["capacidad_actual"],
+        estacionamientos_disponibles,
+        0
+    )
 
 def reporte_vehiculos_por_tipo(lista_tipo):
     """Muestra un reporte de la cantidad de vehículos registrados por tipo (moto, auto, camioneta), utilizando filter para contar cada tipo de vehículo."""
@@ -218,7 +234,7 @@ def imprimir_usuarios(usuarios, vehiculos):
         archivo.write("=" * 45 + "\n\n")
 
         '''
-        se debe mostrar la base de datos combinando la informacion de usuarios+vehiculos, el usuario tiene el vehiculo asignado
+        se debe mostrar la base de datos combinando la informacion de usuarios + vehiculos, el usuario tiene el vehiculo asignado
         '''
 
         archivo.write("\n" + "=" * 45 + "\n")
