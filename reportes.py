@@ -1,5 +1,6 @@
 from functools import reduce
 from reservas import escritura_digitos
+import estacionamiento
 
 def mostrar_reportes(estacionamientos, lista_tipo, lista_dni, lista_estado, reservar, reservas_canceladas, lista_cobros):
     '''Llama a todas las estadísticas'''
@@ -115,3 +116,65 @@ def reporte_recaudacion(lista_cobros):
         print("\nREPORTE DE RECAUDACIÓN:")
         print("Cantidad de cobros realizados:", len(lista_cobros))
         print("Total de dinero recaudado: $", total_dinero)
+
+def imprimir_datos_estacionamiento(estacionamientos, reservas, tarifas):
+    nombre_archivo = input("Ingrese el nombre del archivo: ").strip()
+
+    if not nombre_archivo.endswith(".txt"):
+        nombre_archivo += ".txt"
+
+    try:
+        with open(nombre_archivo, "r", encoding="utf-8"):
+            confirmacion = input("El archivo ya existe. ¿Desea sobrescribirlo? (S/N): ").lower()
+
+            if confirmacion != "s":
+                print("Operación cancelada.")
+                return
+
+    except FileNotFoundError:
+        pass
+
+    with open(nombre_archivo, "w", encoding="utf-8") as archivo:
+        archivo.write("=" * 45 + "\n")
+        archivo.write("       INFORMACIÓN DEL ESTACIONAMIENTO\n")
+        archivo.write("=" * 45 + "\n\n")
+
+        '''
+        el usuario debe elegir un estacionamiento para imprimir en el archivo
+        '''
+
+        seleccion = estacionamiento.elegir_estacionamiento(estacionamientos)
+
+        archivo.write("\n" + "=" * 45 + "\n")
+
+    print(f"Archivo '{nombre_archivo}' creado correctamente.")
+
+def imprimir_usuarios(usuarios, vehiculos):
+    nombre_archivo = input("Ingrese el nombre del archivo: ").strip()
+
+    if not nombre_archivo.endswith(".txt"):
+        nombre_archivo += ".txt"
+
+    try:
+        with open(nombre_archivo, "r", encoding="utf-8"):
+            confirmacion = input("El archivo ya existe. ¿Desea sobrescribirlo? (S/N): ").lower()
+
+            if confirmacion != "s":
+                print("Operación cancelada.")
+                return
+
+    except FileNotFoundError:
+        pass
+
+    with open(nombre_archivo, "w", encoding="utf-8") as archivo:
+        archivo.write("=" * 45 + "\n")
+        archivo.write("       BASE DE DATOS USUARIOS Y VEHÍCULOS\n")
+        archivo.write("=" * 45 + "\n\n")
+
+        '''
+        se debe mostrar la base de datos combinando la informacion de usuarios+vehiculos, el usuario tiene el vehiculo asignado
+        '''
+
+        archivo.write("\n" + "=" * 45 + "\n")
+
+    print(f"Archivo '{nombre_archivo}' creado correctamente.")
