@@ -1,4 +1,21 @@
-import re
+import re, json
+
+def crear_archivo_json(archivo):
+    try:
+        with open(archivo, "w", encoding="UTF-8") as archivo:
+            datos = json.load(archivo)
+
+            if len(datos):
+                return [None]
+
+            return datos
+
+    except (FileNotFoundError, json.JSONDecodeError):
+        return [None]
+
+def cargar_archivos_json(archivo, datos):
+    with open (archivo, "w", encoding="UTF-8") as archivo:
+        json.dump(datos, archivo, indent=4, ensure_ascii=False)
 
 def pedir_nombre(mensaje):
     name = input(mensaje)
@@ -145,17 +162,86 @@ def escribir_horario():
     return hora, minuto
 
 def generar_archivo(nombre_archivo, reservar, estacionamientos, sel, indice):
-        archivo = open(nombre_archivo, 'w', encoding="UTF-8")
+        try:
+            archivo = open(nombre_archivo, 'w', encoding="UTF-8")
 
-        archivo.write("=" * 44)
-        archivo.write("-" * 10 + f"{estacionamientos[sel]['nombre']}" + "-" * 10)
-        archivo.write("=" * 44 + "\n")
-        archivo.write("-" * 3 + "RESERVA REALIZADA EXCITOSAMENTE" + "-" * 3)
-        archivo.write(f"\n Reserva realizada bajo el nombre de {reservar[indice]["nombre"]}")
+            nombre = reservar[indice]['nombre']
+            dia = reservar[indice]['dia']
+            mes = reservar[indice]['mes']
+            año = reservar[indice]['año'] 
+            hora = reservar[indice]['hora']
+            minuto = reservar[indice]['minuto'] 
+            duracion = reservar[indice]['duracion']
+            _, horaduracion = contar_duracion(duracion, hora)
 
+            archivo.write("=" * 50 + "\n")
+            archivo.write(f"{'TICKET DE RESERVA':^50}\n")
+            archivo.write("=" * 50 + "\n\n")
+
+            # Datos principales
+            archivo.write(f" ESTACIONAMIENTO: {estacionamientos[sel]['nombre']}\n")
+            archivo.write(f" TITULAR:         {nombre}\n\n")
+
+            # Detalles de tiempo
+            archivo.write("-" * 50 + "\n")
+            # Nota: Si ya definiste la variable para el año, reemplaza el último 'mes' por 'anio'
+            archivo.write(f" Fecha:           {escritura_digitos(dia)}/{escritura_digitos(mes)}/{escritura_digitos(año)}\n")
+            archivo.write(f" Hora de inicio:  {escritura_digitos(hora)}:{escritura_digitos(minuto)} hs\n")
+            archivo.write(f" Hora de fin:     {escritura_digitos(horaduracion)}:{escritura_digitos(minuto)} hs\n")
+            archivo.write(f" Tiempo total:    {escritura_digitos(duracion)} horas\n")
+            archivo.write("-" * 50 + "\n\n")
+
+            # Pie del recibo
+            archivo.write(f"{'¡RESERVA REALIZADA CON ÉXITO!':^50}\n")
+            archivo.write("=" * 50 + "\n")
+
+            archivo.close()
+
+            print("Recibo realizado con exito.")
+
+        except FileNotFoundError:
+            print("Archivo no encontrado.")
+
+def escribir_archivo(nombre_archivo, reservar, estacionamientos, sel, indice):
+    try:
+        archivo = open(nombre_archivo, 'a', encoding="UTF-8")
+    
+        nombre = reservar[indice]['nombre']
+        dia = reservar[indice]['dia']
+        mes = reservar[indice]['mes']
+        año = reservar[indice]['año'] 
+        hora = reservar[indice]['hora']
+        minuto = reservar[indice]['minuto'] 
+        duracion = reservar[indice]['duracion']
+        _, horaduracion = contar_duracion(duracion, hora)
+    
+        archivo.write("=" * 50 + "\n")
+        archivo.write(f"{'TICKET DE RESERVA':^50}\n")
+        archivo.write("=" * 50 + "\n\n")
+    
+        # Datos principales
+        archivo.write(f" ESTACIONAMIENTO: {estacionamientos[sel]['nombre']}\n")
+        archivo.write(f" TITULAR:         {nombre}\n\n")
+    
+        # Detalles de tiempo
+        archivo.write("-" * 50 + "\n")
+        # Nota: Si ya definiste la variable para el año, reemplaza el último 'mes' por 'anio'
+        archivo.write(f" Fecha:           {escritura_digitos(dia)}/{escritura_digitos(mes)}/{escritura_digitos(año)}\n")
+        archivo.write(f" Hora de inicio:  {escritura_digitos(hora)}:{escritura_digitos(minuto)} hs\n")
+        archivo.write(f" Hora de fin:     {escritura_digitos(horaduracion)}:{escritura_digitos(minuto)} hs\n")
+        archivo.write(f" Tiempo total:    {escritura_digitos(duracion)} horas\n")
+        archivo.write("-" * 50 + "\n\n")
+    
+        # Pie del recibo
+        archivo.write(f"{'¡RESERVA REALIZADA CON ÉXITO!':^50}\n")
+        archivo.write("=" * 50 + "\n")
+    
         archivo.close()
-
-        print("Recibo realizado con excito.")
+    
+        print("Recibo realizado con exito.")
+    
+    except FileNotFoundError:
+        print("Archivo no encontrado.")
 
 def generar_reserva(sel, estacionamientos, reservar):
     ''' Permite generar una reserva tomando datos como, la fecha, el horario, la duracion, y el nombre del titular de la reserva '''
@@ -232,7 +318,7 @@ def generar_reserva(sel, estacionamientos, reservar):
         # 2. REDUCCIÓN DE CAPACIDAD: Restamos 1 al espacio disponible actual (índice 4)
         estacionamientos[sel]['capacidad_actual'] -= 1
         
-        print(f"La reserva se efectuo correctamente bajo el nombre de {nombre} para la fecha {escritura_digitos(dia)}/{escritura_digitos(mes)}/{escritura_digitos(año)}, empezara a las {escritura_digitos(hora)}:{escritura_digitos(minuto)} hs y finalizara a las {escritura_digitos(horaduracion)}:{escritura_digitos(minuto)} hs")
+        print(f"\nLa reserva se efectuo correctamente bajo el nombre de {nombre} para la fecha {escritura_digitos(dia)}/{escritura_digitos(mes)}/{escritura_digitos(año)}, empezara a las {escritura_digitos(hora)}:{escritura_digitos(minuto)} hs y finalizara a las {escritura_digitos(horaduracion)}:{escritura_digitos(minuto)} hs")
 
         reserva = {
             'nombre':nombre,
@@ -246,10 +332,14 @@ def generar_reserva(sel, estacionamientos, reservar):
         }
         reservar.append(reserva)
 
-        indice = len(reservar)
+        indice = len(reservar) - 1
 
         nombre_archivo = 'recibos.txt'
-        generar_archivo(nombre_archivo, reservar, estacionamientos, sel, indice)
+        if len(reservar) == 1:
+            generar_archivo(nombre_archivo, reservar, estacionamientos, sel, indice)
+
+        else: 
+            escribir_archivo(nombre_archivo, reservar, estacionamientos, sel, indice)
 
 def mostrar_lista_reservas(lista):
     """ Muestra únicamente las reservas. """
