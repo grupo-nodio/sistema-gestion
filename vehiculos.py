@@ -91,12 +91,14 @@ def ingresar_vehiculo(nombre_archivo, lista_dniusuarios):
             "dni": dni_usuarios
         }
         vehiculos.append(nuevo_vehiculo)
+        guardar_vehiculosjson(nombre_archivo, vehiculos)
+
 
     if guardar_vehiculosjson(nombre_archivo, vehiculos):
         print("Vehículo registrado correctamente.")
 
 
-def mostrar_vehiculos(vehiculos):
+def mostrar_vehiculos(nombre_archivo):
     
     vehiculos = cargar_vehiculosjson(nombre_archivo)
     if vehiculos is not None:
@@ -109,7 +111,7 @@ def mostrar_vehiculos(vehiculos):
            for v in vehiculos:
                 print(f"{v['patente']:<15}{v['tipo']:<15}{v['dni']:<15}")
 
-def eliminar_vehiculo(vehiculos):
+def eliminar_vehiculo(nombre_archivo):
     vehiculos = cargar_vehiculosjson(nombre_archivo)
     if vehiculos is not None:
         patente = input("Ingrese la patente del vehículo que desea eliminar: ")
