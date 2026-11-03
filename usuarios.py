@@ -13,15 +13,27 @@ from functools import reduce
 def crea_archivo():
     try:
         with open("Usuarios.json", "r", encoding="utf-8") as archivo:
-            json.load(archivo)
+            pass
     except FileNotFoundError:
         with open("Usuarios.json", "w", encoding="utf-8") as archivo:
             archivo.write("{}")
-    except json.JSONDecodeError as error:
-        raise ValueError(
-            f"Usuarios.json tiene JSON invalido en la linea {error.lineno}, "
-            f"columna {error.colno}; no se sobrescribio para proteger los datos."
-        )
+
+
+def formato_usuarios_valido(usuarios):
+    """Comprueba que el JSON tenga un diccionario con los campos esperados."""
+    if type(usuarios) != dict:
+        return False
+
+    campos_requeridos = ("nombre", "apellido", "email", "telefono", "estado")
+    for datos in usuarios.values():
+        if type(datos) != dict:
+            return False
+
+        for campo in campos_requeridos:
+            if campo not in datos:
+                return False
+
+    return True
 
 
 def cargar_usuarios():
@@ -29,21 +41,24 @@ def cargar_usuarios():
     try:
         with open("Usuarios.json", "r", encoding="utf-8") as archivo:
             usuarios = json.load(archivo)
+
+        if not formato_usuarios_valido(usuarios):
+            raise ValueError("el archivo debe contener usuarios con todos los campos requeridos")
     except FileNotFoundError:
         return {}
-    except json.JSONDecodeError as error:
-        raise ValueError(
-            f"Usuarios.json tiene JSON invalido en la linea {error.lineno}, "
-            f"columna {error.colno}; revisa el archivo antes de continuar."
+    except (json.JSONDecodeError, ValueError, AttributeError) as error:
+        decision = input(
+            f"Error: Usuarios.json no tiene el formato esperado ({error}). "
+            "¿Desea sobrescribirlo con un diccionario vacío? (y/n): "
         )
 
-    if not isinstance(usuarios, dict):
-        raise ValueError("Usuarios.json debe contener un objeto con los usuarios.")
+        if decision.lower() in ("y", "yes", "s", "si"):
+            datos_iniciales = {}
+            reiniciar_archivo(datos_iniciales)
+            return datos_iniciales
 
-    campos_requeridos = ("nombre", "apellido", "email", "telefono", "estado")
-    for dni, datos in usuarios.items():
-        if not isinstance(datos, dict) or any(campo not in datos for campo in campos_requeridos):
-            raise ValueError(f"El registro del DNI {dni} no tiene todos los campos requeridos.")
+        print("Se usará un diccionario vacío. Corrija Usuarios.json para guardar cambios.")
+        return {}
 
     return usuarios
 
@@ -79,7 +94,7 @@ def lineas():
 
 
 def pedir_dato_validado(mensaje, validador, mensaje_error):
-    """Pide un dato hasta que sea valido o devuelve None si se ingresa -1."""
+    """Pide un dato válido; devuelve None si se ingresa -1."""
     while True:
         dato = input(mensaje)
         if dato == "-1":
@@ -88,10 +103,42 @@ def pedir_dato_validado(mensaje, validador, mensaje_error):
             return dato
         print(mensaje_error)
 
-def escribir_archivo(usuarios):
-    """Guarda todos los usuarios en formato JSON."""
+
+def guardar_json(usuarios):
+    """Escribe un diccionario en Usuarios.json."""
     with open("Usuarios.json", "w", encoding="utf-8") as archivo:
         json.dump(usuarios, archivo, ensure_ascii=False, indent=4)
+
+
+def reiniciar_archivo(usuarios):
+    """Sobrescribe el JSON después de que la persona confirma reiniciarlo."""
+    if formato_usuarios_valido(usuarios) == False:
+        print("No se pudo reiniciar: los datos iniciales tienen una estructura inválida.")
+        return
+
+    guardar_json(usuarios)
+
+
+def escribir_archivo(usuarios):
+    """Guarda usuarios si el archivo existente todavía tiene un formato válido."""
+    try:
+        with open("Usuarios.json", "r", encoding="utf-8") as archivo:
+            datos_existentes = json.load(archivo)
+    except FileNotFoundError:
+        datos_existentes = {}
+    except json.JSONDecodeError:
+        print("No se guardaron los cambios: Usuarios.json contiene JSON inválido.")
+        return
+
+    if formato_usuarios_valido(datos_existentes) == False:
+        print("No se guardaron los cambios: Usuarios.json tiene una estructura inválida.")
+        return
+
+    if formato_usuarios_valido(usuarios) == False:
+        print("No se guardaron los cambios: los datos de usuarios tienen una estructura inválida.")
+        return
+
+    guardar_json(usuarios)
 
 
 def actualizar_estado_archivo(usuarios, dni, nuevo_estado):
@@ -270,56 +317,39 @@ def modificar_usuario(usuarios):
         lineas()
         return
 
-    dni_buscar = pedir_dato_validado(
-        "Ingrese el DNI a buscar o -1 para salir: ",
-        validar_dni,
-        "DNI INVALIDO, TIENE QUE TENER EXACTAMENTE 8 CARACTERES.",
-    )
-    if dni_buscar is None:
+    dni_buscar = input("Ingrese el DNI a buscar o -1 para salir:")
+    if dni_buscar == "-1":
         print("Operacion cancelada.")
         lineas()
         return
+
+    while not validar_dni(dni_buscar):
+        print("DNI INVALIDO, TIENE QUE TENER EXACTAMENTE 8 CARACTERES.")
+        dni_buscar = input("Ingrese el DNI a buscar:")
 
     if dni_buscar in usuarios and usuarios[dni_buscar]["estado"] == "A":
         print("Modificando datos para el usuario con DNI", dni_buscar)
         lineas()
 
-        nuevo_nombre = pedir_dato_validado(
-            "Ingrese el nuevo nombre o -1 para cancelar: ", validar_nombre,
-            "Nombre invalido. Solo se permiten letras, espacios, guiones y apostrofes.",
-        )
-        if nuevo_nombre is None:
-            print("Operacion cancelada.")
-            lineas()
-            return
+        nuevo_nombre = input("Ingrese el nuevo nombre: ")
+        while not validar_nombre(nuevo_nombre):
+            print("Nombre invalido. Solo se permiten letras, espacios, guiones y apostrofes.")
+            nuevo_nombre = input("Ingrese su nombre nuevamente: ")
 
-        nuevo_apellido = pedir_dato_validado(
-            "Ingrese el nuevo apellido o -1 para cancelar: ", validar_nombre,
-            "Apellido invalido. Solo se permiten letras, espacios, guiones y apostrofes.",
-        )
-        if nuevo_apellido is None:
-            print("Operacion cancelada.")
-            lineas()
-            return
+        nuevo_apellido = input("Ingrese el nuevo apellido: ")
+        while not validar_nombre(nuevo_apellido):
+            print("Apellido invalido. Solo se permiten letras, espacios, guiones y apostrofes.")
+            nuevo_apellido = input("Ingrese su apellido nuevamente: ")
 
-        nuevo_email = pedir_dato_validado(
-            "Ingrese el nuevo eMail o -1 para cancelar: ", validar_email,
-            "Correo invalido. Ejemplo valido: nombre@dominio.com",
-        )
-        if nuevo_email is None:
-            print("Operacion cancelada.")
-            lineas()
-            return
+        nuevo_email = input("Ingrese el nuevo eMail: ")
+        while not validar_email(nuevo_email):
+            print("Correo invalido. Ejemplo valido: nombre@dominio.com")
+            nuevo_email = input("Ingrese eMail nuevamente: ")
 
-        nuevo_telefono = pedir_dato_validado(
-            "Ingrese el nuevo telefono o -1 para cancelar: ",
-            lambda telefono: re.fullmatch(r"(?:11|15)\d{8}", telefono),
-            "Telefono invalido. Debe comenzar con '11' o '15' seguido de 8 digitos.",
-        )
-        if nuevo_telefono is None:
-            print("Operacion cancelada.")
-            lineas()
-            return
+        nuevo_telefono = input("Ingrese el nuevo telefono (ej 11 o 15 + 8 digitos): ")
+        while not re.match(r"^(?:11|15)\d{8}$", nuevo_telefono):
+            print("Telefono invalido. Debe comenzar con '11' o '15' seguido de 8 digitos.")
+            nuevo_telefono = input("Ingrese telefono:")
 
         usuarios[dni_buscar]["nombre"] = nuevo_nombre
         usuarios[dni_buscar]["apellido"] = nuevo_apellido
