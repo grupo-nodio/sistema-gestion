@@ -8,7 +8,7 @@ import reportes
 def menu_principal():
     # --- INICIALIZACIÓN DE LA BASE DE DATOS EN MEMORIA ---
     
-    # 1. Estacionamientos
+    # 1. Listas de Estacionamientos
     EST_JSON = 'estacionamientos.json'
     estacionamientos = estacionamiento.cargar_estacionamiento(EST_JSON) # Diccionario principal: { id_estacionamiento: {datos_y_horarios} }, en horarios: True = 24 horas, False = Cerrado, str = "00:00 - 12:30"
     
@@ -136,19 +136,19 @@ def menu_principal():
                             op_usu = input("Opción: ")
                             
                             if op_usu == "1":
-                                usuarios.alta(usuarios_registrados)
+                                usuarios.alta(nombres, apellidos, dnis, emails, telefonos, estados)
                             elif op_usu == "2":
-                                usuarios.mostrar_usuarios(usuarios_registrados)
+                                usuarios.mostrar_usuarios(nombres, apellidos, dnis, emails, telefonos, estados)
                             elif op_usu == "3":
-                                usuarios.modificar_usuario(usuarios_registrados)
+                                usuarios.modificar_usuario(nombres, apellidos, dnis, emails, telefonos, estados)
                             elif op_usu == "4":
-                                vehiculos.ingresar_vehiculo(VHC_JSON, usuarios_registrados)
+                                vehiculos.ingresar_vehiculo(patentes, tipos, dni_vehiculos, dnis)
                             elif op_usu == "5":
                                 vehiculos.mostrar_vehiculos(VHC_JSON, usuarios_registrados)
                             elif op_usu == "6":
-                                usuarios.baja_usuarios(usuarios_registrados)
+                                usuarios.baja_usuarios(dnis, estados)
                             elif op_usu == "7":
-                                usuarios.quitar_baja(usuarios_registrados)
+                                usuarios.quitar_baja(nombres, apellidos, dnis, emails, telefonos, estados)
                             elif op_usu == "8":
                                 vehiculos.eliminar_vehiculo(VHC_JSON)
                                 
