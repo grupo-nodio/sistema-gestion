@@ -13,7 +13,7 @@ from functools import reduce
 def crea_archivo():
     try:
         with open("Usuarios.json", "r", encoding="utf-8") as archivo:
-            pass
+            return
     except FileNotFoundError:
         with open("Usuarios.json", "w", encoding="utf-8") as archivo:
             archivo.write("{}")
