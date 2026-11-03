@@ -1,19 +1,16 @@
-#LINEAS PARA MAIN 
-"""
-# 2. Diccionario de Usuarios (en usuario.py), esto basicamente importa el txt y lo convierte en diccionarios
-    usuarios.crea_archivo()
-    usuarios_registrados = usuarios.cargar_usuarios()
-"""
-
 
 import re
 import json
 from functools import reduce
 
 def crea_archivo():
+    """
+    Intenta leer el archivo json, y si no existe, lo crea de cero.
+    """
+
     try:
         with open("Usuarios.json", "r", encoding="utf-8") as archivo:
-            pass
+            return
     except FileNotFoundError:
         with open("Usuarios.json", "w", encoding="utf-8") as archivo:
             archivo.write("{}")
@@ -155,7 +152,7 @@ def alta(usuarios):
 
     nombre = pedir_dato_validado(
         "Ingrese su nombre o -1 para cancelar: ", validar_nombre,
-        "Nombre invalido. Solo se permiten letras, espacios, guiones y apostrofes.",
+        "Nombre invalido. Solo se permiten letras, espacios, guiones y apostrofes.", #Mensaje error
     )
     if nombre is None:
         print("Operacion cancelada.")
@@ -164,7 +161,7 @@ def alta(usuarios):
 
     apellido = pedir_dato_validado(
         "Ingrese su apellido o -1 para cancelar: ", validar_nombre,
-        "Apellido invalido. Solo se permiten letras, espacios, guiones y apostrofes.",
+        "Apellido invalido. Solo se permiten letras, espacios, guiones y apostrofes.", #Mensaje error
     )
     if apellido is None:
         print("Operacion cancelada.")
@@ -173,7 +170,7 @@ def alta(usuarios):
 
     dni = pedir_dato_validado(
         "Ingrese su DNI o -1 para cancelar: ", validar_dni,
-        "DNI INVALIDO, TIENE QUE TENER EXACTAMENTE 8 CARACTERES.",
+        "DNI INVALIDO, TIENE QUE TENER EXACTAMENTE 8 CARACTERES.", #Mensaje error
     )
     if dni is None:
         print("Operacion cancelada.")
@@ -184,7 +181,7 @@ def alta(usuarios):
         print("ERROR, EL DNI YA EXISTE, un dni no puede estar duplicado.")
         dni = pedir_dato_validado(
             "Ingrese otro DNI o -1 para cancelar: ", validar_dni,
-            "DNI INVALIDO, TIENE QUE TENER EXACTAMENTE 8 CARACTERES.",
+            "DNI INVALIDO, TIENE QUE TENER EXACTAMENTE 8 CARACTERES.", #Mensaje error
         )
         if dni is None:
             print("Operacion cancelada.")
@@ -193,7 +190,7 @@ def alta(usuarios):
 
     email = pedir_dato_validado(
         "Ingrese eMail o -1 para cancelar: ", validar_email,
-        "Correo invalido. Ejemplo valido: nombre@dominio.com",
+        "Correo invalido. Ejemplo valido: nombre@dominio.com", #Mensaje error
     )
     if email is None:
         print("Operacion cancelada.")
@@ -203,7 +200,7 @@ def alta(usuarios):
     telefono = pedir_dato_validado(
         "Ingrese telefono (11 o 15 + 8 digitos) o -1 para cancelar: ",
         lambda numero: re.fullmatch(r"(?:11|15)\d{8}", numero),
-        "Telefono invalido. Debe comenzar con '11' o '15' seguido de 8 digitos.",
+        "Telefono invalido. Debe comenzar con '11' o '15' seguido de 8 digitos.", #Mensaje error
     )
     if telefono is None:
         print("Operacion cancelada.")
