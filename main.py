@@ -139,19 +139,19 @@ def menu_principal():
                             op_usu = input("Opción: ")
                             
                             if op_usu == "1":
-                                usuarios.alta(nombres, apellidos, dnis, emails, telefonos, estados)
+                                usuarios.alta(usuarios_registrados)
                             elif op_usu == "2":
-                                usuarios.mostrar_usuarios(nombres, apellidos, dnis, emails, telefonos, estados)
+                                usuarios.mostrar_usuarios(usuarios_registrados)
                             elif op_usu == "3":
-                                usuarios.modificar_usuario(nombres, apellidos, dnis, emails, telefonos, estados)
+                                usuarios.modificar_usuario(usuarios_registrados)
                             elif op_usu == "4":
-                                vehiculos.ingresar_vehiculo(patentes, tipos, dni_vehiculos, dnis)
+                                vehiculos.ingresar_vehiculo(patentes, tipos, dni_vehiculos, usuarios_registrados)
                             elif op_usu == "5":
                                 vehiculos.mostrar_vehiculos(VHC_JSON)
                             elif op_usu == "6":
-                                usuarios.baja_usuarios(dnis, estados)
+                                usuarios.baja_usuarios(usuarios_registrados)
                             elif op_usu == "7":
-                                usuarios.quitar_baja(nombres, apellidos, dnis, emails, telefonos, estados)
+                                usuarios.quitar_baja(usuarios_registrados)
                             elif op_usu == "8":
                                 vehiculos.eliminar_vehiculo(VHC_JSON)
                                 
