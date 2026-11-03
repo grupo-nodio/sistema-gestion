@@ -8,22 +8,17 @@ import reportes
 def menu_principal():
     # --- INICIALIZACIÓN DE LA BASE DE DATOS EN MEMORIA ---
     
-    # 1. Listas de Estacionamientos
+    # 1. Estacionamientos
     EST_JSON = 'estacionamientos.json'
     estacionamientos = estacionamiento.cargar_estacionamiento(EST_JSON) # Diccionario principal: { id_estacionamiento: {datos_y_horarios} }, en horarios: True = 24 horas, False = Cerrado, str = "00:00 - 12:30"
     
-    # 2. Listas de Usuarios
-    nombres = []
-    apellidos = []
-    dnis = []
-    emails = []
-    telefonos = []
-    estados = []
-
-    # 3. Listas de Vehículos
-    patentes = []
-    tipos = []
-    dni_vehiculos = []
+    # 2. Diccionario de Usuarios (en usuario.py), esto basicamente importa el json y lo convierte en diccionarios
+    usuarios.crea_archivo()
+    usuarios_registrados = usuarios.cargar_usuarios()
+    
+    # 3. Vehiculos
+    VHC_JSON = 'vehiculos.json'
+    vehiculos_registrados = vehiculos.cargar_vehiculosjson(VHC_JSON)
 
     # 4. Lista de reservas
     reservar = []
@@ -142,21 +137,21 @@ def menu_principal():
                             op_usu = input("Opción: ")
                             
                             if op_usu == "1":
-                                usuarios.alta(nombres, apellidos, dnis, emails, telefonos, estados)
+                                usuarios.alta(usuarios_registrados)
                             elif op_usu == "2":
-                                usuarios.mostrar_usuarios(nombres, apellidos, dnis, emails, telefonos, estados)
+                                usuarios.mostrar_usuarios(usuarios_registrados)
                             elif op_usu == "3":
-                                usuarios.modificar_usuario(nombres, apellidos, dnis, emails, telefonos, estados)
+                                usuarios.modificar_usuario(usuarios_registrados)
                             elif op_usu == "4":
-                                vehiculos.ingresar_vehiculo(patentes, tipos, dni_vehiculos, dnis)
+                                vehiculos.ingresar_vehiculo(VHC_JSON, usuarios_registrados)
                             elif op_usu == "5":
-                                vehiculos.mostrar_vehiculos(patentes, tipos, dni_vehiculos)
+                                vehiculos.mostrar_vehiculos(vehiculos_registrados)
                             elif op_usu == "6":
-                                usuarios.baja_usuarios(dnis, estados)
+                                usuarios.baja_usuarios(usuarios_registrados)
                             elif op_usu == "7":
-                                usuarios.quitar_baja(nombres, apellidos, dnis, emails, telefonos, estados)
+                                usuarios.quitar_baja(usuarios_registrados)
                             elif op_usu == "8":
-                                vehiculos.eliminar_vehiculo(patentes, tipos, dni_vehiculos)
+                                vehiculos.eliminar_vehiculo(VHC_JSON, vehiculos_registrados)
                                 
                     # 4. TARIFAS Y COBROS
                     elif op_sub == "4":

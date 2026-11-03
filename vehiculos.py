@@ -19,7 +19,7 @@ def guardar_vehiculosjson(nombre_archivo, vehiculos):
     guardado = False
     try:
         with open(nombre_archivo, "w", encoding="utf-8") as archivo:
-            json.dump(vehiculos, ensure_ascii=False, indent=4)
+            json.dump(vehiculos, archivo, indent=4, ensure_ascii=False)
             guardado = True
     except OSError as error:
         print("Error al guardar el archivo JSON:", error)

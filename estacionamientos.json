@@ -1,0 +1,18 @@
+{
+    "1": {
+        "nombre": "Bautidaun",
+        "estado": 1,
+        "direccion": "123",
+        "capacidad_total": 100,
+        "capacidad_actual": 100,
+        "horarios": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            false,
+            false
+        ]
+    }
+}
