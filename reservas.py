@@ -1,22 +1,5 @@
 import re, json
 
-def crear_archivo_json(archivo):
-    try:
-        with open(archivo, "w", encoding="UTF-8") as archivo:
-            datos = json.load(archivo)
-
-            if len(datos):
-                return [None]
-
-            return datos
-
-    except (FileNotFoundError, json.JSONDecodeError):
-        return [None]
-
-def cargar_archivos_json(archivo, datos):
-    with open (archivo, "w", encoding="UTF-8") as archivo:
-        json.dump(datos, archivo, indent=4, ensure_ascii=False)
-
 def pedir_nombre(mensaje):
     name = input(mensaje)
 
