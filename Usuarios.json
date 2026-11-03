@@ -1,0 +1,37 @@
+{
+    "47129364": {
+        "nombre": "BAUTISTA",
+        "apellido": "mazzolla",
+        "email": "bautistamazzolla4@gmail.com",
+        "telefono": "1155776674",
+        "estado": "B"
+    },
+    "12345678": {
+        "nombre": "joaquin",
+        "apellido": "gonzales",
+        "email": "joaco@gmail.com",
+        "telefono": "1133445566",
+        "estado": "A"
+    },
+    "12345670": {
+        "nombre": "bautista",
+        "apellido": "mazzolla",
+        "email": "bauti2@gmail.com",
+        "telefono": "1155776674",
+        "estado": "A"
+    },
+    "12345612": {
+        "nombre": "bautista",
+        "apellido": "polopo",
+        "email": "bautistamazzolla@gmail.com",
+        "telefono": "1122332233",
+        "estado": "A"
+    },
+    "12345677": {
+        "nombre": "jo",
+        "apellido": "lo",
+        "email": "bautista@gmail.cpm",
+        "telefono": "1133445566",
+        "estado": "A"
+    }
+}

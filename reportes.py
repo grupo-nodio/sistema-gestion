@@ -1,5 +1,6 @@
 from functools import reduce
 from reservas import escritura_digitos
+import estacionamiento
 
 def mostrar_reportes(estacionamientos, lista_tipo, lista_dni, lista_estado, reservar, reservas_canceladas, lista_cobros):
     '''Llama a todas las estadísticas'''
@@ -12,20 +13,36 @@ def mostrar_reportes(estacionamientos, lista_tipo, lista_dni, lista_estado, rese
 
 def reporte_estacionamiento(estacionamientos):
     '''Muestra en pantalla estacionamientos registrados, disponibles, no disponibles y capacidad actual disponible total'''
-    indices = range(1, len(estacionamientos[0]))
-    disponibles = len(list(filter(lambda i: estacionamientos[1][i] == 1, indices)))
+    # Se obtienen únicamente los estacionamientos activos (excluyendo los marcados como "ELIMINADO")
+    activos = list(filter(lambda est: est["nombre"] != "ELIMINADO", estacionamientos.values()))
+    
+    # Se filtran los estacionamientos cuyo estado es 1 (disponible)
+    disponibles = list(filter(lambda est: est["estado"] == 1, activos))
+    
+    cant_registrados = len(activos)
+    cant_disponibles = len(disponibles)
+    cant_no_disponibles = cant_registrados - cant_disponibles
     
     print("\nESTADÍSTICAS DE ESTACIONAMIENTOS:")
-    print("Estacionamientos registrados:", len(estacionamientos[0]) - 1)
-    print("Estacionamientos disponibles:", disponibles)
-    print("Estacionamientos no disponibles:", (len(estacionamientos[0]) - 1) - disponibles)
+    print("Estacionamientos registrados:", cant_registrados)
+    print("Estacionamientos disponibles:", cant_disponibles)
+    print("Estacionamientos no disponibles:", cant_no_disponibles)
     print("Capacidad actual disponible (todos los estacionamientos):", capacidad_actual_disponible(estacionamientos))
 
 def capacidad_actual_disponible(estacionamientos):
     '''Muestra la capacidad actual sin reservar en total entre todos los estacionamientos que se encuentren disponibles.'''
-    indices = range(1, len(estacionamientos[0]))
-    indices_disponibles = filter(lambda i: estacionamientos[1][i] == 1, indices)
-    return reduce(lambda acumulador, i: acumulador + estacionamientos[4][i], indices_disponibles, 0)
+    # Filtrar estacionamientos que estén activos y disponibles (estado == 1)
+    estacionamientos_disponibles = filter(
+        lambda est: est["nombre"] != "ELIMINADO" and est["estado"] == 1,
+        estacionamientos.values()
+    )
+    
+    # Sumar la capacidad_actual de los estacionamientos filtrados
+    return reduce(
+        lambda acumulador, est: acumulador + est["capacidad_actual"],
+        estacionamientos_disponibles,
+        0
+    )
 
 def reporte_vehiculos_por_tipo(lista_tipo):
     """Muestra un reporte de la cantidad de vehículos registrados por tipo (moto, auto, camioneta), utilizando filter para contar cada tipo de vehículo."""
@@ -115,3 +132,111 @@ def reporte_recaudacion(lista_cobros):
         print("\nREPORTE DE RECAUDACIÓN:")
         print("Cantidad de cobros realizados:", len(lista_cobros))
         print("Total de dinero recaudado: $", total_dinero)
+
+def imprimir_datos_estacionamiento(estacionamientos, reservas, tarifas):
+    '''Genera un archivo de texto con los datos de un estacionamiento seleccionado'''
+    nombre_archivo = input("Ingrese el nombre del archivo: ").strip()
+
+    if not nombre_archivo.endswith(".txt"):
+        nombre_archivo += ".txt"
+
+    try:
+        with open(nombre_archivo, "r", encoding="utf-8"):
+            confirmacion = input("El archivo ya existe. Presione 1 para sobrescribirlo, 2 para agregar los datos al final, 3 para cancelar: ").lower()
+
+            if confirmacion not in ("1", "2"):
+                print("Operación cancelada.")
+                return
+            else:
+                eleccion = ("w", "a")
+
+                confirmacion = eleccion[int(confirmacion) - 1]
+
+    except FileNotFoundError:
+        confirmacion = "w"
+
+    with open(nombre_archivo, confirmacion, encoding="utf-8") as archivo:
+        archivo.write("=" * 45 + "\n")
+        archivo.write("       INFORMACIÓN DEL ESTACIONAMIENTO\n")
+        archivo.write("=" * 45 + "\n\n")
+
+        seleccion = estacionamiento.elegir_estacionamiento(estacionamientos)
+
+        dias = ('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo')
+
+        archivo.write(f"Nombre: {estacionamientos[seleccion]['nombre']}")
+        archivo.write(f"Nombre: {estacionamientos[seleccion]['direccion']}")
+        archivo.write(f"Estado: {estacionamiento.ver_estado}")
+        archivo.write(f"Capacidad ocupada: {estacionamientos[seleccion]['capacidad_total']}/{estacionamientos[seleccion]['capacidad_actual']}")
+        
+        archivo.write(f"\nHorarios:")
+        
+        for dia in range(len(dias)):
+            archivo.write(f"{dias[dia]}: {estacionamiento.mostrar_horario(estacionamientos[seleccion]['horarios'][dia])}")
+
+        # PONER ACA ABAJO ESCRITURA DE DATOS DE RESERVA Y TARIFAS
+
+        archivo.write("\n" + "=" * 45 + "\n")
+
+    print(f"Archivo '{nombre_archivo}' creado correctamente.")
+
+''' VERLO
+def imprimir_estacionamientos(estacionamientos, reservas, tarifas):
+    nombre_archivo = input("Ingrese el nombre del archivo: ").strip()
+
+    if not nombre_archivo.endswith(".txt"):
+        nombre_archivo += ".txt"
+
+    try:
+        with open(nombre_archivo, "r", encoding="utf-8"):
+            confirmacion = input("El archivo ya existe. ¿Desea sobrescribirlo? (S/N): ").lower()
+
+            if confirmacion != "s":
+                print("Operación cancelada.")
+                return
+
+    except FileNotFoundError:
+        pass
+
+    with open(nombre_archivo, "w", encoding="utf-8") as archivo:
+        archivo.write("=" * 45 + "\n")
+        archivo.write("       INFORMACIÓN DEL ESTACIONAMIENTO\n")
+        archivo.write("=" * 45 + "\n\n")
+
+        #funciona igual que la funcion de imprimir un estacionamiento, pero impime a todos.
+
+        archivo.write("\n" + "=" * 45 + "\n")
+
+    print(f"Archivo '{nombre_archivo}' creado correctamente.")
+'''
+
+    
+def imprimir_usuarios(usuarios, vehiculos):
+    nombre_archivo = input("Ingrese el nombre del archivo: ").strip()
+
+    if not nombre_archivo.endswith(".txt"):
+        nombre_archivo += ".txt"
+
+    try:
+        with open(nombre_archivo, "r", encoding="utf-8"):
+            confirmacion = input("El archivo ya existe. ¿Desea sobrescribirlo? (S/N): ").lower()
+
+            if confirmacion != "s":
+                print("Operación cancelada.")
+                return
+
+    except FileNotFoundError:
+        pass
+
+    with open(nombre_archivo, "w", encoding="utf-8") as archivo:
+        archivo.write("=" * 45 + "\n")
+        archivo.write("       BASE DE DATOS USUARIOS Y VEHÍCULOS\n")
+        archivo.write("=" * 45 + "\n\n")
+
+        '''
+        se debe mostrar la base de datos combinando la informacion de usuarios + vehiculos, el usuario tiene el vehiculo asignado
+        '''
+
+        archivo.write("\n" + "=" * 45 + "\n")
+
+    print(f"Archivo '{nombre_archivo}' creado correctamente.")

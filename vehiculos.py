@@ -19,7 +19,7 @@ def guardar_vehiculosjson(nombre_archivo, vehiculos):
     guardado = False
     try:
         with open(nombre_archivo, "w", encoding="utf-8") as archivo:
-            json.dump(vehiculos, ensure_ascii=False, indent=4)
+            json.dump(vehiculos, archivo, ensure_ascii=False, indent=4)
             guardado = True
     except OSError as error:
         print("Error al guardar el archivo JSON:", error)
@@ -68,6 +68,7 @@ def ingresar_vehiculo(nombre_archivo, lista_dniusuarios):
     
     #Patente
     patente = validar_patente()
+    
     for v in vehiculos:
         if v["patente"] == patente.upper():
             print("La patente ingresada ya existe en la lista de vehículos. No se puede registrar un nuevo vehículo con la misma patente.")
@@ -91,14 +92,13 @@ def ingresar_vehiculo(nombre_archivo, lista_dniusuarios):
             "dni": dni_usuarios
         }
         vehiculos.append(nuevo_vehiculo)
-        guardar_vehiculosjson(nombre_archivo, vehiculos)
-
+        
 
     if guardar_vehiculosjson(nombre_archivo, vehiculos):
         print("Vehículo registrado correctamente.")
 
 
-def mostrar_vehiculos(nombre_archivo):
+def mostrar_vehiculos(nombre_archivo, usuarios_registrados):
     
     vehiculos = cargar_vehiculosjson(nombre_archivo)
     if vehiculos is not None:
@@ -130,9 +130,3 @@ def eliminar_vehiculo(nombre_archivo):
         else:
             print("No se encontró un vehículo con la patente ingresada.")
    
-#NOMBRE_ARCHIVO LO LLAMO EN EL MAIN
-        
-
-
-
-
