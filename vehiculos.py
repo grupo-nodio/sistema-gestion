@@ -70,7 +70,7 @@ def ingresar_vehiculo(nombre_archivo, lista_dniusuarios):
     patente = validar_patente()
     
     for v in vehiculos:
-        if v["patente"] == patente.upper():
+        if v["patente"].strip().upper() == patente.strip().upper():
             print("La patente ingresada ya existe en la lista de vehículos. No se puede registrar un nuevo vehículo con la misma patente.")
             return
 
@@ -86,12 +86,12 @@ def ingresar_vehiculo(nombre_archivo, lista_dniusuarios):
         print("el dni ingresado no existe, porfavor ingrese un dni valido")
         dni_usuarios = input("Ingrese el DNI del usuario propietario del vehiculo:")
 
-        nuevo_vehiculo = {
-            "patente": patente,
-            "tipo": tipo,
-            "dni": dni_usuarios
-        }
-        vehiculos.append(nuevo_vehiculo)
+    nuevo_vehiculo = {
+        "patente": patente,
+        "tipo": tipo,
+        "dni": dni_usuarios
+    }
+    vehiculos.append(nuevo_vehiculo)
         
 
     if guardar_vehiculosjson(nombre_archivo, vehiculos):
@@ -99,27 +99,26 @@ def ingresar_vehiculo(nombre_archivo, lista_dniusuarios):
 
 
 def mostrar_vehiculos(nombre_archivo, usuarios_registrados):
-    
     vehiculos = cargar_vehiculosjson(nombre_archivo)
     if vehiculos is not None:
         if len(vehiculos) == 0:
             print("No hay vehículos registrados.")
         else:
-           print("Vehículos registrados:")
-           print(f"{'Patente':<15}{'Tipo':<15}{'DNI Propietario':<15}")
-           print("-" * 45)
-           for v in vehiculos:
+            print("Vehículos registrados:")
+            print(f"{'Patente':<15}{'Tipo':<15}{'DNI Propietario':<15}")
+            print("-" * 45)
+            for v in vehiculos:
                 print(f"{v['patente']:<15}{v['tipo']:<15}{v['dni']:<15}")
 
 def eliminar_vehiculo(nombre_archivo):
     vehiculos = cargar_vehiculosjson(nombre_archivo)
     if vehiculos is not None:
-        patente = input("Ingrese la patente del vehículo que desea eliminar: ")
+        patente = input("Ingrese la patente del vehículo que desea eliminar: ").strip().upper()
         encontrado = False
         actualizados = []
 
         for v in vehiculos:
-            if v["patente"].upper() == patente:
+            if v["patente"].strip().upper() == patente:
                 encontrado = True
             else:
                 actualizados.append(v)
@@ -129,4 +128,5 @@ def eliminar_vehiculo(nombre_archivo):
                 print("Vehículo eliminado correctamente.")
         else:
             print("No se encontró un vehículo con la patente ingresada.")
+   
    

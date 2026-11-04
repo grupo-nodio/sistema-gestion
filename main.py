@@ -19,10 +19,7 @@ def menu_principal():
     
     # 3. Vehículos
     VHC_JSON = 'vehiculos.json'
-    patentes = []
-    tipos = []
-    dni_vehiculos = []
-
+    
     # 4. Lista de reservas
     reservar = reservas.cargar_datos_json('reservas.json')
     reservas_canceladas = reservas.cargar_datos_json('canceladas.json')
