@@ -19,10 +19,7 @@ def menu_principal():
     
     # 3. Vehículos
     VHC_JSON = 'vehiculos.json'
-    patentes = []
-    tipos = []
-    dni_vehiculos = []
-
+    
     # 4. Lista de reservas
     reservar = []
     reservas_canceladas = []
