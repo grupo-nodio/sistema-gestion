@@ -3,7 +3,7 @@ import tarifas
 import reservas
 import usuarios
 import vehiculos
-import reportes
+#import reportes
 
 def menu_principal():
     # --- INICIALIZACIÓN DE LA BASE DE DATOS EN MEMORIA Y ESTRUCTURAS ---
@@ -19,9 +19,6 @@ def menu_principal():
     
     # 3. Vehículos
     VHC_JSON = 'vehiculos.json'
-    patentes = []
-    tipos = []
-    dni_vehiculos = []
 
     # 4. Lista de reservas
     reservar = []

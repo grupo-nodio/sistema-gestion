@@ -33,5 +33,12 @@
         "email": "bautista@gmail.cpm",
         "telefono": "1133445566",
         "estado": "A"
+    },
+    "11111111": {
+        "nombre": "bautista",
+        "apellido": "mazzolla",
+        "email": "bautistamazzolla@gmail.com",
+        "telefono": "1144556677",
+        "estado": "A"
     }
 }
