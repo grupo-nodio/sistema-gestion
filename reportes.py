@@ -75,25 +75,50 @@ def reporte_ocupacion_estacionamiento(lista_tipo):
         print("Cantidad de espacios estándar ocupados (autos y motos):", espacios_estandar)
 
 def reporte_reservas(reservar, reservas_canceladas):
-    """ Muestra únicamente las reservas realizadas y canceladas. """
-    print("\n REPORTE DE RESERVAS REALIZADAS \n")
+    if len(reservar) > 1:
+        print("\n REPORTE DE RESERVAS REALIZADAS \n")
+        print(f'{"Índice":<8} | {"Nombre":<15} | {"Día":<5} | {"Mes":<5} | {"Año":<6} | {"Hora":<6} | {"Minuto":<8} | {"Duración":<10} | {"Estacionamiento":<15}')
+        print("-" * 110)
+            
+        for i in range(1, len(reservar)):
+            # Buscamos el nombre real del estacionamiento usando el índice guardado
+            
+            print(f'{i:<8} | '
+                  f'{reservar[i]["nombre"]:<15} | '
+                  f'{escritura_digitos(reservar[i]["dia"]):<5} | '
+                  f'{escritura_digitos(reservar[i]["mes"]):<5} | '
+                  f'{reservar[i]["año"]:<6} | '
+                  f'{escritura_digitos(reservar[i]["hora"]):<6} | '
+                  f'{escritura_digitos(reservar[i]["minuto"]):<8} | '
+                  f'{escritura_digitos(reservar[i]["duracion"]):<10} | ')
 
-    for i in range(len(reservar)):
-        print(f"{i + 1}. Nombre: {reservar[i][0]} / dia: {escritura_digitos(reservar[i][1])} / mes: {escritura_digitos(reservar[i][2])} / año: {escritura_digitos(reservar[i][3])} / hora: {escritura_digitos(reservar[i][4])} / minuto: {escritura_digitos(reservar[i][5])} / duracion: {escritura_digitos(reservar[i][6])}hs / estacionamiento: {escritura_digitos(reservar[i][7])}.")
-
-    print(f"Cantidad de reservas realizadas con éxito: {len(reservar)}")
-
-    print("\n REPORTE DE RESERVAS CANCELADAS \n")
-
-    if len(reservas_canceladas) > 0:
-        for i in range(len(reservas_canceladas)):
-            # CORREGIDO: Se usa reservas_canceladas en lugar de reservar, y se aplica escritura_digitos al año
-            print(f"{i + 1}. Nombre: {reservas_canceladas[i][0]} / dia: {escritura_digitos(reservas_canceladas[i][1])} / mes: {escritura_digitos(reservas_canceladas[i][2])} / año: {escritura_digitos(reservas_canceladas[i][3])} / hora: {escritura_digitos(reservas_canceladas[i][4])} / minuto: {escritura_digitos(reservas_canceladas[i][5])} / duracion: {escritura_digitos(reservas_canceladas[i][6])}hs / estacionamiento: {escritura_digitos(reservas_canceladas[i][7])}.")
-
-        print(f"Cantidad de reservas canceladas: {len(reservas_canceladas)}")
+        print(f"\nCantidad de reservas realizadas: {len(reservar) - 1}")
     else:
-        print("No se canceló ninguna reserva.")
+        print("\nNo se realizaron reservas.")
 
+    if len(reservas_canceladas) > 1:
+        print("\n REPORTE DE RESERVAS CANCELADAS \n")
+        print(f'{"Índice":<8} | {"Nombre":<15} | {"Día":<5} | {"Mes":<5} | {"Año":<6} | {"Hora":<6} | {"Minuto":<8} | {"Duración":<10} | {"Estacionamiento":<15}')
+        print("-" * 110)
+                
+        for i in range(1, len(reservas_canceladas)):
+            
+            print(f'{i:<8} | '
+                  f'{reservas_canceladas[i]["nombre"]:<15} | '
+                  f'{escritura_digitos(reservas_canceladas[i]["dia"]):<5} | '
+                  f'{escritura_digitos(reservas_canceladas[i]["mes"]):<5} | '
+                  f'{reservas_canceladas[i]["año"]:<6} | '
+                  f'{escritura_digitos(reservas_canceladas[i]["hora"]):<6} | '
+                  f'{escritura_digitos(reservas_canceladas[i]["minuto"]):<8} | '
+                  f'{escritura_digitos(reservas_canceladas[i]["duracion"]):<10} | ')
+
+        print(f"\nCantidad de reservas canceladas: {len(reservas_canceladas) - 1}")
+    else:
+        print("\nNo se canceló ninguna reserva.")
+
+    # Pausa para que el usuario llegue a leer el reporte antes de que el programa siga
+    input("\nPresione ENTER para volver...")
+    
 def reporte_usuarios_por_estado(lista_dni, lista_estado):
     """ Reporte de usuarios dados de alta y dados de baja. """
     if len(lista_dni) >= len(lista_estado):

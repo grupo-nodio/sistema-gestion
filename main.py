@@ -24,8 +24,8 @@ def menu_principal():
     dni_vehiculos = []
 
     # 4. Lista de reservas
-    reservar = []
-    reservas_canceladas = []
+    reservar = reservas.cargar_datos_json('reservas.json')
+    reservas_canceladas = reservas.cargar_datos_json('canceladas.json')
 
     # 5. Lista de tarifas y cobros
     lista_cobros = []
@@ -86,41 +86,51 @@ def menu_principal():
                         if modificar in {'y', 'Y', 's', 'S', 'si', 'SI', 'Si', 'sI', 'yes', 'YES', 'Yes'}:
                             estacionamiento.modificar(sel, estacionamientos, EST_JSON)
                     
-                    # 2. RESERVAS
                     elif op_sub == "2":
                         op_res = "-1"
                         while op_res != "0":
                             print(f"\n -------- MENU RESERVAS ({nombre_actual}) --------")
-                            print("1. Generar una reserva.")
-                            print("2. Consultar reservas.")
-                            print("3. Modificar reserva.")
+                            print("1. Generar una reserva. ")
+                            print("2. Consultar reservas. ")
+                            print("3. Modificar reserva. ")
                             print("4. Cancelar una reserva.")
+                            print("5. Recuperar una reserva.")
                             print("0. Volver atrás.")
                             op_res = input("Opción: ")
                             
                             if op_res == "1":
+                                # Se agregó 'sel' como parámetro
                                 reservas.generar_reserva(sel, estacionamientos, reservar)
 
                             elif op_res == "2":
-                                if len(reservar) == 0:
+                                if len(reservar) == 1:
                                     print("\n---------------- !IMPORTANTE¡ ---------------- \n")
                                     print("Debe cargarse una reserva previamente.\n")
                                 else:
                                     reservas.consultar_reservas(reservar)
 
                             elif op_res == "3":
-                                if len(reservar) == 0:
+                                if len(reservar) == 1:
                                     print("\n---------------- !IMPORTANTE¡ ---------------- \n")
                                     print("Debe cargarse una reserva previamente.\n")
                                 else:
-                                    reservas.modificar_reserva(reservar, sel)
+                                    reservas.modificar_reserva(sel, estacionamientos, reservar)
 
                             elif op_res == "4":
-                                if len(reservar) == 0:
+                                if len(reservar) == 1:
                                     print("\n---------------- !IMPORTANTE¡ ---------------- \n")
                                     print("Debe cargarse una reserva previamente.\n")
                                 else:
+                                    # Se agregó 'sel' como parámetro
                                     reservas.cancelar_reserva(sel, estacionamientos, reservar, reservas_canceladas)
+
+                            elif op_res == '5':
+                                if len(reservas_canceladas) == 1:
+                                    print("\n---------------- !IMPORTANTE¡ ---------------- \n")
+                                    print("No se puede recuperar ninguna reserva. Debido a que no hay reservas canceldas.\n")
+                                else:
+                                    # Se agregó 'sel' como parámetro
+                                    reservas.recuperar_reserva(sel, estacionamientos, reservar, reservas_canceladas)
                     
                     # 3. USUARIOS Y VEHÍCULOS (Integrados)
                     elif op_sub == "3":
