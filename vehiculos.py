@@ -5,6 +5,14 @@ import json
 
 #JSON
 def cargar_vehiculosjson(nombre_archivo):
+
+    """
+    Lee y carga la lista de vehículos desde un archivo JSON.
+    Si el archivo no existe, devuelve una lista vacía. Si ocurre un error de lectura,
+    usa la excepción y retorna None para evitar que el programa falle.
+
+    """
+
     try:
         with open(nombre_archivo, "r", encoding="utf-8") as archivo:
             vehiculos = json.load(archivo)
@@ -16,6 +24,12 @@ def cargar_vehiculosjson(nombre_archivo):
     return vehiculos
 
 def guardar_vehiculosjson(nombre_archivo, vehiculos):
+    """
+    Guarda y sobrescribe la lista de vehículos en el archivo JSON indicado.
+    Aplica sangría de 4 espacios (indent=4) para mantener la legibilidad de la información
+
+    """
+
     guardado = False
     try:
         with open(nombre_archivo, "w", encoding="utf-8") as archivo:
@@ -57,14 +71,22 @@ def validar_tipodeauto():
 
 #INGRESAR UN VEHICULO
 def ingresar_vehiculo(nombre_archivo, lista_dniusuarios):
+
+    """
+    Registra un nuevo vehículo asociándolo a un usuario existente:
+    1. Carga la lista actual desde el JSON.
+    2. Valida la patente y verifica que no esté duplicada.
+    3. Valida el tipo de vehículo.
+    4. Verifica que el DNI del propietario exista en la lista de usuarios.
+    5. Guarda el registro actualizado en el archivo JSON.
+    """
+
     vehiculos = cargar_vehiculosjson(nombre_archivo)
     if vehiculos is None:
         print("No se pudo cargar la lista de vehículos. No se puede registrar un nuevo vehículo.")
         return
     print("Ingresar datos del vehiculo: ")
-    """
-    Solicita y valida los datos necesarios para registrar un nuevo vehículo 
-    """
+
     
     #Patente
     patente = validar_patente()
@@ -99,6 +121,10 @@ def ingresar_vehiculo(nombre_archivo, lista_dniusuarios):
 
 
 def mostrar_vehiculos(nombre_archivo, usuarios_registrados):
+    """
+    Muestra en pantalla la lista completa de vehículos formateada como una tabla.
+    
+    """
     vehiculos = cargar_vehiculosjson(nombre_archivo)
     if vehiculos is not None:
         if len(vehiculos) == 0:
@@ -111,6 +137,12 @@ def mostrar_vehiculos(nombre_archivo, usuarios_registrados):
                 print(f"{v['patente']:<15}{v['tipo']:<15}{v['dni']:<15}")
 
 def eliminar_vehiculo(nombre_archivo):
+
+    """
+    Busca un vehículo por patente y lo elimina de la lista.
+    Compara las patentes normalizadas (.strip().upper()) para evitar errores por mayúsculas.
+    """
+
     vehiculos = cargar_vehiculosjson(nombre_archivo)
     if vehiculos is not None:
         patente = input("Ingrese la patente del vehículo que desea eliminar: ").strip().upper()

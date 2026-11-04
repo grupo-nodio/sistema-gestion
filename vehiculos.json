@@ -3,10 +3,5 @@
         "patente": "ab123cs",
         "tipo": "camioneta",
         "dni": "47129364"
-    },
-    {
-        "patente": "ab123cd",
-        "tipo": "moto",
-        "dni": "12345678"
     }
 ]
