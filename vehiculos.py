@@ -117,6 +117,8 @@ def ingresar_vehiculo(nombre_archivo, lista_dniusuarios):
 
     if guardar_vehiculosjson(nombre_archivo, vehiculos):
         print("Vehículo registrado correctamente.")
+    
+    input("\nPresione ENTER para continuar...")
 
 # ------------------------------------------------------------- 4. MOSTRAR VEHICULOS REGISTRADOS -------------------------------------------------------------
 def mostrar_vehiculos(nombre_archivo, usuarios_registrados):
@@ -134,7 +136,8 @@ def mostrar_vehiculos(nombre_archivo, usuarios_registrados):
             print("-" * 45)
             for v in vehiculos:
                 print(f"{v['patente']:<15}{v['tipo']:<15}{v['dni']:<15}")
-
+                
+    input("\nPresione ENTER para continuar...")
 
 # ------------------------------------------------------------- 5. ELIMINAR VEHICULOS REGISTRADOS -------------------------------------------------------------
 def eliminar_vehiculo(nombre_archivo):

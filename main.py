@@ -142,7 +142,7 @@ def menu_principal():
                             elif op_usu == "3":
                                 usuarios.alta(usuarios_registrados)
                             elif op_usu == "4":
-                                vehiculos.ingresar_vehiculo(VHC_JSON, usuarios_registrados)
+                                vehiculos.ingresar_vehiculo(patentes, tipos, dni_vehiculos, VHC_JSON, usuarios_registrados)
                             elif op_usu == "5":
                                 vehiculos.mostrar_vehiculos(VHC_JSON, usuarios_registrados)
                             elif op_usu == "6":
