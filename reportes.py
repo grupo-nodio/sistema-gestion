@@ -262,15 +262,14 @@ def imprimir_usuarios(usuarios, vehiculos):
     except FileNotFoundError:
         pass
 
-    if isinstance(vehiculos, str):
-        try:
-            with open(vehiculos, "r", encoding="utf-8") as archivo_vehiculos:
-                vehiculos = json.load(archivo_vehiculos)
-        except FileNotFoundError:
-            vehiculos = []
-        except (OSError, json.JSONDecodeError):
-            print("No se pudo leer el archivo de vehículos.")
-            return
+    try:
+        with open(vehiculos, "r", encoding="utf-8") as archivo_vehiculos:
+            vehiculos = json.load(archivo_vehiculos)
+    except FileNotFoundError:
+        vehiculos = []
+    except (OSError, json.JSONDecodeError):
+        print("No se pudo leer el archivo de vehículos.")
+        return
 
     ancho = 72
     with open(nombre_archivo, "w", encoding="utf-8") as archivo:
