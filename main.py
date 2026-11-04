@@ -182,7 +182,7 @@ def menu_principal():
 
         # --- ESTADÍSTICAS GENERALES ---
         elif opcion_principal == "3":
-            reportes.mostrar_reportes(estacionamientos, tipos, dnis, estados, reservar, reservas_canceladas, lista_cobros)
+            reportes.mostrar_reportes(estacionamientos, tipos, usuarios_registrados, reservar, reservas_canceladas, lista_cobros)
 
         # --- ELIMINAR ESTACIONAMIENTO ---
         elif opcion_principal == "4":

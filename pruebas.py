@@ -3,6 +3,13 @@ from estacionamiento import (
     validar_cierre,
     validar_horario
 )
+from usuarios import (
+    formato_usuarios_valido,
+    validar_nombre,
+    validar_email,
+    validar_dni,
+    formatear_usuario,
+)
 
 # ==============================================================================
 # 1. PRUEBAS PARA: ver_estado() -> ESTACIONAMIENTOS
@@ -94,11 +101,63 @@ def prueba_validar_horario_limite():
         print("Error en prueba validar_horario (Límite)")
 
 
+# ============================================================================== 
+# 4. PRUEBAS PARA FUNCIONES DE USUARIOS
+# ============================================================================== 
+
+def prueba_validar_nombre():
+    if validar_nombre("María José") and not validar_nombre("María2") and validar_nombre("Ana-María"):
+        print("Prueba validar_nombre: Correcta")
+    else:
+        print("Error en prueba validar_nombre")
+
+def prueba_validar_email():
+    if validar_email("ana.perez@example.com") and not validar_email("ana@"):
+        print("Prueba validar_email: Correcta")
+    else:
+        print("Error en prueba validar_email")
+
+def prueba_validar_dni():
+    if validar_dni("12345678") and not validar_dni("1234567") and not validar_dni("1234567A"):
+        print("Prueba validar_dni: Correcta")
+    else:
+        print("Error en prueba validar_dni")
+
+def prueba_formato_usuarios_valido():
+    usuario = {"12345678": {
+        "nombre": "Ana", "apellido": "Pérez", "email": "ana@example.com",
+        "telefono": "1112345678", "estado": "A",
+    }}
+    if formato_usuarios_valido(usuario):
+        print("Prueba formato_usuarios_valido (Válido): Correcta")
+    else:
+        print("Error en prueba formato_usuarios_valido (Válido)")
+
+def prueba_formato_usuarios_invalido():
+    usuario_incompleto = {"12345678": {"nombre": "Ana"}}
+    if not formato_usuarios_valido(usuario_incompleto) and not formato_usuarios_valido([]):
+        print("Prueba formato_usuarios_valido (Inválido): Correcta")
+    else:
+        print("Error en prueba formato_usuarios_valido (Inválido)")
+
+def prueba_formatear_usuario():
+    usuario = ("12345678", {
+        "nombre": "Ana", "apellido": "Pérez", "email": "ana@example.com",
+        "telefono": "1112345678", "estado": "A",
+    })
+    resultado = formatear_usuario(usuario)
+    if all(dato in resultado for dato in ("Ana", "Pérez", "12345678", "ana@example.com", "1112345678", "A")):
+        print("Prueba formatear_usuario: Correcta")
+    else:
+        print("Error en prueba formatear_usuario")
+
+
 # ==============================================================================
 # EJECUCIÓN GENERAL
 # ==============================================================================
 def ejecutar_todas_las_pruebas():
     pruebas_estacionamiento()
+    pruebas_usuarios()
     print("=" * 50)
 
 
@@ -117,6 +176,15 @@ def pruebas_estacionamiento():
     prueba_validar_horario_valido()
     prueba_validar_horario_invalido()
     prueba_validar_horario_limite()
+
+def pruebas_usuarios():
+    print("\n--- PRUEBAS: usuarios ---")
+    prueba_validar_nombre()
+    prueba_validar_email()
+    prueba_validar_dni()
+    prueba_formato_usuarios_valido()
+    prueba_formato_usuarios_invalido()
+    prueba_formatear_usuario()
 
 if __name__ == "__main__":
     ejecutar_todas_las_pruebas()
