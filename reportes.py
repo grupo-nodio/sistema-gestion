@@ -276,3 +276,36 @@ def imprimir_usuarios(usuarios, vehiculos):
         archivo.write("\n" + "=" * 45 + "\n")
 
     print(f"Archivo '{nombre_archivo}' creado correctamente.")
+
+def escribir_reporte_tarifas(archivo, sel, estacionamientos, tarifas):
+    """Escribe el historial de cobros y recaudación en el archivo de texto."""
+    archivo.write("\n--- HISTORIAL DE COBROS Y TARIFAS ---\n")
+    
+    cobros_estacionamiento = list(filter(lambda cobro: cobro["estacionamiento"] == estacionamientos[sel]["nombre"], tarifas))
+    
+    if len(cobros_estacionamiento) == 0:
+        archivo.write("No hay cobros registrados en este estacionamiento.\n")
+    else:
+        recaudacion = reduce(lambda acumulador, cobro: acumulador + cobro["total"], cobros_estacionamiento, 0)
+        
+        archivo.write(f"Cantidad de cobros: {len(cobros_estacionamiento)}\n")
+        archivo.write(f"Recaudación total: ${recaudacion}\n\n")
+        
+        archivo.write(f"{'N°':<7}{'Patente':<10}{'Tipo':<11}{'Horas':>6}{'Total':>13}\n")
+        archivo.write("-" * 50 + "\n")
+        for cobro in cobros_estacionamiento:
+            numero = f"{cobro['numero']:04d}"
+            total = f"${cobro['total']}"
+            archivo.write(f"{numero:<7}{cobro['patente']:<10}{cobro['tipo']:<11}{cobro['horas']:>6}{total:>13}\n")
+
+def reporte_recaudacion(lista_cobros):
+    """Muestra la cantidad total de dinero recaudado en consola."""
+    if len(lista_cobros) == 0:
+        print("\nREPORTE DE RECAUDACIÓN:")
+        print("Todavía no se registró ningún cobro en el sistema.")
+    else:
+        total_dinero = reduce(lambda acumulador, cobro: acumulador + cobro["total"], lista_cobros, 0)
+            
+        print("\nREPORTE DE RECAUDACIÓN:")
+        print("Cantidad de cobros realizados:", len(lista_cobros))
+        print("Total de dinero recaudado: $", total_dinero)
