@@ -138,16 +138,12 @@ def mostrar_vehiculos(nombre_archivo, usuarios_registrados):
 
 # ------------------------------------------------------------- 5. ELIMINAR VEHICULOS REGISTRADOS -------------------------------------------------------------
 def eliminar_vehiculo(nombre_archivo):
-    """
-    Busca un vehículo por patente, solicita confirmación al usuario y lo elimina de la lista.
-    Compara las patentes normalizadas (.strip().upper()) para evitar errores por mayúsculas.
-    """
     vehiculos = cargar_vehiculosjson(nombre_archivo)
     if vehiculos is not None:
         patente = input("\nIngrese la patente del vehículo que desea eliminar (o '0' para cancelar): ").strip().upper()
         if patente == "0":
             print("Operación cancelada.")
-            input("\nPresione ENTER para volver al menú...")
+            input("\nPresione ENTER para continuar...")
             return
 
         encontrado = False
@@ -165,9 +161,11 @@ def eliminar_vehiculo(nombre_archivo):
             if confirmacion in ["S", "SI", "SÍ"]:
                 if guardar_vehiculosjson(nombre_archivo, actualizados):
                     print("Vehículo eliminado correctamente.")
-            else:
-                print("Operación cancelada. El vehículo no fue eliminado.")
+                elif confirmacion in ["N", "NO"]:
+                    print("El vehículo no fue eliminado.")
+                else:
+                    print("Opción no válida. El vehículo no fue eliminado por seguridad.")
         else:
             print("No se encontró un vehículo con la patente ingresada.")
             
-        input("\nPresione ENTER para volver al menú...")
+        input("\nPresione ENTER para continuar...")
