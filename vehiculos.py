@@ -3,7 +3,7 @@ import re
 import json
 #FUNCIONES PARA VEHICULOS
 
-#JSON
+# ------------------------------------------------------------- 1. ARCHIVOS JSON -------------------------------------------------------------
 def cargar_vehiculosjson(nombre_archivo):
 
     """
@@ -39,7 +39,7 @@ def guardar_vehiculosjson(nombre_archivo, vehiculos):
         print("Error al guardar el archivo JSON:", error)
     return guardado
 
-#VALIDAR PATENTE
+# ------------------------------------------------------------- 2. VALIDACIÓN -------------------------------------------------------------
 def validar_patente():
 
     """
@@ -54,7 +54,6 @@ def validar_patente():
         else:
             print("Patente inválida. Formatos válidos: AB123CD, ABC123 o ABC1234")
     
-#VALIDAR TIPO DE AUTO
 def validar_tipodeauto():
     """
     Expresiones Regulares para validar que el tipo de vehículo ingresado corresponda exactamente 
@@ -69,7 +68,7 @@ def validar_tipodeauto():
         else:
             print("Tipo de vehículo inválido. Debe ser 'moto', 'auto' o 'camioneta'.")
 
-#INGRESAR UN VEHICULO
+# ------------------------------------------------------------- 3. INGRESO DE VEHÍCULOS -------------------------------------------------------------
 def ingresar_vehiculo(nombre_archivo, lista_dniusuarios):
 
     """
@@ -119,7 +118,7 @@ def ingresar_vehiculo(nombre_archivo, lista_dniusuarios):
     if guardar_vehiculosjson(nombre_archivo, vehiculos):
         print("Vehículo registrado correctamente.")
 
-
+# ------------------------------------------------------------- 4. MOSTRAR VEHICULOS REGISTRADOS -------------------------------------------------------------
 def mostrar_vehiculos(nombre_archivo, usuarios_registrados):
     """
     Muestra en pantalla la lista completa de vehículos formateada como una tabla.
@@ -136,16 +135,21 @@ def mostrar_vehiculos(nombre_archivo, usuarios_registrados):
             for v in vehiculos:
                 print(f"{v['patente']:<15}{v['tipo']:<15}{v['dni']:<15}")
 
-def eliminar_vehiculo(nombre_archivo):
 
+# ------------------------------------------------------------- 5. ELIMINAR VEHICULOS REGISTRADOS -------------------------------------------------------------
+def eliminar_vehiculo(nombre_archivo):
     """
-    Busca un vehículo por patente y lo elimina de la lista.
+    Busca un vehículo por patente, solicita confirmación al usuario y lo elimina de la lista.
     Compara las patentes normalizadas (.strip().upper()) para evitar errores por mayúsculas.
     """
-
     vehiculos = cargar_vehiculosjson(nombre_archivo)
     if vehiculos is not None:
-        patente = input("Ingrese la patente del vehículo que desea eliminar: ").strip().upper()
+        patente = input("\nIngrese la patente del vehículo que desea eliminar (o '0' para cancelar): ").strip().upper()
+        if patente == "0":
+            print("Operación cancelada.")
+            input("\nPresione ENTER para volver al menú...")
+            return
+
         encontrado = False
         actualizados = []
 
@@ -156,8 +160,14 @@ def eliminar_vehiculo(nombre_archivo):
                 actualizados.append(v)
 
         if encontrado:
-            if guardar_vehiculosjson(nombre_archivo, actualizados):
-                print("Vehículo eliminado correctamente.")
+            confirmacion = input(f"¿Está seguro de que desea eliminar el vehículo con patente {patente}? (S/N): ").strip().upper()
+            
+            if confirmacion in ["S", "SI", "SÍ"]:
+                if guardar_vehiculosjson(nombre_archivo, actualizados):
+                    print("Vehículo eliminado correctamente.")
+            else:
+                print("Operación cancelada. El vehículo no fue eliminado.")
         else:
             print("No se encontró un vehículo con la patente ingresada.")
-   
+            
+        input("\nPresione ENTER para volver al menú...")
