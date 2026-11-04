@@ -25,12 +25,8 @@ def menu_principal():
     dni_vehiculos = []
 
     # 4. Lista de reservas
-    reservar = [
-        None
-                ]
-    reservas_canceladas = [
-        None
-    ]
+    reservar = reservas.cargar_datos_json('reservas.json')
+    reservas_canceladas = reservas.cargar_datos_json('canceladas.json')
 
     # 5. Lista de tarifas
     lista_cobros = []
@@ -119,7 +115,7 @@ def menu_principal():
                                     print("\n---------------- !IMPORTANTE¡ ---------------- \n")
                                     print("Debe cargarse una reserva previamente.\n")
                                 else:
-                                    reservas.modificar_reserva(reservar, sel)
+                                    reservas.modificar_reserva(sel, estacionamientos, reservar)
 
                             elif op_res == "4":
                                 if len(reservar) == 1:
