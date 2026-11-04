@@ -10,6 +10,7 @@ def mostrar_reportes(estacionamientos, lista_tipo, lista_dni, lista_estado, rese
     reporte_usuarios_por_estado(lista_dni, lista_estado)
     reporte_reservas(reservar, reservas_canceladas)
     reporte_recaudacion(lista_cobros)
+    reporte_tarifas(estacionamientos, lista_cobros)
 
 def reporte_estacionamiento(estacionamientos):
     '''Muestra en pantalla estacionamientos registrados, disponibles, no disponibles y capacidad actual disponible total'''
@@ -277,7 +278,7 @@ def imprimir_usuarios(usuarios, vehiculos):
 
     print(f"Archivo '{nombre_archivo}' creado correctamente.")
 
-def escribir_reporte_tarifas(archivo, sel, estacionamientos, tarifas):
+def reporte_tarifas(archivo, sel, estacionamientos, tarifas):
     """Escribe el historial de cobros y recaudación en el archivo de texto."""
     archivo.write("\n--- HISTORIAL DE COBROS Y TARIFAS ---\n")
     
@@ -297,15 +298,3 @@ def escribir_reporte_tarifas(archivo, sel, estacionamientos, tarifas):
             numero = f"{cobro['numero']:04d}"
             total = f"${cobro['total']}"
             archivo.write(f"{numero:<7}{cobro['patente']:<10}{cobro['tipo']:<11}{cobro['horas']:>6}{total:>13}\n")
-
-def reporte_recaudacion(lista_cobros):
-    """Muestra la cantidad total de dinero recaudado en consola."""
-    if len(lista_cobros) == 0:
-        print("\nREPORTE DE RECAUDACIÓN:")
-        print("Todavía no se registró ningún cobro en el sistema.")
-    else:
-        total_dinero = reduce(lambda acumulador, cobro: acumulador + cobro["total"], lista_cobros, 0)
-            
-        print("\nREPORTE DE RECAUDACIÓN:")
-        print("Cantidad de cobros realizados:", len(lista_cobros))
-        print("Total de dinero recaudado: $", total_dinero)
