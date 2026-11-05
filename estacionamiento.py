@@ -360,8 +360,8 @@ def edit_espacios(seleccion, estacionamientos):
 
         estacionamientos[seleccion]['capacidad_total'] = cambio
 
-        if cambio < estacionamientos[4][seleccion]:
-            estacionamientos[4][seleccion] = cambio
+        if cambio < estacionamientos[seleccion]['capacidad_actual']:
+            estacionamientos[seleccion]['capacidad_actual'] = cambio
             print("La capacidad disponible era mayor al cambio de capacidad total, por lo que esta se ajustó al mismo valor.")
         print("Modificación realizada. La nueva capacidad es: " + str(estacionamientos[seleccion]['capacidad_total']))
 
