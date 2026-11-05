@@ -1,6 +1,8 @@
 import re, json
 
 def cargar_datos_json(name_archive):
+    '''Funcion utilizada, para la lectura o creacion del archivo .json.'''
+
     try:
         with open(name_archive, "r", encoding="UTF-8") as archivo:
             return json.load(archivo)
@@ -8,10 +10,12 @@ def cargar_datos_json(name_archive):
         return [None]
 
 def guardar_datos_json(name_archive, datos):
+    '''Abre el archivo .json, y almacena los cambios realizados en los diccionarios, para luego cerrar el archivo.'''
     with open(name_archive, "w", encoding="UTF-8") as archivo:
         json.dump(datos, archivo, indent=4, ensure_ascii=False)
 
 def pedir_nombre(mensaje):
+    '''Funcion usada para utilizar pedir exclusivamente valores alfabeticos.'''
     name = input(mensaje)
 
     while not re.match(r"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$", name):
@@ -21,6 +25,7 @@ def pedir_nombre(mensaje):
     return name
 
 def pedir_numero(mensaje):
+    '''Funcion usada para utilizar pedir exclusivamente valores numericos.'''
     while True:
         valor = input(mensaje)
 
@@ -30,6 +35,7 @@ def pedir_numero(mensaje):
             print("El valor ingresado no es de valor numerico. Vuelva a ingresar.")
 
 def escritura_digitos(A):
+    '''Se introduce una variable obligatoriamente numerica, y en caso de ser menor a 10, se le introduce un cero adelante.'''
     if A < 10:
         A = "0" + str(A)
     else:
@@ -37,6 +43,7 @@ def escritura_digitos(A):
     return A
 
 def validar_fecha(dia, mes, año):
+    '''Se controla que la fecha ingresada, sea una fecha valida para los estandares del sistema.'''
     fecha = False
     while not fecha:
         fecha = True
@@ -80,6 +87,7 @@ def validar_fecha(dia, mes, año):
     return dia, mes, año
 
 def validar_hora(hora, minuto):
+    '''Se controla que el horario ingresado, sea un horario valido para los estandares del sistema.'''
     tiempo = False
     while not tiempo:
         tiempo = True
