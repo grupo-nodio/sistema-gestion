@@ -1,21 +1,20 @@
 import re, json
 
 def cargar_datos_json(name_archive):
-    '''Funcion utilizada, para la lectura o creacion del archivo .json.'''
-
+    """Lee y carga los datos desde un archivo JSON. Retorna una lista con un elemento nulo [None] si el archivo no existe o presenta errores de decodificación."""
     try:
         with open(name_archive, "r", encoding="UTF-8") as archivo:
             return json.load(archivo)
-    except(FileNotFoundError, json.JSONDecodeError): 
+    except (FileNotFoundError, json.JSONDecodeError): 
         return [None]
 
 def guardar_datos_json(name_archive, datos):
-    '''Abre el archivo .json, y almacena los cambios realizados en los diccionarios, para luego cerrar el archivo.'''
+    """Serializa y persiste la estructura de datos en un archivo JSON, asegurando el formato de codificación UTF-8 y preservando caracteres especiales."""
     with open(name_archive, "w", encoding="UTF-8") as archivo:
         json.dump(datos, archivo, indent=4, ensure_ascii=False)
 
 def pedir_nombre(mensaje):
-    '''Funcion usada para utilizar pedir exclusivamente valores alfabeticos.'''
+    """Solicita una cadena de texto al usuario y valida mediante expresiones regulares (regex) que contenga exclusivamente caracteres alfabéticos."""
     name = input(mensaje)
 
     while not re.match(r"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$", name):
@@ -25,17 +24,17 @@ def pedir_nombre(mensaje):
     return name
 
 def pedir_numero(mensaje):
-    '''Funcion usada para utilizar pedir exclusivamente valores numericos.'''
+    """Solicita un dato al usuario y valida mediante manejo de excepciones (try-except) que el valor ingresado sea un entero numérico válido."""
     while True:
         valor = input(mensaje)
 
         try:
             return int(valor)
         except ValueError:
-            print("El valor ingresado no es de valor numerico. Vuelva a ingresar.")
+            print("El valor ingresado no es de valor numérico. Vuelva a ingresar.")
 
 def escritura_digitos(A):
-    '''Se introduce una variable obligatoriamente numerica, y en caso de ser menor a 10, se le introduce un cero adelante.'''
+    """Formatea un valor numérico entero convirtiéndolo a cadena de texto (str) y aplicando padding de ceros a la izquierda si es menor a 10."""
     if A < 10:
         A = "0" + str(A)
     else:
@@ -43,7 +42,7 @@ def escritura_digitos(A):
     return A
 
 def validar_fecha(dia, mes, año):
-    '''Se controla que la fecha ingresada, sea una fecha valida para los estandares del sistema.'''
+    """Valida la coherencia cronológica de una fecha, contemplando la cantidad de días por mes, años bisiestos y restringiendo el registro a años iguales o superiores a 2026."""
     fecha = False
     while not fecha:
         fecha = True
@@ -87,7 +86,7 @@ def validar_fecha(dia, mes, año):
     return dia, mes, año
 
 def validar_hora(hora, minuto):
-    '''Se controla que el horario ingresado, sea un horario valido para los estandares del sistema.'''
+    """Verifica que el horario ingresado respete el formato de 24 horas y que los minutos se limiten a intervalos de media hora (0 o 30)."""
     tiempo = False
     while not tiempo:
         tiempo = True
@@ -110,10 +109,12 @@ def validar_hora(hora, minuto):
     return hora, minuto
 
 def modificar_datos(A):
+    """Solicita y retorna un nuevo valor numérico para actualizar un dato existente, mostrando el valor actual por pantalla como referencia."""
     A = pedir_numero(f"Ingrese el nuevo valor que reemplazará al dato actual [{A}]: ")
     return A
 
 def contar_duracion(duracion, hora):
+    """Calcula la hora de finalización de una reserva en base a su hora de inicio y su duración, gestionando el reinicio del ciclo horario a medianoche (módulo 24 horas)."""
     horaduracion = hora
     for i in range(duracion):
         if horaduracion == 23:
@@ -123,6 +124,7 @@ def contar_duracion(duracion, hora):
     return duracion, horaduracion
 
 def escribir_fecha():
+    """Extrae los componentes de una fecha ingresada (día, mes, año) mediante expresiones regulares, validando que el año posea exactamente 4 dígitos."""
     valido = False
     dia, mes, año = 0, 0, 0
     while not valido:
@@ -141,6 +143,7 @@ def escribir_fecha():
     return dia, mes, año
 
 def escribir_horario():
+    """Extrae los componentes horarios (hora, minuto) de un string mediante expresiones regulares, esperando un formato de hasta dos dígitos para cada magnitud."""
     valido = False
     hora, minuto = 0, 0
     while not valido:
@@ -156,6 +159,7 @@ def escribir_horario():
     return hora, minuto
 
 def generar_archivo(nombre_archivo, lista_reservas, EST_JSON, sel, indice):
+    """Crea un nuevo archivo de texto plano para emitir el ticket correspondiente a la primera reserva registrada, sobrescribiendo (modo 'w') cualquier archivo existente."""
     try:
         archivo = open(nombre_archivo, 'w', encoding="UTF-8")
 
@@ -188,12 +192,13 @@ def generar_archivo(nombre_archivo, lista_reservas, EST_JSON, sel, indice):
 
         archivo.close()
 
-        print("Recibo realizado con exito.")
+        print("Recibo realizado con éxito.")
 
     except FileNotFoundError:
         print("Archivo no encontrado.")
 
 def escribir_archivo(nombre_archivo, lista_reservas, EST_JSON, sel, indice):
+    """Anexa (modo 'a') la información de un nuevo ticket de reserva en el archivo de texto existente, manteniendo el historial de recibos emitidos sin sobrescribir los anteriores."""
     try:
         archivo = open(nombre_archivo, 'a', encoding="UTF-8")
     
@@ -226,12 +231,13 @@ def escribir_archivo(nombre_archivo, lista_reservas, EST_JSON, sel, indice):
     
         archivo.close()
     
-        print("Recibo realizado con exito.")
+        print("Recibo realizado con éxito.")
     
     except FileNotFoundError:
         print("Archivo no encontrado.")
 
 def generar_reserva(sel, EST_JSON, RESER_JSON, reservar):
+    """Orquesta el flujo completo para registrar una nueva reserva. Verifica la disponibilidad de cupos, recolecta y valida datos cronológicos, permite la confirmación o edición por parte del usuario, y finalmente actualiza el estado en memoria y en disco."""
     if EST_JSON[sel]['capacidad_actual'] <= 0:
         print("\nNo hay espacios disponibles en este estacionamiento.")
         return
@@ -248,7 +254,7 @@ def generar_reserva(sel, EST_JSON, RESER_JSON, reservar):
 
     duracion = pedir_numero("Ingrese la duración estimada de la reserva (en intervalos de una hora): ")
     while duracion <= 0:
-        print("Duracion ingresada invalida.")
+        print("Duración ingresada inválida.")
         duracion = pedir_numero("Ingrese la duración estimada de la reserva (en intervalos de una hora): ")
     duracion, horaduracion = contar_duracion(duracion, hora)
 
@@ -256,13 +262,13 @@ def generar_reserva(sel, EST_JSON, RESER_JSON, reservar):
     print("\n CONTROL DE RESERVA \n")
     print("=" * 44)
     print("\nEn la fecha DD - MM - YYYY: ", escritura_digitos(dia), "-", escritura_digitos(mes), "-", escritura_digitos(año))
-    print(f"la reserva comenzara a las: {escritura_digitos(hora)} : {escritura_digitos(minuto)} y durara hasta las: {escritura_digitos(horaduracion)} : {escritura_digitos(minuto)} hs")
+    print(f"La reserva comenzará a las: {escritura_digitos(hora)} : {escritura_digitos(minuto)} y durará hasta las: {escritura_digitos(horaduracion)} : {escritura_digitos(minuto)} hs")
 
     control = input("\nVerifique si los datos tomados son los correctos [Y / N]: ")
 
     if control.lower() not in ("y", "yes", "si"):
         while control.lower() not in ("y", "yes", "si"):
-            cambio = pedir_numero(f"¿Cual de los siguientes datos desea modificar?, [1. {escritura_digitos(dia)} / 2. {escritura_digitos(mes)} / 3. {escritura_digitos(año)} / 4. {escritura_digitos(hora)} / 5. {escritura_digitos(minuto)} / 6. {duracion}]: ")
+            cambio = pedir_numero(f"¿Cuál de los siguientes datos desea modificar?, [1. {escritura_digitos(dia)} / 2. {escritura_digitos(mes)} / 3. {escritura_digitos(año)} / 4. {escritura_digitos(hora)} / 5. {escritura_digitos(minuto)} / 6. {duracion}]: ")
 
             match cambio:
                 case 1:
@@ -284,7 +290,7 @@ def generar_reserva(sel, EST_JSON, RESER_JSON, reservar):
                 case 6:
                     duracion = modificar_datos(duracion)
                     while duracion <= 0:
-                        print("Duracion ingresada invalida.")
+                        print("Duración ingresada inválida.")
                         duracion = modificar_datos(duracion)
                     duracion, horaduracion = contar_duracion(duracion, hora)
                 case _:
@@ -294,7 +300,7 @@ def generar_reserva(sel, EST_JSON, RESER_JSON, reservar):
             print("\n CONTROL DE RESERVA \n")
             print("=" * 44)
             print("\nEn la fecha DD - MM - YYYY: ", escritura_digitos(dia), "-", escritura_digitos(mes), "-", escritura_digitos(año))
-            print(f"la reserva comenzara a las: {escritura_digitos(hora)} : {escritura_digitos(minuto)} hs y durara hasta las: {escritura_digitos(horaduracion)} : {escritura_digitos(minuto)} hs")
+            print(f"La reserva comenzará a las: {escritura_digitos(hora)} : {escritura_digitos(minuto)} hs y durará hasta las: {escritura_digitos(horaduracion)} : {escritura_digitos(minuto)} hs")
             control = input("\nVerifique si los datos tomados son los correctos [Y / N]: ")
 
     if control.lower() in ("y", "yes", "si"):
@@ -302,7 +308,7 @@ def generar_reserva(sel, EST_JSON, RESER_JSON, reservar):
         
         EST_JSON[sel]['capacidad_actual'] -= 1
         
-        print(f"\nLa reserva se efectuo correctamente bajo el nombre de {nombre} para la fecha {escritura_digitos(dia)}/{escritura_digitos(mes)}/{escritura_digitos(año)}, empezara a las {escritura_digitos(hora)}:{escritura_digitos(minuto)} hs y finalizara a las {escritura_digitos(horaduracion)}:{escritura_digitos(minuto)} hs")
+        print(f"\nLa reserva se efectuó correctamente bajo el nombre de {nombre} para la fecha {escritura_digitos(dia)}/{escritura_digitos(mes)}/{escritura_digitos(año)}, empezará a las {escritura_digitos(hora)}:{escritura_digitos(minuto)} hs y finalizará a las {escritura_digitos(horaduracion)}:{escritura_digitos(minuto)} hs")
 
         reserva = {
             'nombre':nombre,
@@ -327,6 +333,7 @@ def generar_reserva(sel, EST_JSON, RESER_JSON, reservar):
             escribir_archivo(nombre_archivo, reservar, EST_JSON, sel, indice)
 
 def mostrar_lista_reservas(lista):
+    """Renderiza por consola una tabla formateada con el listado de reservas (activas o canceladas), alineando dinámicamente los campos para su correcta lectura."""
     print(f'{"Índice":<8} | {"Nombre":<15} | {"Día":<5} | {"Mes":<5} | {"Año":<6} | {"Hora":<6} | {"Minuto":<8} | {"Duración":<10} | {"Estacionamiento":<15}')
     print("-" * 120)
     
@@ -342,6 +349,7 @@ def mostrar_lista_reservas(lista):
               f'{lista[i]["estacionamiento"]:<15}')
 
 def consultar_reservas(lista_reservas):
+    """Despliega la interfaz de consulta de reservas, invocando a la función de renderizado de tablas y pausando la ejecución hasta que el usuario decida retornar."""
     print("\n" + "=" * 44)
     print("\n CONSULTAR RESERVAS \n")
     print("=" * 44)
@@ -349,6 +357,7 @@ def consultar_reservas(lista_reservas):
     input("\nPresione ENTER para volver...")
 
 def modificar_reserva(sel, EST_JSON, RESER_JSON, reservar):
+    """Permite seleccionar y actualizar campos específicos de una reserva previamente almacenada, regenerando la persistencia de estado (JSON) y actualizando el recibo correspondiente."""
     print("\n--- RESERVAS EXISTENTES ---")
     mostrar_lista_reservas(reservar)
 
@@ -430,6 +439,7 @@ def modificar_reserva(sel, EST_JSON, RESER_JSON, reservar):
     input("\nPresione ENTER para continuar...")
 
 def cancelar_reserva(sel, EST_JSON, RESER_JSON, RESER_CANCEL_JSON, reservas_canceladas, reservar):
+    """Ejecuta la baja lógica de una reserva activa, trasladando el registro desde la estructura principal hacia la colección de reservas canceladas, e incrementando la disponibilidad de espacios en el estacionamiento."""
     print("\n--- RESERVAS EXISTENTES ---")
     mostrar_lista_reservas(reservar)
 
@@ -455,7 +465,7 @@ def cancelar_reserva(sel, EST_JSON, RESER_JSON, RESER_CANCEL_JSON, reservas_canc
     print(f"Fecha: {escritura_digitos(dia)}-{escritura_digitos(mes)}-{escritura_digitos(año)}")
     print(f"Horario: {escritura_digitos(hora)}:{escritura_digitos(minuto)} hs a {escritura_digitos(horaduracion)}:{escritura_digitos(minuto)} hs (Duración: {escritura_digitos(duracion)} hs)")
 
-    confirmacion_cancelar = input("¿Esta seguro de que desea cancelar esta reserva?, [Y / N]: ") 
+    confirmacion_cancelar = input("¿Está seguro de que desea cancelar esta reserva? [Y / N]: ") 
 
     if confirmacion_cancelar.lower() in ("y", "yes", "si"):
         reservas_canceladas.append(reservar[reserva_num])
@@ -471,6 +481,7 @@ def cancelar_reserva(sel, EST_JSON, RESER_JSON, RESER_CANCEL_JSON, reservas_canc
         input("\nPresione ENTER para continuar...")
 
 def recuperar_reserva(sel, EST_JSON, RESER_JSON, RESER_CANCEL_JSON, reservas_canceladas, reservar):
+    """Restaura una reserva desde el historial de cancelaciones hacia la nómina activa, verificando previamente la disponibilidad de espacios y descontando el cupo correspondiente."""
     print("\n--- RESERVAS CANCELADAS ---")
     mostrar_lista_reservas(reservas_canceladas)
 
@@ -488,7 +499,7 @@ def recuperar_reserva(sel, EST_JSON, RESER_JSON, RESER_CANCEL_JSON, reservas_can
     print(f"Fecha: {escritura_digitos(reservas_canceladas[reserva_num]['dia'])}-{escritura_digitos(reservas_canceladas[reserva_num]['mes'])}-{escritura_digitos(reservas_canceladas[reserva_num]['año'])}")
     print(f"Horario: {escritura_digitos(reservas_canceladas[reserva_num]['hora'])}:{escritura_digitos(reservas_canceladas[reserva_num]['minuto'])} hs a {escritura_digitos(horaduracion)}:{escritura_digitos(reservas_canceladas[reserva_num]['minuto'])} hs (Duración: {reservas_canceladas[reserva_num]['duracion']} hs)")
 
-    confirmacion_recuperar = input("¿Esta seguro de que desea recuperar esta reserva?, [Y / N]: ") 
+    confirmacion_recuperar = input("¿Está seguro de que desea recuperar esta reserva? [Y / N]: ") 
 
     if confirmacion_recuperar.lower() in ("y", "yes", "si"):
         if EST_JSON[sel]['capacidad_actual'] <= 0:
