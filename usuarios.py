@@ -216,9 +216,9 @@ def alta(usuarios):
     return usuarios
 
 def formatear_usuario(item):
-    #Sirve para convertir cada usuario en una linea de texto antes de imprimirlo, mas que nada esta para tener
-    # implementado el map en algun lugar del codigo
-
+    """Sirve para convertir cada usuario en una linea de texto antes de imprimirlo, mas que nada esta para tener
+       implementado el map en algun lugar del codigo
+    """
     dni, datos = item
     return (
         "Nombre: " + datos["nombre"]

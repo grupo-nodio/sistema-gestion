@@ -221,6 +221,7 @@ def imprimir_datos_estacionamiento(estacionamientos):
     print(f"Archivo '{nombre_archivo}' generado correctamente.")
 
 def imprimir_usuarios(usuarios, vehiculos):
+    '''Genera un archivo de texto con los usuarios registrados y sus vehículos asociados.'''
     nombre_archivo = input("Ingrese el nombre del archivo: ").strip()
 
     if not nombre_archivo.endswith(".txt"):
