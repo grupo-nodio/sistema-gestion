@@ -68,6 +68,7 @@ def reporte_ocupacion_estacionamiento(lista_tipo):
         print("Cantidad de espacios estándar ocupados (autos y motos):", espacios_estandar)
 
 def reporte_reservas(RESER_JSON, reservas_canceladas):
+    '''Muestra las reservas, tanto activas como canceladas y la cantidad total de ambas.'''
     if len(RESER_JSON) > 1:
         print("\n REPORTE DE RESERVAS REALIZADAS \n")
         print(f'{"Índice":<8} | {"Nombre":<15} | {"Día":<5} | {"Mes":<5} | {"Año":<6} | {"Hora":<6} | {"Minuto":<8} | {"Duración":<10}')
