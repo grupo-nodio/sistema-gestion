@@ -148,17 +148,17 @@ def menu_principal():
                             if op_usu == "1":
                                 usuarios.alta(usuarios_registrados)
                             elif op_usu == "2":
-                                usuarios.alta(usuarios_registrados)
+                                usuarios.mostrar_usuarios(usuarios_registrados)
                             elif op_usu == "3":
-                                usuarios.alta(usuarios_registrados)
+                                usuarios.modificar_usuario(usuarios_registrados)
                             elif op_usu == "4":
-                                vehiculos.ingresar_vehiculo(VHC_JSON, usuarios_registrados)
+                                vehiculos.ingresar_vehiculo(patentes, tipos, dni_vehiculos, usuarios_registrados)
                             elif op_usu == "5":
-                                vehiculos.mostrar_vehiculos(VHC_JSON, usuarios_registrados)
+                                vehiculos.mostrar_vehiculos(VHC_JSON)
                             elif op_usu == "6":
-                                usuarios.alta(usuarios_registrados)
+                                usuarios.baja_usuarios(usuarios_registrados)
                             elif op_usu == "7":
-                                usuarios.alta(usuarios_registrados)
+                                usuarios.quitar_baja(usuarios_registrados)
                             elif op_usu == "8":
                                 vehiculos.eliminar_vehiculo(VHC_JSON)
                                 
@@ -182,7 +182,7 @@ def menu_principal():
 
         # --- ESTADÍSTICAS GENERALES ---
         elif opcion_principal == "3":
-            reportes.mostrar_reportes(estacionamientos, tipos, dnis, estados, reservar, reservas_canceladas, lista_cobros)
+            reportes.mostrar_reportes(estacionamientos, tipos, usuarios_registrados, reservar, reservas_canceladas, lista_cobros)
 
         # --- ELIMINAR ESTACIONAMIENTO ---
         elif opcion_principal == "4":
@@ -216,5 +216,4 @@ def menu_principal():
         elif opcion_principal == "0":
             print("\nCerrando sesión de administrador. ¡Hasta luego!")
 
-if __name__ == "__main__":
-    menu_principal() 
+menu_principal()

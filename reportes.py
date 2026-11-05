@@ -1,13 +1,14 @@
 from functools import reduce
+import json
 from reservas import escritura_digitos
 import estacionamiento
 
-def mostrar_reportes(estacionamientos, lista_tipo, lista_dni, lista_estado, reservar, reservas_canceladas, lista_cobros):
+def mostrar_reportes(estacionamientos, lista_tipo, usuarios, reservar, reservas_canceladas, lista_cobros):
     '''Llama a todas las estadísticas'''
     reporte_estacionamiento(estacionamientos)
     reporte_vehiculos_por_tipo(lista_tipo)
     reporte_ocupacion_estacionamiento(lista_tipo)
-    reporte_usuarios_por_estado(lista_dni, lista_estado)
+    reporte_usuarios_por_estado(usuarios)
     reporte_reservas(reservar, reservas_canceladas)
     reporte_recaudacion(lista_cobros)
     reporte_tarifas(estacionamientos, lista_cobros)
@@ -120,12 +121,9 @@ def reporte_reservas(reservar, reservas_canceladas):
     # Pausa para que el usuario llegue a leer el reporte antes de que el programa siga
     input("\nPresione ENTER para volver...")
     
-def reporte_usuarios_por_estado(lista_dni, lista_estado):
+def reporte_usuarios_por_estado(usuarios):
     """ Reporte de usuarios dados de alta y dados de baja. """
-    if len(lista_dni) >= len(lista_estado):
-        total_usuarios = len(lista_dni)
-    else:
-        total_usuarios = len(lista_estado)
+    total_usuarios = len(usuarios)
 
     if total_usuarios == 0:
         print("\nUSUARIOS REGISTRADOS:")
@@ -136,10 +134,10 @@ def reporte_usuarios_por_estado(lista_dni, lista_estado):
     usuarios_activos = 0
     usuarios_baja = 0
 
-    for estado in lista_estado:
-        if estado == "A":
+    for datos in usuarios.values():
+        if datos["estado"] == "A":
             usuarios_activos += 1
-        elif estado == "B":
+        elif datos["estado"] == "B":
             usuarios_baja += 1
 
     print("\nUSUARIOS REGISTRADOS:")
@@ -265,16 +263,42 @@ def imprimir_usuarios(usuarios, vehiculos):
     except FileNotFoundError:
         pass
 
+    try:
+        with open(vehiculos, "r", encoding="utf-8") as archivo_vehiculos:
+            vehiculos = json.load(archivo_vehiculos)
+    except FileNotFoundError:
+        vehiculos = []
+    except (OSError, json.JSONDecodeError):
+        print("No se pudo leer el archivo de vehículos.")
+        return
+
+    ancho = 72
     with open(nombre_archivo, "w", encoding="utf-8") as archivo:
-        archivo.write("=" * 45 + "\n")
-        archivo.write("       BASE DE DATOS USUARIOS Y VEHÍCULOS\n")
-        archivo.write("=" * 45 + "\n\n")
+        archivo.write("=" * ancho + "\n")
+        titulo = "PARK DIRECT | REPORTE DE USUARIOS Y VEHÍCULOS"
+        espacios = (ancho - len(titulo)) // 2
+        archivo.write(" " * espacios + titulo + "\n")
+        archivo.write("=" * ancho + "\n")
+        archivo.write(f"Usuarios registrados: {len(usuarios)}    |    Vehículos registrados: {len(vehiculos)}\n\n")
 
-        '''
-        se debe mostrar la base de datos combinando la informacion de usuarios + vehiculos, el usuario tiene el vehiculo asignado
-        '''
-
-        archivo.write("\n" + "=" * 45 + "\n")
+        if not usuarios:
+            archivo.write("No hay usuarios registrados.\n")
+        else:
+            for dni, datos in usuarios.items():
+                estado = "Activo" if datos["estado"] == "A" else "Dado de baja" if datos["estado"] == "B" else "Desconocido"
+                archivo.write("-" * ancho + "\n")
+                archivo.write(f"Nombre: {datos['nombre']}    Apellido: {datos['apellido']}\n")
+                archivo.write(f"DNI: {dni}    |    Estado: {estado}\n")
+                archivo.write(f"Email: {datos['email']}\n")
+                archivo.write(f"Teléfono: {datos['telefono']}\n")
+                vehiculos_usuario = [v for v in vehiculos if v["dni"] == dni]
+                archivo.write("Vehículos:\n")
+                if vehiculos_usuario:
+                    for vehiculo in vehiculos_usuario:
+                        archivo.write(f"  • {vehiculo['patente']} — {vehiculo['tipo']}\n")
+                else:
+                    archivo.write("  Sin vehículos registrados.\n")
+            archivo.write("\n" + "=" * ancho + "\n")
 
     print(f"Archivo '{nombre_archivo}' creado correctamente.")
 
