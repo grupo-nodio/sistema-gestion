@@ -44,18 +44,13 @@ def cargar_usuarios():
     except FileNotFoundError:
         return {}
     except (json.JSONDecodeError, ValueError, AttributeError) as error:
-        decision = input(
+        print(
             f"Error: Usuarios.json no tiene el formato esperado ({error}). "
-            "¿Desea sobrescribirlo con un diccionario vacío? (y/n): "
+            "Se sobrescribirá automáticamente con un diccionario vacío."
         )
-
-        if decision.lower() in ("y", "yes", "s", "si"):
-            datos_iniciales = {}
-            reiniciar_archivo(datos_iniciales)
-            return datos_iniciales
-
-        print("Se usará un diccionario vacío. Corrija Usuarios.json para guardar cambios.")
-        return {}
+        datos_iniciales = {}
+        reiniciar_archivo(datos_iniciales)
+        return datos_iniciales
 
     return usuarios
 
@@ -221,9 +216,9 @@ def alta(usuarios):
     return usuarios
 
 def formatear_usuario(item):
-    #Sirve para convertir cada usuario en una linea de texto antes de imprimirlo, mas que nada esta para tener
-    # implementado el map en algun lugar del codigo
-
+    """Sirve para convertir cada usuario en una linea de texto antes de imprimirlo, mas que nada esta para tener
+       implementado el map en algun lugar del codigo
+    """
     dni, datos = item
     return (
         "Nombre: " + datos["nombre"]

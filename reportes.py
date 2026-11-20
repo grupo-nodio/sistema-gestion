@@ -1,22 +1,21 @@
 from functools import reduce
+import json
 from reservas import escritura_digitos
 import estacionamiento
+import tarifas
 
-def mostrar_reportes(estacionamientos, lista_tipo, lista_dni, lista_estado, reservar, reservas_canceladas, lista_cobros):
-    '''Llama a todas las estadísticas'''
+def mostrar_reportes(estacionamientos, lista_tipo, usuarios, reservar, reservas_canceladas, lista_cobros):
+    '''Llama a todas las estadísticas generales por pantalla'''
     reporte_estacionamiento(estacionamientos)
     reporte_vehiculos_por_tipo(lista_tipo)
     reporte_ocupacion_estacionamiento(lista_tipo)
-    reporte_usuarios_por_estado(lista_dni, lista_estado)
+    reporte_usuarios_por_estado(usuarios)
     reporte_reservas(reservar, reservas_canceladas)
     reporte_recaudacion(lista_cobros)
 
 def reporte_estacionamiento(estacionamientos):
     '''Muestra en pantalla estacionamientos registrados, disponibles, no disponibles y capacidad actual disponible total'''
-    # Se obtienen únicamente los estacionamientos activos (excluyendo los marcados como "ELIMINADO")
     activos = list(filter(lambda est: est["nombre"] != "ELIMINADO", estacionamientos.values()))
-    
-    # Se filtran los estacionamientos cuyo estado es 1 (disponible)
     disponibles = list(filter(lambda est: est["estado"] == 1, activos))
     
     cant_registrados = len(activos)
@@ -31,13 +30,10 @@ def reporte_estacionamiento(estacionamientos):
 
 def capacidad_actual_disponible(estacionamientos):
     '''Muestra la capacidad actual sin reservar en total entre todos los estacionamientos que se encuentren disponibles.'''
-    # Filtrar estacionamientos que estén activos y disponibles (estado == 1)
     estacionamientos_disponibles = filter(
         lambda est: est["nombre"] != "ELIMINADO" and est["estado"] == 1,
         estacionamientos.values()
     )
-    
-    # Sumar la capacidad_actual de los estacionamientos filtrados
     return reduce(
         lambda acumulador, est: acumulador + est["capacidad_actual"],
         estacionamientos_disponibles,
@@ -45,7 +41,7 @@ def capacidad_actual_disponible(estacionamientos):
     )
 
 def reporte_vehiculos_por_tipo(lista_tipo):
-    """Muestra un reporte de la cantidad de vehículos registrados por tipo (moto, auto, camioneta), utilizando filter para contar cada tipo de vehículo."""
+    """Muestra un reporte de la cantidad de vehículos registrados por tipo."""
     print("\nANÁLISIS DE VEHÍCULOS POR TIPO:")
 
     if len(lista_tipo) == 0:
@@ -60,10 +56,7 @@ def reporte_vehiculos_por_tipo(lista_tipo):
         print("Cantidad de camionetas:", camionetas)
 
 def reporte_ocupacion_estacionamiento(lista_tipo):
-    """
-    Muestra un reporte de la ocupación de estacionamientos por tipo de vehículo, utilizando filter para contar los tipos de vehículos.
-    Si el vehículo es una camioneta, ocupa un espacio grande; si es un auto o moto, ocupa un espacio estándar.
-    """
+    """Muestra un reporte de la ocupación de espacios por tipo de vehículo."""
     print("\nLOGÍSTICA DE ESPACIOS OCUPADOS:")
     if len(lista_tipo) == 0:
         return
@@ -74,32 +67,51 @@ def reporte_ocupacion_estacionamiento(lista_tipo):
         print("Cantidad de espacios grandes ocupados (camionetas):", espacios_grandes)
         print("Cantidad de espacios estándar ocupados (autos y motos):", espacios_estandar)
 
-def reporte_reservas(reservar, reservas_canceladas):
-    """ Muestra únicamente las reservas realizadas y canceladas. """
-    print("\n REPORTE DE RESERVAS REALIZADAS \n")
+def reporte_reservas(RESER_JSON, reservas_canceladas):
+    '''Muestra las reservas, tanto activas como canceladas y la cantidad total de ambas.'''
+    if len(RESER_JSON) > 1:
+        print("\n REPORTE DE RESERVAS REALIZADAS \n")
+        print(f'{"Índice":<8} | {"Nombre":<15} | {"Día":<5} | {"Mes":<5} | {"Año":<6} | {"Hora":<6} | {"Minuto":<8} | {"Duración":<10}')
+        print("-" * 110)
+            
+        for i in range(1, len(RESER_JSON)):
+            print(f'{i:<8} | '
+                  f'{RESER_JSON[i]["nombre"]:<15} | '
+                  f'{escritura_digitos(RESER_JSON[i]["dia"]):<5} | '
+                  f'{escritura_digitos(RESER_JSON[i]["mes"]):<5} | '
+                  f'{RESER_JSON[i]["año"]:<6} | '
+                  f'{escritura_digitos(RESER_JSON[i]["hora"]):<6} | '
+                  f'{escritura_digitos(RESER_JSON[i]["minuto"]):<8} | '
+                  f'{escritura_digitos(RESER_JSON[i]["duracion"]):<10} | ')
 
-    for i in range(len(reservar)):
-        print(f"{i + 1}. Nombre: {reservar[i][0]} / dia: {escritura_digitos(reservar[i][1])} / mes: {escritura_digitos(reservar[i][2])} / año: {escritura_digitos(reservar[i][3])} / hora: {escritura_digitos(reservar[i][4])} / minuto: {escritura_digitos(reservar[i][5])} / duracion: {escritura_digitos(reservar[i][6])}hs / estacionamiento: {escritura_digitos(reservar[i][7])}.")
-
-    print(f"Cantidad de reservas realizadas con éxito: {len(reservar)}")
-
-    print("\n REPORTE DE RESERVAS CANCELADAS \n")
-
-    if len(reservas_canceladas) > 0:
-        for i in range(len(reservas_canceladas)):
-            # CORREGIDO: Se usa reservas_canceladas en lugar de reservar, y se aplica escritura_digitos al año
-            print(f"{i + 1}. Nombre: {reservas_canceladas[i][0]} / dia: {escritura_digitos(reservas_canceladas[i][1])} / mes: {escritura_digitos(reservas_canceladas[i][2])} / año: {escritura_digitos(reservas_canceladas[i][3])} / hora: {escritura_digitos(reservas_canceladas[i][4])} / minuto: {escritura_digitos(reservas_canceladas[i][5])} / duracion: {escritura_digitos(reservas_canceladas[i][6])}hs / estacionamiento: {escritura_digitos(reservas_canceladas[i][7])}.")
-
-        print(f"Cantidad de reservas canceladas: {len(reservas_canceladas)}")
+        print(f"\nCantidad de reservas realizadas: {len(RESER_JSON) - 1}")
     else:
-        print("No se canceló ninguna reserva.")
+        print("\nNo se realizaron reservas.")
 
-def reporte_usuarios_por_estado(lista_dni, lista_estado):
+    if len(reservas_canceladas) > 1:
+        print("\n REPORTE DE RESERVAS CANCELADAS \n")
+        print(f'{"Índice":<8} | {"Nombre":<15} | {"Día":<5} | {"Mes":<5} | {"Año":<6} | {"Hora":<6} | {"Minuto":<8} | {"Duración":<10}')
+        print("-" * 110)
+                
+        for i in range(1, len(reservas_canceladas)):
+            print(f'{i:<8} | '
+                  f'{reservas_canceladas[i]["nombre"]:<15} | '
+                  f'{escritura_digitos(reservas_canceladas[i]["dia"]):<5} | '
+                  f'{escritura_digitos(reservas_canceladas[i]["mes"]):<5} | '
+                  f'{reservas_canceladas[i]["año"]:<6} | '
+                  f'{escritura_digitos(reservas_canceladas[i]["hora"]):<6} | '
+                  f'{escritura_digitos(reservas_canceladas[i]["minuto"]):<8} | '
+                  f'{escritura_digitos(reservas_canceladas[i]["duracion"]):<10} | ')
+
+        print(f"\nCantidad de reservas canceladas: {len(reservas_canceladas) - 1}")
+    else:
+        print("\nNo se canceló ninguna reserva.")
+
+    input("\nPresione ENTER para volver...")
+    
+def reporte_usuarios_por_estado(usuarios):
     """ Reporte de usuarios dados de alta y dados de baja. """
-    if len(lista_dni) >= len(lista_estado):
-        total_usuarios = len(lista_dni)
-    else:
-        total_usuarios = len(lista_estado)
+    total_usuarios = len(usuarios)
 
     if total_usuarios == 0:
         print("\nUSUARIOS REGISTRADOS:")
@@ -110,10 +122,10 @@ def reporte_usuarios_por_estado(lista_dni, lista_estado):
     usuarios_activos = 0
     usuarios_baja = 0
 
-    for estado in lista_estado:
-        if estado == "A":
+    for datos in usuarios.values():
+        if datos["estado"] == "A":
             usuarios_activos += 1
-        elif estado == "B":
+        elif datos["estado"] == "B":
             usuarios_baja += 1
 
     print("\nUSUARIOS REGISTRADOS:")
@@ -127,13 +139,13 @@ def reporte_recaudacion(lista_cobros):
         print("\nREPORTE DE RECAUDACIÓN:")
         print("Todavía no se registró ningún cobro en el sistema.")
     else:
-        total_dinero = sum(lista_cobros)
+        total_dinero = reduce(lambda acumulador, cobro: acumulador + cobro["total"], lista_cobros, 0)
             
         print("\nREPORTE DE RECAUDACIÓN:")
         print("Cantidad de cobros realizados:", len(lista_cobros))
-        print("Total de dinero recaudado: $", total_dinero)
+        print("Total de dinero recaudado:", tarifas.formatear_pesos(total_dinero))
 
-def escribir_ficha_estacionamiento(archivo, sel, estacionamientos, reservas, tarifas):
+def escribir_ficha_estacionamiento(archivo, sel, estacionamientos):
     '''Escribe el bloque de datos de un estacionamiento específico dentro del archivo abierto.'''
     dias = ('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo')
 
@@ -152,17 +164,10 @@ def escribir_ficha_estacionamiento(archivo, sel, estacionamientos, reservas, tar
         horario_texto = estacionamiento.mostrar_horario(estacionamientos[sel]['horarios'][dia])
         archivo.write(f"  - {dias[dia]}: {horario_texto}\n")
 
-    # =========================================================================
-    # ESCRIBIR ACÁ ABAJO LOS DATOS DE RESERVAS Y TARIFAS (COMPAÑEROS)
-    # =========================================================================
-
     archivo.write("=" * 45 + "\n\n")
 
-
-def imprimir_datos_estacionamiento(estacionamientos, reservas, tarifas):
+def imprimir_datos_estacionamiento(estacionamientos):
     '''Genera un archivo de texto con los datos de uno o todos los estacionamientos activos.'''
-    
-    # Filtrar estacionamientos activos (excluir los eliminados)
     activos = {k: v for k, v in estacionamientos.items() if v["nombre"] != "ELIMINADO"}
     
     if not activos:
@@ -183,12 +188,9 @@ def imprimir_datos_estacionamiento(estacionamientos, reservas, tarifas):
     if not nombre_archivo.endswith(".txt"):
         nombre_archivo += ".txt"
 
-    # Determinar el modo de apertura ("w" para sobreescribir, "a" para anexar)
     if opcion == "2":
-        # Si elige TODOS, se sobreescribe directamente sin usar append
         modo = "w"
     else:
-        # Si elige UNO SOLO, se valida si el archivo ya existe
         try:
             with open(nombre_archivo, "r", encoding="utf-8"):
                 print("El archivo ya existe.")
@@ -207,22 +209,20 @@ def imprimir_datos_estacionamiento(estacionamientos, reservas, tarifas):
         except FileNotFoundError:
             modo = "w"
 
-    # Definir la lista de IDs a procesar
     if opcion == "1":
         seleccion = estacionamiento.elegir_estacionamiento(estacionamientos)
         lista_ids = [seleccion]
     else:
         lista_ids = list(activos.keys())
 
-    # Escritura en el archivo
     with open(nombre_archivo, modo, encoding="utf-8") as archivo:
         for id_est in lista_ids:
-            escribir_ficha_estacionamiento(archivo, id_est, estacionamientos, reservas, tarifas)
+            escribir_ficha_estacionamiento(archivo, id_est, estacionamientos)
 
     print(f"Archivo '{nombre_archivo}' generado correctamente.")
 
-    
 def imprimir_usuarios(usuarios, vehiculos):
+    '''Genera un archivo de texto con los usuarios registrados y sus vehículos asociados.'''
     nombre_archivo = input("Ingrese el nombre del archivo: ").strip()
 
     if not nombre_archivo.endswith(".txt"):
@@ -239,15 +239,63 @@ def imprimir_usuarios(usuarios, vehiculos):
     except FileNotFoundError:
         pass
 
+    try:
+        with open(vehiculos, "r", encoding="utf-8") as archivo_vehiculos:
+            lista_vehiculos = json.load(archivo_vehiculos)
+    except (FileNotFoundError, OSError, json.JSONDecodeError):
+        lista_vehiculos = []
+
+    ancho = 72
     with open(nombre_archivo, "w", encoding="utf-8") as archivo:
-        archivo.write("=" * 45 + "\n")
-        archivo.write("       BASE DE DATOS USUARIOS Y VEHÍCULOS\n")
-        archivo.write("=" * 45 + "\n\n")
+        archivo.write("=" * ancho + "\n")
+        titulo = "PARK DIRECT | REPORTE DE USUARIOS Y VEHÍCULOS"
+        espacios = (ancho - len(titulo)) // 2
+        archivo.write(" " * espacios + titulo + "\n")
+        archivo.write("=" * ancho + "\n")
+        archivo.write(f"Usuarios registrados: {len(usuarios)}    |    Vehículos registrados: {len(lista_vehiculos)}\n\n")
 
-        '''
-        se debe mostrar la base de datos combinando la informacion de usuarios + vehiculos, el usuario tiene el vehiculo asignado
-        '''
-
-        archivo.write("\n" + "=" * 45 + "\n")
+        if not usuarios:
+            archivo.write("No hay usuarios registrados.\n")
+        else:
+            for dni, datos in usuarios.items():
+                estado = "Activo" if datos["estado"] == "A" else "Dado de baja" if datos["estado"] == "B" else "Desconocido"
+                archivo.write("-" * ancho + "\n")
+                archivo.write(f"Nombre: {datos['nombre']}    Apellido: {datos['apellido']}\n")
+                archivo.write(f"DNI: {dni}    |    Estado: {estado}\n")
+                archivo.write(f"Email: {datos['email']}\n")
+                archivo.write(f"Teléfono: {datos['telefono']}\n")
+                vehiculos_usuario = [v for v in lista_vehiculos if v["dni"] == dni]
+                archivo.write("Vehículos:\n")
+                if vehiculos_usuario:
+                    for vehiculo in vehiculos_usuario:
+                        archivo.write(f"  • {vehiculo['patente']} — {vehiculo['tipo']}\n")
+                else:
+                    archivo.write("  Sin vehículos registrados.\n")
+            archivo.write("\n" + "=" * ancho + "\n")
 
     print(f"Archivo '{nombre_archivo}' creado correctamente.")
+
+def reporte_tarifas_archivo(archivo, sel, estacionamientos):
+    """Escribe el historial de cobros y recaudación de un estacionamiento en el archivo txt."""
+    archivo.write("\n--- HISTORIAL DE COBROS Y TARIFAS ---\n")
+    
+    cobros_totales = tarifas.cargar_cobros()
+    cobros_estacionamiento = list(filter(
+        lambda cobro: cobro["estacionamiento"] == estacionamientos[sel]["nombre"], 
+        cobros_totales
+    ))
+    
+    if len(cobros_estacionamiento) == 0:
+        archivo.write("No hay cobros registrados en este estacionamiento.\n")
+    else:
+        recaudacion = reduce(lambda acumulador, cobro: acumulador + cobro["total"], cobros_estacionamiento, 0)
+        
+        archivo.write(f"Cantidad de cobros: {len(cobros_estacionamiento)}\n")
+        archivo.write(f"Recaudación total: {tarifas.formatear_pesos(recaudacion)}\n\n")
+        
+        archivo.write(f"{'N°':<7}{'Patente':<10}{'Tipo':<11}{'Horas':>6}{'Total':>13}\n")
+        archivo.write("-" * 50 + "\n")
+        for cobro in cobros_estacionamiento:
+            numero = f"{cobro['numero']:04d}"
+            total = tarifas.formatear_pesos(cobro["total"])
+            archivo.write(f"{numero:<7}{cobro['patente']:<10}{cobro['tipo']:<11}{cobro['horas']:>6}{total:>13}\n")
