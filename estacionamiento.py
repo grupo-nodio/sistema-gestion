@@ -368,15 +368,10 @@ def edit_direccion(seleccion, estacionamientos):
     print(f"Modificación realizada. La nueva dirección es: {datos['direccion']}")
 
 def edit_espacios(seleccion, estacionamientos):
-    estacionamiento = estacionamientos[seleccion]
-    sector = elegir_sector_final(estacionamiento["sectores"])
+    datos = estacionamientos[seleccion]
 
-    if sector is None:
-        return
-
-    print(f"Área seleccionada: {sector['nombre']}")
-    print("1. Capacidad total del área")
-    print("2. Espacios disponibles en el área")
+    print("1. Capacidad total del estacionamiento")
+    print("2. Espacios disponibles en el estacionamiento")
 
     eleccion = pedir_numero("Seleccione una opción: ")
 
@@ -384,48 +379,33 @@ def edit_espacios(seleccion, estacionamientos):
         eleccion = pedir_numero("Seleccione 1 o 2: ")
 
     if eleccion == 1:
-        nueva_capacidad = pedir_numero("Nueva capacidad total del área: ")
+        print("Capacidad total actual:", datos["capacidad_total"])
+        nueva_capacidad = pedir_numero("Nueva capacidad total: ")
         nueva_capacidad = validar_positivos(nueva_capacidad)
+        datos["capacidad_total"] = nueva_capacidad
 
-        sector["capacidad_total"] = nueva_capacidad
-
-        if sector["capacidad_actual"] > nueva_capacidad:
-            sector["capacidad_actual"] = nueva_capacidad
+        if datos["capacidad_actual"] > nueva_capacidad:
+            datos["capacidad_actual"] = nueva_capacidad
+            print("Los espacios disponibles se ajustaron al nuevo total.")
 
     else:
-        disponibles = pedir_numero(
-            f"Espacios disponibles en el área (0 a {sector['capacidad_total']}): "
-        )
+        print("Espacios disponibles actualmente:", datos["capacidad_actual"])
+        disponibles = pedir_numero("Nueva cantidad de espacios disponibles: ")
 
-        while disponibles < 0 or disponibles > sector["capacidad_total"]:
-            print("La cantidad debe estar entre 0 y la capacidad del área.")
-            disponibles = pedir_numero(
-                f"Espacios disponibles en el área (0 a {sector['capacidad_total']}): "
-            )
+        while disponibles < 0 or disponibles > datos["capacidad_total"]:
+            print("Debe ingresar un valor entre 0 y la capacidad total.")
+            disponibles = pedir_numero("Nueva cantidad de espacios disponibles: ")
 
-        sector["capacidad_actual"] = disponibles
+        datos["capacidad_actual"] = disponibles
 
-    print("Actualice los totales del estacionamiento según todas sus áreas.")
+    if datos["estado"] != 3:
+        if datos["capacidad_actual"] == 0:
+            datos["estado"] = 2
+        else:
+            datos["estado"] = 1
 
-    total = pedir_numero("Capacidad total del estacionamiento: ")
-    total = validar_positivos(total)
-
-    disponibles = pedir_numero("Espacios disponibles en el estacionamiento: ")
-
-    while disponibles < 0 or disponibles > total:
-        print("Los disponibles deben estar entre 0 y la capacidad total.")
-        disponibles = pedir_numero(
-            "Espacios disponibles en el estacionamiento: "
-        )
-
-    estacionamiento["capacidad_total"] = total
-    estacionamiento["capacidad_actual"] = disponibles
-
-    if estacionamiento["estado"] != 3:
-        estacionamiento["estado"] = 1 if disponibles > 0 else 2
-
-    print(f"Capacidad total del estacionamiento: {total}")
-    print(f"Espacios disponibles en el estacionamiento: {disponibles}")
+    print("Capacidad total:", datos["capacidad_total"])
+    print("Espacios disponibles:", datos["capacidad_actual"])
 
 def edit_horario(seleccion, estacionamientos):
     '''permite modificar un horario de un dia especifico'''
@@ -542,7 +522,7 @@ def eliminar_estacionamiento(estacionamientos, archivo_json):
     print("\n-- OPERACIÓN CANCELADA: El código de confirmación es incorrecto --")
     return None
 
-# ================= NUEVO BLOQUE RECURSIVIDAD =================
+# ------------------------------------------------------------- NUEVO BLOQUE RECURSIVIDAD -------------------------------------------------------------
 
 def preguntar_si_no(mensaje):
     while True:
@@ -583,7 +563,6 @@ def crear_sector(padre):
         "capacidad_actual": capacidad
     }
 
-
 def crear_sectores():
     sectores = {
         "nombre": "Sectores",
@@ -599,87 +578,16 @@ def crear_sectores():
 
     return sectores
 
-def elegir_sector_final(sector):
-    while "subsectores" in sector:
-        hijos = sector["subsectores"]
-
-        if not hijos:
-            print("No hay áreas para seleccionar.")
-            return None
-
-        print(f"\nÁreas dentro de '{sector['nombre']}':")
-
-        numero = 1
-        for hijo in hijos:
-            if "subsectores" in hijo:
-                tipo = "contiene otras áreas"
-            else:
-                tipo = "tiene lugares para estacionar"
-
-            print(f"{numero}. {hijo['nombre']} ({tipo})")
-            numero += 1
-
-        print("0. Cancelar")
-        opcion = pedir_numero("Seleccione un área: ")
-
-        if opcion == 0:
-            return None
-
-        if 1 <= opcion <= len(hijos):
-            sector = hijos[opcion - 1]
+def mostrar_sectores(diccionario, nivel):
+    sangria = " " * nivel
+    sectores = diccionario["subsectores"]
+    
+    for sector in sectores:
+        if "capacidad_actual" in sector:
+            print(f"{sangria}Sector: {sector["nombre"]} - capacidad de {sector["capacidad_actual"]}")
         else:
-            print("Opción inválida.")
-
-    return sector
-
-def buscar_sector_disponible(sector, recorrido):
-    recorrido = recorrido + (sector["nombre"],)
-
-    if "subsectores" not in sector:
-        if sector["capacidad_actual"] > 0:
-            return recorrido, sector["capacidad_actual"]
-
-        return None
-
-    for hijo in sector["subsectores"]:
-        resultado = buscar_sector_disponible(hijo, recorrido)
-
-        if resultado is not None:
-            return resultado
-
-    return None
-
-def ver_sector_disponible(seleccion, estacionamientos):
-    datos = estacionamientos[seleccion]
-
-    if datos["estado"] != 1 or datos["capacidad_actual"] <= 0:
-        print("No hay áreas disponibles para estacionar.")
-        return
-
-    resultado = buscar_sector_disponible(datos["sectores"], ())
-
-    if resultado is None:
-        print("No se encontró un área con espacios disponibles.")
-        return
-
-    recorrido, disponibles = resultado
-
-    ubicacion = ""
-    for nombre in recorrido[1:]:
-        if ubicacion == "":
-            ubicacion = nombre
-        else:
-            ubicacion = ubicacion + " → " + nombre
-
-    print(f"Primera área con lugar: {ubicacion} ({disponibles} disponibles)")
-
-def seleccionar_activo(estacionamientos):
-    for datos in estacionamientos.values():
-        if datos["nombre"] != "ELIMINADO":
-            return elegir_estacionamiento(estacionamientos)
-
-    print("No hay estacionamientos activos.")
-    return None
+            print(f"{sangria}Sector: {sector["nombre"]} - Subsectores:")
+            mostrar_sectores(sector, nivel+2)
 
 def menu_recursividad():
     archivo_json = "estacionamiento.json"
@@ -688,11 +596,9 @@ def menu_recursividad():
 
     while opcion != 0:
         print("\n--- DEMOSTRACIÓN DE RECURSIVIDAD ---")
-        print("1. Crear estacionamiento y sectores")
+        print("1. Crear estacionamiento con áreas")
         print("2. Listar estacionamientos")
-        print("3. Ver información y sector con lugar")
-        print("4. Modificar estacionamiento (opción 4: espacios)")
-        print("5. Eliminar estacionamiento")
+        print("3. Mostrar espacios de todos los estacionamientos")
         print("0. Salir")
 
         opcion = pedir_numero("Elija una opción: ")
@@ -706,18 +612,11 @@ def menu_recursividad():
         elif opcion == 2:
             mostrar_estacionamientos(estacionamientos)
 
-        elif opcion in (3, 4):
-            seleccion = seleccionar_activo(estacionamientos)
-
-            if seleccion is not None:
-                if opcion == 3:
-                    mostrar_informacion(seleccion, estacionamientos)
-                else:
-                    modificar(seleccion, estacionamientos, archivo_json)
-
-        elif opcion == 5:
-            eliminar_estacionamiento(estacionamientos, archivo_json)
-
+        elif opcion == 3:
+            for garage in estacionamientos.values():
+                print(f"\nestacionamiento - {garage["nombre"]}")
+                mostrar_sectores(garage["sectores"], 0)
+        
         else:
             print("Opción inválida.")
 
