@@ -536,18 +536,18 @@ def preguntar_si_no(mensaje):
         print("Responda s o n.")
 
 
-def crear_sector(padre):
+def crear_subsector(padre):
     nombre = validar_nombre(
         input(f"Nombre de un área dentro de {padre}: ")
     )
 
     if preguntar_si_no(f"¿'{nombre}' contiene áreas más pequeñas? (s/n): "):
-        subsectores = [crear_sector(f"'{nombre}'")]
+        subsectores = [crear_subsector(f"'{nombre}'")]
 
         while preguntar_si_no(
             f"¿Agregar otra área dentro de '{nombre}'? (s/n): "
         ):
-            subsectores.append(crear_sector(f"'{nombre}'"))
+            subsectores.append(crear_subsector(f"'{nombre}'"))
 
         return {
             "nombre": nombre,
@@ -566,17 +566,56 @@ def crear_sector(padre):
 def crear_sectores():
     sectores = {
         "nombre": "Sectores",
-        "subsectores": [crear_sector("este estacionamiento")]
+        "subsectores": [crear_subsector("este estacionamiento")]
     }
 
     while preguntar_si_no(
         "¿Agregar otra área principal al estacionamiento? (s/n): "
     ):
         sectores["subsectores"].append(
-            crear_sector("este estacionamiento")
+            crear_subsector("este estacionamiento")
         )
 
     return sectores
+
+def buscar_sector_disponible(sector, recorrido):
+    recorrido.append(sector["nombre"])
+
+    if "subsectores" not in sector:
+        if sector["capacidad_actual"] > 0:
+            return recorrido
+
+        return None
+
+    for hijo in sector["subsectores"]:
+        resultado = buscar_sector_disponible(hijo, recorrido)
+
+        if resultado is not None:
+            return resultado
+
+    return None
+
+def ver_sector_disponible(seleccion, estacionamientos):
+    datos = estacionamientos[seleccion]
+
+    if datos["capacidad_actual"] <= 0:
+        print("No hay áreas disponibles para estacionar.")
+        return
+
+    resultado = buscar_sector_disponible(datos["sectores"], [])
+
+    if resultado is None:
+        print("No se encontró un área con espacios disponibles.")
+        return
+    
+    ubicacion = ""
+    for nombre in resultado[1:]:
+        if ubicacion == "":
+            ubicacion = nombre
+        else:
+            ubicacion = ubicacion + " → " + nombre
+
+    print(f"Primera área con lugar: {ubicacion}")
 
 def mostrar_sectores(diccionario, nivel):
     sangria = " " * nivel
@@ -584,7 +623,7 @@ def mostrar_sectores(diccionario, nivel):
     
     for sector in sectores:
         if "capacidad_actual" in sector:
-            print(f"{sangria}Sector: {sector["nombre"]} - capacidad de {sector["capacidad_actual"]}")
+            print(f"{sangria}Sector: {sector["nombre"]} - capacidad actual de {sector["capacidad_actual"]}")
         else:
             print(f"{sangria}Sector: {sector["nombre"]} - Subsectores:")
             mostrar_sectores(sector, nivel+2)
@@ -598,7 +637,8 @@ def menu_recursividad():
         print("\n--- DEMOSTRACIÓN DE RECURSIVIDAD ---")
         print("1. Crear estacionamiento con áreas")
         print("2. Listar estacionamientos")
-        print("3. Mostrar espacios de todos los estacionamientos")
+        print("3. Buscar un área con lugares")
+        print("4. Mostrar espacios de todos los estacionamientos")
         print("0. Salir")
 
         opcion = pedir_numero("Elija una opción: ")
@@ -613,6 +653,10 @@ def menu_recursividad():
             mostrar_estacionamientos(estacionamientos)
 
         elif opcion == 3:
+            seleccion = elegir_estacionamiento(estacionamientos)
+            ver_sector_disponible(seleccion, estacionamientos)
+
+        elif opcion == 4:
             for garage in estacionamientos.values():
                 print(f"\nestacionamiento - {garage["nombre"]}")
                 mostrar_sectores(garage["sectores"], 0)

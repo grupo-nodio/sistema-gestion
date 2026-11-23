@@ -1,10 +1,10 @@
 {
     "1": {
-        "nombre": "hola",
+        "nombre": "Estacionamiento Central",
         "estado": 1,
-        "direccion": "123",
-        "capacidad_total": 148,
-        "capacidad_actual": 148,
+        "direccion": "Av Independencia 1200",
+        "capacidad_total": 30,
+        "capacidad_actual": 30,
         "horarios": [
             true,
             true,
@@ -12,28 +12,28 @@
             true,
             true,
             true,
-            true
+            false
         ],
         "sectores": {
             "nombre": "Sectores",
             "subsectores": [
                 {
-                    "nombre": "Piso Uno",
-                    "capacidad_total": 123,
-                    "capacidad_actual": 123
+                    "nombre": "Planta baja",
+                    "capacidad_total": 10,
+                    "capacidad_actual": 0
                 },
                 {
-                    "nombre": "Piso Dos",
+                    "nombre": "Primer piso",
                     "subsectores": [
                         {
-                            "nombre": "Dos A",
-                            "capacidad_total": 12,
-                            "capacidad_actual": 12
+                            "nombre": "Sector A",
+                            "capacidad_total": 8,
+                            "capacidad_actual": 0
                         },
                         {
-                            "nombre": "Dos B",
-                            "capacidad_total": 13,
-                            "capacidad_actual": 13
+                            "nombre": "Sector B",
+                            "capacidad_total": 12,
+                            "capacidad_actual": 12
                         }
                     ]
                 }
